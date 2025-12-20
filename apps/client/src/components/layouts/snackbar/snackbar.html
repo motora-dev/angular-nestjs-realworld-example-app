@@ -1,0 +1,17 @@
+@if (snackbars().length > 0) {
+<div class="fixed top-16 left-1/2 -translate-x-1/2 z-[9999] flex flex-col items-center pt-4">
+  @for (item of snackbars(); track item.id) {
+  <div [class]="getTypeStyles(item.type)" [class.snackbar-item]="!isLeaving(item.id)" [class.leaving]="isLeaving(item.id)">
+    <span class="flex-1 pr-4">{{ item.message }}</span>
+    <button
+      type="button"
+      (click)="onClose(item.id)"
+      class="flex-shrink-0 text-current opacity-70 hover:opacity-100 transition-opacity"
+      [attr.aria-label]="'閉じる'"
+    >
+      <span class="material-symbols-outlined text-lg">close</span>
+    </button>
+  </div>
+  }
+</div>
+}

@@ -1,0 +1,176 @@
+packages:
+  - apps/*
+  - packages/*
+
+versions:
+  angular: &angular 21.0.3
+  angular-build: &angular-build 21.0.2
+  angular-cdk: &angular-cdk 21.0.2
+  angular-eslint: &angular-eslint 21.1.0
+  class-transformer: &class-transformer 0.5.1
+  class-validator: &class-validator 0.14.3
+  class-variance-authority: &cva 0.7.1
+  clsx: &clsx 2.1.1
+  compression: &compression 1.8.1
+  cookie: &cookie 1.1.1
+  cookie-parser: &cookie-parser 1.4.7
+  csrf-csrf: &csrf-csrf 4.0.3
+  dotenv: &dotenv 17.2.3
+  esbuild: &esbuild 0.27.1
+  eslint: &eslint 9.39.1
+  eslint-eslintrc: &eslint-eslintrc 3.3.3
+  eslint-plugin-boundaries: &eslint-plugin-boundaries 5.3.1
+  eslint-plugin-storybook: &eslint-plugin-storybook 10.1.2
+  eslint-plugin-testing-library: &eslint-plugin-testing-library 7.13.5
+  eslint-plugin-turbo: &eslint-plugin-turbo 2.6.3
+  express-session: &express-session 1.18.2
+  google-auth-library: &google-auth-library 10.5.0
+  husky: &husky 9.1.7
+  jsdom: &jsdom 27.3.0
+  katex: &katex 0.16.27
+  lint-staged: &lint-staged 16.2.7
+  nestjs: &nestjs 11.1.9
+  nestjs-cli: &nestjs-cli 11.0.14
+  nestjs-config: &nestjs-config 4.0.2
+  nestjs-cqrs: &nestjs-cqrs 11.0.3
+  nestjs-passport: &nestjs-passport 11.0.5
+  nestjs-schematics: &nestjs-schematics 11.0.9
+  nestjs-throttler: &nestjs-throttler 6.5.0
+  ngx-translate-core: &ngx-translate-core 17.0.0
+  ngxs: &ngxs 21.0.0
+  node: &node 24.10.1
+  paralleldrive-cuid2: &paralleldrive-cuid2 3.0.4
+  pg: &pg 8.16.3
+  playwright: &playwright 1.57.0
+  postcss: &postcss 8.5.6
+  prettier: &prettier 3.7.4
+  prisma: &prisma 7.1.0
+  reflect-metadata: &reflect-metadata 0.2.2
+  rimraf: &rimraf 6.1.2
+  rx-angular: &rx-angular 20.1.0
+  rx-angular-isr: &rx-angular-isr 20.0.0
+  rxjs: &rxjs 7.8.2
+  storybook: &storybook 10.1.4
+  swc: &swc 1.15.3
+  tailwind-merge: &tailwind-merge 3.4.0
+  tailwindcss: &tailwindcss 4.1.17
+  ts-node: &ts-node 10.9.2
+  tslib: &tslib 2.8.1
+  tsx: &tsx 4.20.6
+  turbo: &turbo 2.6.3
+  types-cookie-parser: &types-cookie-parser 1.4.9
+  types-express: &types-express 5.0.0
+  types-express-session: &types-express-session 1.18.2
+  typescript: &typescript 5.9.3
+  typescript-eslint: &typescript-eslint 8.48.1
+  unplugin-swc: &unplugin-swc 1.5.9
+  vite: &vite 7.2.7
+  vitest: &vitest 4.0.15
+
+catalog:
+  '@angular/animations': *angular
+  '@angular/build': *angular-build
+  '@angular/cdk': *angular-cdk
+  '@angular/cli': *angular-build
+  '@angular/common': *angular
+  '@angular/compiler': *angular
+  '@angular/compiler-cli': *angular
+  '@angular/core': *angular
+  '@angular-eslint/eslint-plugin': *angular-eslint
+  '@angular-eslint/eslint-plugin-template': *angular-eslint
+  '@angular-eslint/schematics': *angular-eslint
+  '@angular-eslint/template-parser': *angular-eslint
+  '@angular/forms': *angular
+  '@angular/platform-browser': *angular
+  '@angular/platform-server': *angular
+  '@angular/router': *angular
+  '@angular/ssr': *angular-build
+  '@eslint/eslintrc': *eslint-eslintrc
+  '@eslint/js': *eslint
+  '@nestjs/cli': *nestjs-cli
+  '@nestjs/common': *nestjs
+  '@nestjs/config': *nestjs-config
+  '@nestjs/core': *nestjs
+  '@nestjs/cqrs': *nestjs-cqrs
+  '@nestjs/passport': *nestjs-passport
+  '@nestjs/platform-express': *nestjs
+  '@nestjs/schematics': *nestjs-schematics
+  '@nestjs/testing': *nestjs
+  '@nestjs/throttler': *nestjs-throttler
+  '@ngx-translate/core': *ngx-translate-core
+  '@ngxs/devtools-plugin': *ngxs
+  '@ngxs/form-plugin': *ngxs
+  '@ngxs/store': *ngxs
+  '@paralleldrive/cuid2': *paralleldrive-cuid2
+  '@prisma/adapter-pg': *prisma
+  '@prisma/client': *prisma
+  '@prisma/client-runtime-utils': *prisma
+  '@rx-angular/cdk': *rx-angular
+  '@rx-angular/isr': *rx-angular-isr
+  '@rx-angular/template': *rx-angular
+  '@storybook/addon-a11y': *storybook
+  '@storybook/addon-vitest': *storybook
+  '@storybook/angular': *storybook
+  '@swc/core': *swc
+  '@tailwindcss/postcss': *tailwindcss
+  '@types/cookie-parser': *types-cookie-parser
+  '@types/express': *types-express
+  '@types/express-session': *types-express-session
+  '@types/node': *node
+  '@typescript-eslint/eslint-plugin': *typescript-eslint
+  '@typescript-eslint/parser': *typescript-eslint
+  '@vitest/coverage-v8': *vitest
+  class-transformer: *class-transformer
+  class-validator: *class-validator
+  class-variance-authority: *cva
+  clsx: *clsx
+  compression: *compression
+  cookie: *cookie
+  cookie-parser: *cookie-parser
+  csrf-csrf: *csrf-csrf
+  dotenv: *dotenv
+  esbuild: *esbuild
+  eslint: *eslint
+  eslint-plugin-boundaries: *eslint-plugin-boundaries
+  eslint-plugin-storybook: *eslint-plugin-storybook
+  eslint-plugin-testing-library: *eslint-plugin-testing-library
+  eslint-plugin-turbo: *eslint-plugin-turbo
+  express-session: *express-session
+  google-auth-library: *google-auth-library
+  husky: *husky
+  jsdom: *jsdom
+  lint-staged: *lint-staged
+  pg: *pg
+  playwright: *playwright
+  postcss: *postcss
+  prettier: *prettier
+  prisma: *prisma
+  reflect-metadata: *reflect-metadata
+  rimraf: *rimraf
+  rxjs: *rxjs
+  storybook: *storybook
+  tailwind-merge: *tailwind-merge
+  tailwindcss: *tailwindcss
+  turbo: *turbo
+  ts-node: *ts-node
+  tslib: *tslib
+  tsx: *tsx
+  typescript: *typescript
+  typescript-eslint: *typescript-eslint
+  unplugin-swc: *unplugin-swc
+  vite: *vite
+  vitest: *vitest
+
+ignoredBuiltDependencies:
+  - '@nestjs/core'
+  - '@parcel/watcher'
+  - '@prisma/client'
+  - '@prisma/engines'
+  - '@swc/core'
+  - '@tailwindcss/oxide'
+  - esbuild
+  - lmdb
+  - msgpackr-extract
+  - prisma
+  - sharp
+  - unrs-resolver

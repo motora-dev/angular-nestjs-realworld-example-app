@@ -1,0 +1,26 @@
+<main class="flex flex-col bg-white min-h-full">
+  <form [formGroup]="form" ngxsForm="articleEdit.rootForm" ></form>
+
+  <!-- Header -->
+  <div class="flex-shrink-0 p-4 border-b border-gray-200">
+    <div class="flex items-center justify-between">
+      <h1 class="text-xl font-bold text-gray-900">{{ 'articleEdit.title' | translate }}</h1>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="flex-1 p-4">
+    <div class="max-w-2xl mx-auto space-y-6">
+      <app-edit-form #editForm />
+
+      <!-- Save Buttons -->
+      <div class="flex items-center justify-end pt-4">
+        <button type="button" appButton [disabled]="(isFormInvalid$ | push) || !(isFormDirty$ | push)" (click)="onSave()" class="px-4 py-2">
+          {{ 'articleEdit.form.saveButton' | translate }}
+        </button>
+      </div>
+
+      <app-page-list [pages]="pages$ | push" (pageEdit)="navigateToPageEdit($event.articleId, $event.pageId)" />
+    </div>
+  </div>
+</main>

@@ -1,0 +1,21 @@
+<div class="mt-8">
+  <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ 'articleEdit.pageList.title' | translate }}</h2>
+  <div class="space-y-2">
+    @for (page of pages(); track page.pageId || page.order) {
+    <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50">
+      <span class="text-sm text-gray-900">{{ page.title }}</span>
+      <button
+        type="button"
+        (click)="onPageEdit(page.articleId, page.pageId)"
+        class="flex items-center justify-center p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors"
+        [attr.aria-label]="'articleEdit.pageList.editPage' | translate: { title: page.title }"
+      >
+        <span class="material-symbols-outlined text-lg">edit</span>
+      </button>
+    </div>
+    }
+    @empty {
+    <p class="text-sm text-gray-500">{{ 'articleEdit.pageList.noPages' | translate }}</p>
+    }
+  </div>
+</div>

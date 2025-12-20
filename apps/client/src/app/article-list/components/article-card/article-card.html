@@ -1,0 +1,22 @@
+<article
+  class="bg-white border border-[#E5E7EB] rounded-xl p-6 md:p-8 relative transition-all duration-300 ease-out cursor-pointer hover:-translate-y-0.5 hover:shadow-sm hover:border-[#D1D5DB]"
+>
+  <a
+    [routerLink]="['/article', article().id]"
+    [attr.aria-label]="'articleList.readArticle' | translate: { title: article().title }"
+    class="absolute inset-0 z-10"
+  ></a>
+  <div class="relative pointer-events-none">
+    <h2 class="text-xl md:text-2xl font-bold mb-3 text-[#1A1A1E] truncate">
+      {{ article().title || ('articleList.noTitle' | translate) }}
+    </h2>
+    <div class="flex flex-wrap gap-2 mb-4">
+      @for (tag of article().tags; track tag) {
+      <span class="bg-[#F3F4F6] text-[#6B7280] px-3 py-1 rounded-md text-xs font-medium"> {{ tag }} </span>
+      }
+    </div>
+    <div class="pt-4 border-t border-[#E5E7EB] text-sm">
+      <time class="text-[#6B7280]">{{ article().createdAt | date: 'yyyy/MM/dd' }}</time>
+    </div>
+  </div>
+</article>

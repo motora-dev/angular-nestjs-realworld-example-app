@@ -1,0 +1,24 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/${_SERVICE_NAME}:${_IMAGE_TAG}'
+      - '-f'
+      - 'apps/client/Dockerfile'
+      - '--build-arg'
+      - 'BUILD_CONFIGURATION=${_BUILD_CONFIGURATION}'
+      - '.'
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/${_SERVICE_NAME}:${_IMAGE_TAG}'
+
+substitutions:
+  _SERVICE_NAME: client-new
+  _IMAGE_TAG: latest
+  _BUILD_CONFIGURATION: production
+
+images:
+  - 'gcr.io/$PROJECT_ID/${_SERVICE_NAME}:${_IMAGE_TAG}'

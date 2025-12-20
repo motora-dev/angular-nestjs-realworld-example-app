@@ -1,0 +1,43 @@
+@if (page(); as currentPage) {
+<article class="flex-1 w-full max-w-4xl">
+  <h1 class="text-3xl md:text-4xl font-bold mb-6 md:mb-8 text-gray-900">{{ currentPage.title }}</h1>
+  <div
+    class="w-full prose prose-base max-w-none break-words"
+    [innerHTML]="safeHtml()"
+    [unpatch]="['click']"
+    (click)="onContentClick($event)"
+    (keydown.enter)="onContentClick($event)"
+    tabindex="0"
+  ></div>
+
+  <!-- Page navigation -->
+  @if (navigation(); as nav) {
+  <div class="mt-12 pt-6">
+    <div class="flex justify-between items-center gap-4">
+      @if (nav.prev) {
+      <a
+        [routerLink]="['/article', articleId(), nav.prev.id]"
+        class="flex-1 max-w-[45%] p-4 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors text-left"
+      >
+        <div class="text-sm text-gray-500 mb-1">{{ 'articlePage.prev' | translate }}</div>
+        <div class="text-sm font-medium text-gray-900 truncate">{{ nav.prev.title }}</div>
+      </a>
+      } @else {
+      <div class="flex-1"></div>
+      } @if (nav.next) {
+      <a
+        [routerLink]="['/article', articleId(), nav.next.id]"
+        class="flex-1 max-w-[45%] p-4 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors text-right"
+      >
+        <div class="text-sm text-gray-500 mb-1">{{ 'articlePage.next' | translate }}</div>
+        <div class="text-sm font-medium text-gray-900 truncate">{{ nav.next.title }}</div>
+      </a>
+      } @else {
+      <div class="flex-1"></div>
+      }
+    </div>
+  </div>
+  }
+</article>
+}
+

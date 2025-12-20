@@ -1,0 +1,6 @@
+project_id   = "your-project-name"  # Preview環境用プロジェクト
+region       = "asia-northeast1"
+environment  = "preview"
+service_name = "your-service-name"
+github_org   = "your-github-org"
+github_repo  = "your-repo-name"

@@ -1,0 +1,114 @@
+{
+  "common": {
+    "backToHome": "トップページへ戻る",
+    "close": "閉じる"
+  },
+  "header": {
+    "siteName": "もとら's dev",
+    "articles": "記事一覧",
+    "openMenu": "メニューを開く"
+  },
+  "footer": {
+    "privacyPolicy": "プライバシーポリシー",
+    "cookieSettings": "Cookie設定",
+    "copyright": "© 2025 もとら's dev"
+  },
+  "article": {
+    "errors": {
+      "articleIdRequired": "記事IDが指定されていません"
+    }
+  },
+  "articleEdit": {
+    "title": "記事設定",
+    "saveSuccess": "保存しました",
+    "form": {
+      "titleLabel": "タイトル",
+      "titlePlaceholder": "記事のタイトルを入力してください",
+      "descriptionLabel": "説明",
+      "descriptionPlaceholder": "記事の説明を入力してください",
+      "tagsLabel": "タグ",
+      "saveButton": "保存"
+    },
+    "pageList": {
+      "title": "ページ一覧",
+      "noPages": "ページがありません",
+      "editPage": "ページ「{{title}}」を編集"
+    },
+    "errors": {
+      "articleIdRequired": "記事IDが指定されていません"
+    }
+  },
+  "articleList": {
+    "title": "記事一覧",
+    "description": "技術記事やチュートリアルを掲載しています",
+    "noArticles": "記事がありません",
+    "noTitle": "(タイトルなし)",
+    "readArticle": "{{title}}を読む",
+    "readMore": "続きを読む →"
+  },
+  "articlePage": {
+    "toc": "目次",
+    "onThisPage": "On this page",
+    "headingToc": "見出し目次",
+    "goToHeading": "{{text}}へ移動",
+    "prev": "← 前へ",
+    "next": "次へ →"
+  },
+  "articlePageEdit": {
+    "title": "ページ編集",
+    "saveSuccess": "保存が完了しました",
+    "saveError": "保存中にエラーが発生しました",
+    "articleSettings": "記事設定",
+    "pageListTitle": "ページ一覧",
+    "previewLabel": "プレビュー",
+    "form": {
+      "titleLabel": "タイトル",
+      "titlePlaceholder": "ページタイトル",
+      "descriptionLabel": "説明",
+      "descriptionPlaceholder": "ページの説明",
+      "contentLabel": "コンテンツ (Markdown)",
+      "contentPlaceholder": "Markdownで記事を書いてください...",
+      "saveButton": "保存"
+    },
+    "errors": {
+      "articleIdOrPageIdRequired": "記事IDもしくはページIDが指定されていません"
+    }
+  },
+  "callback": {
+    "title": "ログイン完了",
+    "message": "ログインに成功しました",
+    "redirecting": "ホームページへ移動中..."
+  },
+  "error": {
+    "dialogTitle": "エラーが発生しました",
+    "errorCode": "エラーコード",
+    "unexpectedError": "予期しないエラーが発生しました",
+    "401": {
+      "title": "認証が必要です",
+      "message": "このページにアクセスするにはログインが必要です。"
+    },
+    "403": {
+      "title": "アクセス権限がありません",
+      "message": "このページにアクセスする権限がありません。"
+    },
+    "404": {
+      "title": "ページが見つかりません",
+      "message": "お探しのページは存在しないか、移動した可能性があります。"
+    }
+  },
+  "login": {
+    "title": "ログイン",
+    "description": "アカウントにログインしてください",
+    "googleButton": "Googleでログイン"
+  },
+  "spinner": {
+    "defaultMessage": "読み込み中..."
+  },
+  "errorCodes": {
+    "E-999": "予期しないエラーが発生しました",
+    "E-500-999-999-001": "サーバー内部エラーが発生しました",
+    "E-400-200-200-001": "ファイル拡張子がありません",
+    "E-500-200-200-002": "ダウンロードURLの生成に失敗しました",
+    "E-500-999-999-002": "アップロードURLの生成に失敗しました"
+  }
+}

@@ -1,0 +1,6 @@
+/* xl未満のときは見出しリンクを非表示（右サイドバーと連動） */
+@media (max-width: 1279px) {
+  :host ::ng-deep .heading-anchor {
+    display: none !important;
+  }
+}

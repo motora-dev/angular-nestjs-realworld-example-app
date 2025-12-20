@@ -1,0 +1,126 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client"
+  output        = "../src/generated/prisma-client"
+  binaryTargets = ["native", "debian-openssl-1.1.x"]
+}
+
+datasource db {
+  provider  = "postgresql"
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  publicId  String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  name      String?
+  email     String    @unique
+
+  accounts  Account[]
+  articles  Article[]
+  media     Media[]
+}
+
+model Account {
+  id        Int      @id @default(autoincrement())
+  publicId  String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId    Int
+  provider  String
+  sub       String
+  email     String
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, sub])
+  @@index([email])
+}
+
+enum ArticleStatus {
+  NEW
+  DRAFT
+  PUBLIC
+}
+
+model Article {
+  id        Int             @id @default(autoincrement())
+  publicId  String          @unique
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @default(now()) @updatedAt
+
+  title       String
+  tags        String[]
+  status      ArticleStatus   @default(NEW)
+  description String?         @db.Text  // 記事全体の概要・説明
+
+  userId    Int
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  pages     Page[]
+  media     ArticleMedia[]
+
+  @@index([tags])
+  @@index([userId])
+}
+
+model Page {
+  id        Int       @id @default(autoincrement())
+  publicId  String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  articleId Int
+  article   Article   @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  title       String
+  description String    @db.Text
+  content     String    @db.Text
+  level       Int       // 階層レベル (1 or 2)
+  order       Int       // 全体通しの表示順序
+
+  @@index([articleId])
+}
+
+enum MediaType {
+  IMAGE
+}
+
+model Media {
+  id        Int       @id @default(autoincrement())
+  publicId  String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type      MediaType
+  mimeType  String
+  fileName  String
+  extension String
+  filePath  String    @unique
+
+  articles  ArticleMedia[]
+
+  @@index([userId])
+}
+
+model ArticleMedia {
+  publicId  String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  articleId Int
+  article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  mediaId   Int
+  media     Media   @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+
+  @@id([articleId, mediaId])
+  @@index([mediaId])
+}

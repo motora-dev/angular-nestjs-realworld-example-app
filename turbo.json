@@ -1,0 +1,52 @@
+{
+  "$schema": "https://turborepo.com/schema.json",
+  "globalEnv": ["DIRECT_URL", "DATABASE_URL"],
+  "ui": "tui",
+  "tasks": {
+    "clean": {
+      "cache": false
+    },
+    "clean:cache": {
+      "cache": false
+    },
+    "build": {
+      "dependsOn": ["^build"],
+      "cache": true
+    },
+    "start": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": true
+    },
+    "start:prd": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": true
+    },
+    "tsc": {
+      "dependsOn": ["^build"],
+      "cache": true
+    },
+    "format": {
+      "cache": true
+    },
+    "format:fix": {
+      "cache": false
+    },
+    "lint": {
+      "cache": true
+    },
+    "lint:fix": {
+      "cache": false
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "cache": true
+    },
+    "test:coverage": {
+      "dependsOn": ["^build"],
+      "cache": true,
+      "outputs": ["coverage/**"]
+    }
+  }
+}
