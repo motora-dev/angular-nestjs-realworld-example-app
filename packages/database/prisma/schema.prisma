@@ -8,119 +8,103 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
+  provider = "postgresql"
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  publicId  String    @unique
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  name      String?
-  email     String    @unique
+  username String  @unique
+  email    String  @unique
+  bio      String?
+  image    String?
 
   accounts  Account[]
   articles  Article[]
-  media     Media[]
+  comments  Comment[]
+  favorites Favorite[]
+  followers Follow[]   @relation("following")
+  following Follow[]   @relation("followers")
 }
 
 model Account {
   id        Int      @id @default(autoincrement())
-  publicId  String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userId    Int
-  provider  String
-  sub       String
-  email     String
+  userId   Int
+  provider String
+  sub      String
+  email    String
 
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, sub])
   @@index([email])
 }
 
-enum ArticleStatus {
-  NEW
-  DRAFT
-  PUBLIC
-}
-
 model Article {
-  id        Int             @id @default(autoincrement())
-  publicId  String          @unique
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @default(now()) @updatedAt
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
+  slug        String   @unique
   title       String
+  description String?  @db.Text
+  body        String   @db.Text
   tags        String[]
-  status      ArticleStatus   @default(NEW)
-  description String?         @db.Text  // 記事全体の概要・説明
 
-  userId    Int
-  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  pages     Page[]
-  media     ArticleMedia[]
+  comments  Comment[]
+  favorites Favorite[]
 
   @@index([tags])
   @@index([userId])
 }
 
-model Page {
-  id        Int       @id @default(autoincrement())
-  publicId  String    @unique
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+model Comment {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  articleId Int
-  article   Article   @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  body String @db.Text
 
-  title       String
-  description String    @db.Text
-  content     String    @db.Text
-  level       Int       // 階層レベル (1 or 2)
-  order       Int       // 全体通しの表示順序
-
-  @@index([articleId])
-}
-
-enum MediaType {
-  IMAGE
-}
-
-model Media {
-  id        Int       @id @default(autoincrement())
-  publicId  String    @unique
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-
-  userId    Int
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  type      MediaType
-  mimeType  String
-  fileName  String
-  extension String
-  filePath  String    @unique
-
-  articles  ArticleMedia[]
-
-  @@index([userId])
-}
-
-model ArticleMedia {
-  publicId  String    @unique
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
   articleId Int
   article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
 
-  mediaId   Int
-  media     Media   @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@id([articleId, mediaId])
-  @@index([mediaId])
+  @@index([articleId])
+  @@index([userId])
+}
+
+model Follow {
+  followerId  Int
+  followingId Int
+  createdAt   DateTime @default(now())
+
+  follower  User @relation("followers", fields: [followerId], references: [id], onDelete: Cascade)
+  following User @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@id([followerId, followingId])
+  @@index([followerId])
+  @@index([followingId])
+}
+
+model Favorite {
+  userId    Int
+  articleId Int
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  article Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, articleId])
+  @@index([userId])
+  @@index([articleId])
 }

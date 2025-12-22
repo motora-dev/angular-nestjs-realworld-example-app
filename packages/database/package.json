@@ -19,6 +19,7 @@
   "devDependencies": {
     "@monorepo/typescript-config": "workspace:*",
     "@prisma/client": "catalog:",
+    "dotenv": "catalog:",
     "prisma": "catalog:",
     "rimraf": "catalog:",
     "typescript": "catalog:"
