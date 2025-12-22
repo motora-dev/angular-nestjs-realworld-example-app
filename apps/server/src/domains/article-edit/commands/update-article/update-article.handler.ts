@@ -1,27 +1,15 @@
-import { ICommandHandler, CommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-import { UpdateArticleResponseDto } from '$domains/article-edit/dto';
-import { ArticleEditService } from '$domains/article-edit/services';
 import { UpdateArticleCommand } from './update-article.command';
+import { ArticleEditService } from '../../services/article-edit.service';
+
+import type { SingleArticleDto } from '../../dto';
 
 @CommandHandler(UpdateArticleCommand)
 export class UpdateArticleHandler implements ICommandHandler<UpdateArticleCommand> {
-  constructor(private readonly articleEditService: ArticleEditService) {}
+  constructor(private readonly service: ArticleEditService) {}
 
-  async execute(command: UpdateArticleCommand): Promise<UpdateArticleResponseDto> {
-    const article = await this.articleEditService.updateArticle(
-      command.userId,
-      command.articleId,
-      command.title,
-      command.tags,
-      command.content,
-    );
-
-    return {
-      id: article.publicId,
-      title: article.title,
-      tags: article.tags,
-      description: article.description ?? '',
-    };
+  async execute(command: UpdateArticleCommand): Promise<SingleArticleDto> {
+    return this.service.updateArticle(command.slug, command.request, command.currentUserId);
   }
 }

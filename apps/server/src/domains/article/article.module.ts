@@ -1,18 +1,17 @@
-import { Module } from "@nestjs/common";
-import { ConfigModule } from "@nestjs/config";
-import { CqrsModule } from "@nestjs/cqrs";
+import { Module } from '@nestjs/common';
+import { CqrsModule } from '@nestjs/cqrs';
 
-import { PrismaAdapterModule } from "$adapters";
-import { ArticleController } from "./article.controller";
-import { GetArticleHandler, GetFirstPageIdHandler } from "./queries";
-import { ArticleRepository } from "./repositories";
-import { ArticleService } from "./services";
+import { PrismaAdapterModule } from '$adapters';
+import { ArticleController } from './article.controller';
+import { GetArticleHandler, GetCommentsHandler } from './queries';
+import { ArticleRepository } from './repositories';
+import { ArticleService } from './services';
 
-const ArticleHandlers = [GetArticleHandler, GetFirstPageIdHandler];
+const QueryHandlers = [GetArticleHandler, GetCommentsHandler];
 
 @Module({
-  imports: [CqrsModule, ConfigModule, PrismaAdapterModule],
+  imports: [CqrsModule, PrismaAdapterModule],
   controllers: [ArticleController],
-  providers: [ArticleService, ArticleRepository, ...ArticleHandlers],
+  providers: [ArticleService, ArticleRepository, ...QueryHandlers],
 })
 export class ArticleModule {}

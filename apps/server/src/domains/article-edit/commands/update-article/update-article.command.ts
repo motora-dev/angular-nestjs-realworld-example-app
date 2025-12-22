@@ -1,9 +1,9 @@
+import type { UpdateArticleRequestDto } from '../../dto';
+
 export class UpdateArticleCommand {
   constructor(
-    public readonly userId: number,
-    public readonly articleId: string,
-    public readonly title: string,
-    public readonly tags: string[],
-    public readonly content: string,
+    public readonly slug: string,
+    public readonly request: UpdateArticleRequestDto,
+    public readonly currentUserId: number,
   ) {}
 }

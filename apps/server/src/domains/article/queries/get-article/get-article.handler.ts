@@ -1,22 +1,14 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 
+import type { SingleArticleDto } from '../../dto';
+import { ArticleService } from '../../services/article.service';
 import { GetArticleQuery } from './get-article.query';
-import { GetArticleResponse } from '../../dto';
-import { ArticleService } from '../../services';
 
 @QueryHandler(GetArticleQuery)
 export class GetArticleHandler implements IQueryHandler<GetArticleQuery> {
-  constructor(private readonly articleService: ArticleService) {}
+  constructor(private readonly service: ArticleService) {}
 
-  async execute(query: GetArticleQuery): Promise<GetArticleResponse> {
-    const article = await this.articleService.getArticle(query.articleId);
-    return {
-      id: article.publicId,
-      createdAt: article.createdAt,
-      updatedAt: article.updatedAt,
-      title: article.title,
-      tags: article.tags,
-      description: article.description ?? '',
-    };
+  async execute(query: GetArticleQuery): Promise<SingleArticleDto> {
+    return this.service.getArticle(query.slug, query.currentUserId);
   }
 }

@@ -1,17 +1,15 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-import { CreateUserResponseDto } from '$domains/user/dto';
-import { UserService } from '$domains/user/services';
+import type { CreateUserResponseDto } from '../../dto';
+import { UserService } from '../../services/user.service';
 import { CreateUserCommand } from './create-user.command';
 
 @CommandHandler(CreateUserCommand)
 export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly service: UserService) {}
 
   async execute(command: CreateUserCommand): Promise<CreateUserResponseDto> {
-    const user = await this.userService.findOrCreateUser(command.provider, command.sub, command.email);
-    return {
-      id: user.publicId,
-    };
+    return this.service.createUser(command.dto);
   }
 }
+

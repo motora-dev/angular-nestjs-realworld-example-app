@@ -1,1 +1,1 @@
-export * from './get-article-list.dto';
+export * from './article-list.dto';

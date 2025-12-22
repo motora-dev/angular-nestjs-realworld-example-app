@@ -1,20 +1,39 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus, Param } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
 
-import { GetArticleResponse, GetFirstPageIdResponse } from './dto';
-import { GetArticleQuery, GetFirstPageIdQuery } from './queries';
+import { CurrentUser } from '$decorators';
 
-@Controller('article')
+import type { MultipleCommentsDto, SingleArticleDto } from './dto';
+import { GetArticleQuery, GetCommentsQuery } from './queries';
+
+interface CurrentUserType {
+  id: number;
+  username: string;
+}
+
+@Controller('api/articles')
 export class ArticleController {
   constructor(private readonly queryBus: QueryBus) {}
 
-  @Get(':articleId')
-  async getArticle(@Param('articleId') articleId: string): Promise<GetArticleResponse> {
-    return await this.queryBus.execute(new GetArticleQuery(articleId));
+  /**
+   * GET /api/articles/:slug
+   * Get an article
+   * Auth not required
+   */
+  @Get(':slug')
+  @HttpCode(HttpStatus.OK)
+  async getArticle(@Param('slug') slug: string, @CurrentUser() user?: CurrentUserType): Promise<SingleArticleDto> {
+    return this.queryBus.execute(new GetArticleQuery(slug, user?.id));
   }
 
-  @Get(':articleId/first-page-id')
-  async getFirstPageId(@Param('articleId') articleId: string): Promise<GetFirstPageIdResponse> {
-    return await this.queryBus.execute(new GetFirstPageIdQuery(articleId));
+  /**
+   * GET /api/articles/:slug/comments
+   * Get comments for an article
+   * Auth is optional
+   */
+  @Get(':slug/comments')
+  @HttpCode(HttpStatus.OK)
+  async getComments(@Param('slug') slug: string, @CurrentUser() user?: CurrentUserType): Promise<MultipleCommentsDto> {
+    return this.queryBus.execute(new GetCommentsQuery(slug, user?.id));
   }
 }

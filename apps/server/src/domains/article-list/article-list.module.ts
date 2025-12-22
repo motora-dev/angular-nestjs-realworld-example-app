@@ -3,15 +3,15 @@ import { CqrsModule } from '@nestjs/cqrs';
 
 import { PrismaAdapterModule } from '$adapters';
 import { ArticleListController } from './article-list.controller';
-import { GetArticleListHandler } from './queries';
+import { GetArticlesHandler, GetFeedHandler, GetTagsHandler } from './queries';
 import { ArticleListRepository } from './repositories';
 import { ArticleListService } from './services';
 
-const ArticleHandlers = [GetArticleListHandler];
+const QueryHandlers = [GetArticlesHandler, GetFeedHandler, GetTagsHandler];
 
 @Module({
   imports: [CqrsModule, PrismaAdapterModule],
   controllers: [ArticleListController],
-  providers: [ArticleListService, ArticleListRepository, ...ArticleHandlers],
+  providers: [ArticleListService, ArticleListRepository, ...QueryHandlers],
 })
 export class ArticleListModule {}

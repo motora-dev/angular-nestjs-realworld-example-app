@@ -4,53 +4,52 @@ import {
   Get,
   HttpCode,
   HttpStatus,
-  Post,
-  Req,
-} from "@nestjs/common";
-import { CommandBus, QueryBus } from "@nestjs/cqrs";
+  Put,
+} from '@nestjs/common';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 
-import { CreateUserCommand } from "./commands";
-import {
-  CreateUserDto,
-  CreateUserResponseDto,
-  GetUserResponseDto,
-} from "./dto";
-import { GetUserQuery } from "./queries";
+import { CurrentUser } from '$decorators';
 
-@Controller("user")
+import { UpdateUserCommand } from './commands';
+import type { UpdateUserRequestDto, UserResponseDto } from './dto';
+import { GetCurrentUserQuery } from './queries';
+
+interface CurrentUserType {
+  id: number;
+  username: string;
+}
+
+@Controller('api/user')
 export class UserController {
   constructor(
     private readonly commandBus: CommandBus,
-    private readonly queryBus: QueryBus
+    private readonly queryBus: QueryBus,
   ) {}
 
   /**
-   * 現在ログインしているユーザーの情報を取得
+   * GET /api/user
+   * Get current user
+   * Auth is required
    */
   @Get()
   @HttpCode(HttpStatus.OK)
-  async getUser(@Req() req: any): Promise<GetUserResponseDto> {
-    return await this.queryBus.execute(
-      new GetUserQuery(req.user.provider, req.user.sub)
-    );
+  async getCurrentUser(
+    @CurrentUser() user: CurrentUserType,
+  ): Promise<UserResponseDto> {
+    return this.queryBus.execute(new GetCurrentUserQuery(user.id));
   }
 
   /**
-   * 新規ユーザーを作成
+   * PUT /api/user
+   * Update current user
+   * Auth is required
    */
-  @Post("create")
-  @HttpCode(HttpStatus.CREATED)
-  async createUser(
-    @Req() req: any,
-    @Body() dto: CreateUserDto
-  ): Promise<CreateUserResponseDto> {
-    return await this.commandBus.execute(
-      new CreateUserCommand(
-        req.user.provider,
-        req.user.sub,
-        req.user.email,
-        dto.name
-      )
-    );
+  @Put()
+  @HttpCode(HttpStatus.OK)
+  async updateUser(
+    @CurrentUser() user: CurrentUserType,
+    @Body() request: UpdateUserRequestDto,
+  ): Promise<UserResponseDto> {
+    return this.commandBus.execute(new UpdateUserCommand(user.id, request));
   }
 }

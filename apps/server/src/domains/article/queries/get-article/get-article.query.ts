@@ -1,3 +1,6 @@
 export class GetArticleQuery {
-  constructor(public readonly articleId: string) {}
+  constructor(
+    public readonly slug: string,
+    public readonly currentUserId?: number,
+  ) {}
 }

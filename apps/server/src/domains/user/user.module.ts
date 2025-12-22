@@ -1,19 +1,19 @@
-import { Module } from "@nestjs/common";
-import { ConfigModule } from "@nestjs/config";
-import { CqrsModule } from "@nestjs/cqrs";
+import { Module } from '@nestjs/common';
+import { CqrsModule } from '@nestjs/cqrs';
 
-import { PrismaAdapterModule } from "$adapters";
-import { CreateUserHandler } from "./commands";
-import { GetUserHandler } from "./queries";
-import { UserRepository } from "./repositories";
-import { UserService } from "./services";
-import { UserController } from "./user.controller";
+import { PrismaAdapterModule } from '$adapters';
 
-const CommandHandlers = [CreateUserHandler];
-const QueryHandlers = [GetUserHandler];
+import { CreateUserHandler, UpdateUserHandler } from './commands';
+import { GetCurrentUserHandler } from './queries';
+import { UserRepository } from './repositories';
+import { UserService } from './services';
+import { UserController } from './user.controller';
+
+const CommandHandlers = [CreateUserHandler, UpdateUserHandler];
+const QueryHandlers = [GetCurrentUserHandler];
 
 @Module({
-  imports: [CqrsModule, ConfigModule, PrismaAdapterModule],
+  imports: [CqrsModule, PrismaAdapterModule],
   controllers: [UserController],
   providers: [
     UserService,
@@ -21,5 +21,6 @@ const QueryHandlers = [GetUserHandler];
     ...CommandHandlers,
     ...QueryHandlers,
   ],
+  exports: [UserService],
 })
 export class UserModule {}
