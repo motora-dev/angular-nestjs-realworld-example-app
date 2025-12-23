@@ -1,6 +1,6 @@
 import { ERROR_CODE } from '@monorepo/error-code';
-import { ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common';
-import { vi } from 'vitest';
+import { ArgumentsHost, HttpException, HttpStatus, Logger } from '@nestjs/common';
+import { vi, type MockInstance } from 'vitest';
 
 import { BadRequestError, ForbiddenError, InternalServerError, NotFoundError, UnauthorizedError } from '$errors';
 import { HttpExceptionFilter } from './http-exception.filter';
@@ -8,10 +8,22 @@ import { HttpExceptionFilter } from './http-exception.filter';
 describe('HttpExceptionFilter', () => {
   let filter: HttpExceptionFilter;
   let mockArgumentsHost: ArgumentsHost;
+  let mockRequest: any;
   let mockResponse: any;
+  let loggerErrorSpy: MockInstance;
 
   beforeEach(() => {
     filter = new HttpExceptionFilter();
+
+    mockRequest = {
+      id: 'test-request-id',
+      originalUrl: '/test/endpoint',
+      url: '/test/endpoint',
+      method: 'GET',
+      user: {
+        id: 'test-user-id',
+      },
+    };
 
     mockResponse = {
       status: vi.fn().mockReturnThis(),
@@ -20,14 +32,19 @@ describe('HttpExceptionFilter', () => {
 
     mockArgumentsHost = {
       switchToHttp: vi.fn().mockReturnValue({
+        getRequest: vi.fn().mockReturnValue(mockRequest),
         getResponse: vi.fn().mockReturnValue(mockResponse),
       }),
     } as unknown as ArgumentsHost;
+
+    // Spy on Logger.prototype.error
+    loggerErrorSpy = vi.spyOn(Logger.prototype, 'error').mockImplementation(() => {});
   });
 
   afterEach(() => {
     vi.clearAllMocks();
     vi.unstubAllEnvs();
+    loggerErrorSpy.mockRestore();
   });
 
   it('should be defined', () => {

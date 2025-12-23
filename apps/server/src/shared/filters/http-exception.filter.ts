@@ -1,5 +1,5 @@
 import { ERROR_CODE } from '@monorepo/error-code';
-import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common';
+import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { Response } from 'express';
 
 import {
@@ -16,8 +16,11 @@ import type { ErrorParams } from '$errors';
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
+  private readonly logger = new Logger(HttpExceptionFilter.name);
+
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
+    const request = ctx.getRequest();
     const response = ctx.getResponse<Response>();
 
     let status: number;
@@ -51,6 +54,22 @@ export class HttpExceptionFilter implements ExceptionFilter {
       errorCode = ERROR_CODE.INTERNAL_SERVER_ERROR;
       params = undefined; // Also hide params in production for 5xx errors
     }
+
+    // Error logging
+    this.logger.error(
+      JSON.stringify({
+        timestamp: new Date().toISOString(),
+        message: `Request failed with status ${status}`,
+        requestId: request.id,
+        userId: request.user?.id,
+        endpoint: request.originalUrl || request.url,
+        method: request.method,
+        statusCode: status,
+        errorCode,
+        error: message,
+        stack: exception instanceof Error ? exception.stack : undefined,
+      }),
+    );
 
     response.status(status).json({
       errorCode,

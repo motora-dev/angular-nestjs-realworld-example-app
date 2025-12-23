@@ -1,6 +1,6 @@
-import { CallHandler, ExecutionContext } from '@nestjs/common';
+import { CallHandler, ExecutionContext, Logger } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { of, throwError } from 'rxjs';
+import { of } from 'rxjs';
 import { vi, type MockInstance } from 'vitest';
 
 import { LoggingInterceptor } from './logging.interceptor';
@@ -11,7 +11,7 @@ describe('LoggingInterceptor', () => {
   let mockCallHandler: CallHandler;
   let mockRequest: any;
   let mockResponse: any;
-  let consoleLogSpy: MockInstance;
+  let loggerLogSpy: MockInstance;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -57,12 +57,12 @@ describe('LoggingInterceptor', () => {
       handle: vi.fn().mockReturnValue(of('test-response')),
     };
 
-    // Spy on console.log
-    consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    // Spy on Logger.prototype.log
+    loggerLogSpy = vi.spyOn(Logger.prototype, 'log').mockImplementation(() => {});
   });
 
   afterEach(() => {
-    consoleLogSpy.mockRestore();
+    loggerLogSpy.mockRestore();
   });
 
   it('should be defined', () => {
@@ -75,11 +75,10 @@ describe('LoggingInterceptor', () => {
         interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe({
           next: (result) => {
             expect(result).toBe('test-response');
-            expect(consoleLogSpy).toHaveBeenCalledTimes(2);
+            expect(loggerLogSpy).toHaveBeenCalledTimes(2);
 
             // Check request log
-            const requestLog = JSON.parse(consoleLogSpy.mock.calls[0][0]);
-            expect(requestLog.level).toBe('INFO');
+            const requestLog = JSON.parse(loggerLogSpy.mock.calls[0][0]);
             expect(requestLog.message).toBe('Request received');
             expect(requestLog.requestId).toBe('test-request-id');
             expect(requestLog.endpoint).toBe('/test/endpoint');
@@ -88,8 +87,7 @@ describe('LoggingInterceptor', () => {
             expect(requestLog.userAgent).toBe('test-agent');
 
             // Check response log
-            const responseLog = JSON.parse(consoleLogSpy.mock.calls[1][0]);
-            expect(responseLog.level).toBe('INFO');
+            const responseLog = JSON.parse(loggerLogSpy.mock.calls[1][0]);
             expect(responseLog.message).toBe('Request completed successfully');
             expect(responseLog.requestId).toBe('test-request-id');
             expect(responseLog.userId).toBe('test-user-id');
@@ -102,103 +100,13 @@ describe('LoggingInterceptor', () => {
         });
       }));
 
-    it('should log request and error on failed execution', () =>
-      new Promise<void>((done) => {
-        const testError = {
-          status: 400,
-          message: 'Bad Request',
-          stack: 'Error stack trace',
-        };
-
-        mockCallHandler.handle = vi.fn().mockReturnValue(throwError(() => testError));
-
-        interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe({
-          error: (error) => {
-            expect(error).toBe(testError);
-            expect(consoleLogSpy).toHaveBeenCalledTimes(2);
-
-            // Check request log
-            const requestLog = JSON.parse(consoleLogSpy.mock.calls[0][0]);
-            expect(requestLog.level).toBe('INFO');
-            expect(requestLog.message).toBe('Request received');
-
-            // Check error log
-            const errorLog = JSON.parse(consoleLogSpy.mock.calls[1][0]);
-            expect(errorLog.level).toBe('ERROR');
-            expect(errorLog.message).toBe('Request failed with status 400');
-            expect(errorLog.requestId).toBe('test-request-id');
-            expect(errorLog.userId).toBe('test-user-id');
-            expect(errorLog.endpoint).toBe('/test/endpoint');
-            expect(errorLog.method).toBe('GET');
-            expect(errorLog.statusCode).toBe(400);
-            expect(errorLog.error).toBe('Bad Request');
-            expect(errorLog.stack).toBe('Error stack trace');
-
-            done();
-          },
-        });
-      }));
-
-    it('should handle error without status code', () =>
-      new Promise<void>((done) => {
-        const testError = {
-          message: 'Internal Server Error',
-        };
-
-        mockCallHandler.handle = vi.fn().mockReturnValue(throwError(() => testError));
-
-        interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe({
-          error: () => {
-            const errorLog = JSON.parse(consoleLogSpy.mock.calls[1][0]);
-            expect(errorLog.statusCode).toBe(500);
-            expect(errorLog.error).toBe('Internal Server Error');
-            done();
-          },
-        });
-      }));
-
-    it('should handle error with statusCode instead of status', () =>
-      new Promise<void>((done) => {
-        const testError = {
-          statusCode: 404,
-          message: 'Not Found',
-        };
-
-        mockCallHandler.handle = vi.fn().mockReturnValue(throwError(() => testError));
-
-        interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe({
-          error: () => {
-            const errorLog = JSON.parse(consoleLogSpy.mock.calls[1][0]);
-            expect(errorLog.statusCode).toBe(404);
-            done();
-          },
-        });
-      }));
-
-    it('should handle error without message', () =>
-      new Promise<void>((done) => {
-        const testError = {
-          status: 500,
-        };
-
-        mockCallHandler.handle = vi.fn().mockReturnValue(throwError(() => testError));
-
-        interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe({
-          error: () => {
-            const errorLog = JSON.parse(consoleLogSpy.mock.calls[1][0]);
-            expect(errorLog.error).toBe('Unknown error occurred');
-            done();
-          },
-        });
-      }));
-
     it('should handle request without originalUrl', () => {
       mockRequest.originalUrl = undefined;
       mockRequest.url = '/fallback/url';
 
       interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe();
 
-      const requestLog = JSON.parse(consoleLogSpy.mock.calls[0][0]);
+      const requestLog = JSON.parse(loggerLogSpy.mock.calls[0][0]);
       expect(requestLog.endpoint).toBe('/fallback/url');
     });
 
@@ -207,7 +115,7 @@ describe('LoggingInterceptor', () => {
 
       interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe();
 
-      const requestLog = JSON.parse(consoleLogSpy.mock.calls[0][0]);
+      const requestLog = JSON.parse(loggerLogSpy.mock.calls[0][0]);
       expect(requestLog.ip).toBe('192.168.1.1');
     });
 
@@ -217,7 +125,7 @@ describe('LoggingInterceptor', () => {
 
       interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe();
 
-      const requestLog = JSON.parse(consoleLogSpy.mock.calls[0][0]);
+      const requestLog = JSON.parse(loggerLogSpy.mock.calls[0][0]);
       expect(requestLog.ip).toBe('10.0.0.1'); // falls back to x-forwarded-for
     });
 
@@ -227,7 +135,7 @@ describe('LoggingInterceptor', () => {
 
       interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe();
 
-      const requestLog = JSON.parse(consoleLogSpy.mock.calls[0][0]);
+      const requestLog = JSON.parse(loggerLogSpy.mock.calls[0][0]);
       expect(requestLog.ip).toBe('10.0.0.1');
     });
 
@@ -238,7 +146,7 @@ describe('LoggingInterceptor', () => {
 
       interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe();
 
-      const requestLog = JSON.parse(consoleLogSpy.mock.calls[0][0]);
+      const requestLog = JSON.parse(loggerLogSpy.mock.calls[0][0]);
       expect(requestLog.ip).toBeUndefined();
     });
 
@@ -247,77 +155,16 @@ describe('LoggingInterceptor', () => {
 
       interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe();
 
-      const responseLog = JSON.parse(consoleLogSpy.mock.calls[1][0]);
+      const responseLog = JSON.parse(loggerLogSpy.mock.calls[1][0]);
       expect(responseLog.userId).toBeUndefined();
     });
-
-    it('should handle error logging without user', () =>
-      new Promise<void>((done) => {
-        mockRequest.user = undefined;
-        const testError = {
-          status: 500,
-          message: 'Internal Server Error',
-          stack: 'Error stack trace',
-        };
-
-        mockCallHandler.handle = vi.fn().mockReturnValue(throwError(() => testError));
-
-        interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe({
-          error: () => {
-            const errorLog = JSON.parse(consoleLogSpy.mock.calls[1][0]);
-            expect(errorLog.userId).toBeUndefined();
-            done();
-          },
-        });
-      }));
-
-    it('should handle error logging with user but without id', () =>
-      new Promise<void>((done) => {
-        mockRequest.user = {}; // user exists but has no id property
-        const testError = {
-          status: 500,
-          message: 'Internal Server Error',
-          stack: 'Error stack trace',
-        };
-
-        mockCallHandler.handle = vi.fn().mockReturnValue(throwError(() => testError));
-
-        interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe({
-          error: () => {
-            const errorLog = JSON.parse(consoleLogSpy.mock.calls[1][0]);
-            expect(errorLog.userId).toBeUndefined();
-            done();
-          },
-        });
-      }));
-
-    it('should handle error logging with user having undefined id', () =>
-      new Promise<void>((done) => {
-        mockRequest.user = { id: undefined }; // user exists but id is explicitly undefined
-        const testError = {
-          status: 500,
-          message: 'Internal Server Error',
-          stack: 'Error stack trace',
-        };
-        mockRequest.originalUrl = undefined;
-        mockRequest.url = '/fallback/url';
-        mockCallHandler.handle = vi.fn().mockReturnValue(throwError(() => testError));
-
-        interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe({
-          error: () => {
-            const errorLog = JSON.parse(consoleLogSpy.mock.calls[1][0]);
-            expect(errorLog.userId).toBeUndefined();
-            done();
-          },
-        });
-      }));
 
     it('should handle response without statusCode', () => {
       mockResponse.statusCode = undefined;
 
       interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe();
 
-      const responseLog = JSON.parse(consoleLogSpy.mock.calls[1][0]);
+      const responseLog = JSON.parse(loggerLogSpy.mock.calls[1][0]);
       expect(responseLog.statusCode).toBe(200);
     });
 
@@ -326,36 +173,16 @@ describe('LoggingInterceptor', () => {
 
       interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe();
 
-      const responseLog = JSON.parse(consoleLogSpy.mock.calls[1][0]);
+      const responseLog = JSON.parse(loggerLogSpy.mock.calls[1][0]);
       expect(responseLog.userId).toBeUndefined();
     });
-
-    it('should handle error logging with null user', () =>
-      new Promise<void>((done) => {
-        mockRequest.user = null;
-        const testError = {
-          status: 500,
-          message: 'Internal Server Error',
-          stack: 'Error stack trace',
-        };
-
-        mockCallHandler.handle = vi.fn().mockReturnValue(throwError(() => testError));
-
-        interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe({
-          error: () => {
-            const errorLog = JSON.parse(consoleLogSpy.mock.calls[1][0]);
-            expect(errorLog.userId).toBeUndefined();
-            done();
-          },
-        });
-      }));
 
     it('should handle response with user but without id', () => {
       mockRequest.user = {}; // user exists but has no id property
 
       interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe();
 
-      const responseLog = JSON.parse(consoleLogSpy.mock.calls[1][0]);
+      const responseLog = JSON.parse(loggerLogSpy.mock.calls[1][0]);
       expect(responseLog.userId).toBeUndefined();
     });
 
@@ -364,7 +191,7 @@ describe('LoggingInterceptor', () => {
 
       interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe();
 
-      const responseLog = JSON.parse(consoleLogSpy.mock.calls[1][0]);
+      const responseLog = JSON.parse(loggerLogSpy.mock.calls[1][0]);
       expect(responseLog.userId).toBeUndefined();
     });
   });
