@@ -1,6 +1,7 @@
 import type {
   ErrorCode,
   BadRequestCode,
+  ConflictCode,
   ForbiddenCode,
   InternalServerErrorCode,
   NotFoundCode,
@@ -51,6 +52,14 @@ export class ForbiddenError extends AppError {
   constructor(code: ForbiddenCode, params?: ErrorParams) {
     super(code, params);
     this.name = 'ForbiddenError';
+  }
+}
+
+// Use for 409 Conflict errors
+export class ConflictError extends AppError {
+  constructor(code: ConflictCode, params?: ErrorParams) {
+    super(code, params);
+    this.name = 'ConflictError';
   }
 }
 

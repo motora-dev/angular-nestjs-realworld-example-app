@@ -41,8 +41,8 @@ describe('HttpExceptionFilter E2E', () => {
 
       expect(response.status).toBe(400);
       const body = await response.json();
-      expect(body.errorCode).toBe(ERROR_CODE.EMAIL_ALREADY_EXISTS);
-      expect(body.message).toBe(ERROR_CODE.EMAIL_ALREADY_EXISTS);
+      expect(body.errorCode).toBe(ERROR_CODE.VALIDATION_ERROR);
+      expect(body.message).toBe(ERROR_CODE.VALIDATION_ERROR);
       expect(body.params).toEqual({ field: 'filename' });
     });
 

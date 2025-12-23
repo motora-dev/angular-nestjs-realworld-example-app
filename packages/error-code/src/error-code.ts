@@ -33,20 +33,20 @@ export type ErrorCode = (typeof ERROR_CODE)[keyof typeof ERROR_CODE];
 /** Error codes for 500 Internal Server Error */
 export type InternalServerErrorCode = typeof ERROR_CODE.INTERNAL_SERVER_ERROR;
 
+/** Error codes for 400 Bad Request */
+export type BadRequestCode = typeof ERROR_CODE.VALIDATION_ERROR;
+
+/** Error codes for 401 Unauthorized */
+export type UnauthorizedCode = typeof ERROR_CODE.UNAUTHORIZED;
+
+/** Error codes for 403 Forbidden */
+export type ForbiddenCode = typeof ERROR_CODE.FORBIDDEN;
+
 /** Error codes for 404 Not Found */
 export type NotFoundCode =
   | typeof ERROR_CODE.USER_NOT_FOUND
   | typeof ERROR_CODE.ARTICLE_NOT_FOUND
   | typeof ERROR_CODE.COMMENT_NOT_FOUND;
 
-/** Error codes for 403 Forbidden */
-export type ForbiddenCode = typeof ERROR_CODE.FORBIDDEN;
-
-/** Error codes for 400 Bad Request */
-export type BadRequestCode =
-  | typeof ERROR_CODE.VALIDATION_ERROR
-  | typeof ERROR_CODE.EMAIL_ALREADY_EXISTS
-  | typeof ERROR_CODE.USERNAME_ALREADY_EXISTS;
-
-/** Error codes for 401 Unauthorized */
-export type UnauthorizedCode = typeof ERROR_CODE.UNAUTHORIZED;
+/** Error codes for 409 Conflict */
+export type ConflictCode = typeof ERROR_CODE.EMAIL_ALREADY_EXISTS | typeof ERROR_CODE.USERNAME_ALREADY_EXISTS;

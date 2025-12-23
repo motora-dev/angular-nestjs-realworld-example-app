@@ -3,6 +3,7 @@ import { ERROR_CODE } from '@monorepo/error-code';
 import {
   AppError,
   BadRequestError,
+  ConflictError,
   ForbiddenError,
   InternalServerError,
   NotFoundError,
@@ -32,20 +33,6 @@ describe('AppError Classes', () => {
       const error = new BadRequestError(ERROR_CODE.VALIDATION_ERROR, params);
 
       expect(error.params).toEqual(params);
-    });
-
-    it('should work with EMAIL_ALREADY_EXISTS code', () => {
-      const error = new BadRequestError(ERROR_CODE.EMAIL_ALREADY_EXISTS);
-
-      expect(error.code).toBe(ERROR_CODE.EMAIL_ALREADY_EXISTS);
-      expect(error.name).toBe('BadRequestError');
-    });
-
-    it('should work with USERNAME_ALREADY_EXISTS code', () => {
-      const error = new BadRequestError(ERROR_CODE.USERNAME_ALREADY_EXISTS);
-
-      expect(error.code).toBe(ERROR_CODE.USERNAME_ALREADY_EXISTS);
-      expect(error.name).toBe('BadRequestError');
     });
   });
 
@@ -133,6 +120,37 @@ describe('AppError Classes', () => {
       const error = new NotFoundError(ERROR_CODE.COMMENT_NOT_FOUND);
 
       expect(error.code).toBe(ERROR_CODE.COMMENT_NOT_FOUND);
+    });
+  });
+
+  describe('ConflictError', () => {
+    it('should be an instance of AppError', () => {
+      const error = new ConflictError(ERROR_CODE.USERNAME_ALREADY_EXISTS);
+
+      expect(error).toBeInstanceOf(AppError);
+      expect(error).toBeInstanceOf(Error);
+    });
+
+    it('should have correct properties', () => {
+      const error = new ConflictError(ERROR_CODE.USERNAME_ALREADY_EXISTS);
+
+      expect(error.code).toBe(ERROR_CODE.USERNAME_ALREADY_EXISTS);
+      expect(error.name).toBe('ConflictError');
+      expect(error.message).toBe(ERROR_CODE.USERNAME_ALREADY_EXISTS);
+      expect(error.params).toBeUndefined();
+    });
+
+    it('should store params when provided', () => {
+      const params = { username: 'johndoe' };
+      const error = new ConflictError(ERROR_CODE.USERNAME_ALREADY_EXISTS, params);
+
+      expect(error.params).toEqual(params);
+    });
+
+    it('should work with EMAIL_ALREADY_EXISTS code', () => {
+      const error = new ConflictError(ERROR_CODE.EMAIL_ALREADY_EXISTS);
+
+      expect(error.code).toBe(ERROR_CODE.EMAIL_ALREADY_EXISTS);
     });
   });
 

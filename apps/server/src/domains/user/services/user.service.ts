@@ -1,5 +1,7 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ERROR_CODE } from '@monorepo/error-code';
+import { Injectable } from '@nestjs/common';
 
+import { ConflictError, NotFoundError } from '$errors';
 import { toUserDto } from '../presenters';
 import { UserRepository } from '../repositories';
 
@@ -16,7 +18,7 @@ export class UserService {
     const user = await this.repository.getById(userId);
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundError(ERROR_CODE.USER_NOT_FOUND);
     }
 
     return { user: toUserDto(user) };
@@ -29,14 +31,14 @@ export class UserService {
     const existingUser = await this.repository.getById(userId);
 
     if (!existingUser) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundError(ERROR_CODE.USER_NOT_FOUND);
     }
 
     // Check username uniqueness
     if (request.user.username) {
       const isTaken = await this.repository.isUsernameTaken(request.user.username, userId);
       if (isTaken) {
-        throw new ConflictException('Username is already taken');
+        throw new ConflictError(ERROR_CODE.USERNAME_ALREADY_EXISTS);
       }
     }
 
@@ -44,7 +46,7 @@ export class UserService {
     if (request.user.email) {
       const isTaken = await this.repository.isEmailTaken(request.user.email, userId);
       if (isTaken) {
-        throw new ConflictException('Email is already taken');
+        throw new ConflictError(ERROR_CODE.EMAIL_ALREADY_EXISTS);
       }
     }
 
@@ -78,7 +80,7 @@ export class UserService {
     // Check username uniqueness
     const isTaken = await this.repository.isUsernameTaken(dto.username);
     if (isTaken) {
-      throw new ConflictException('Username is already taken');
+      throw new ConflictError(ERROR_CODE.USERNAME_ALREADY_EXISTS);
     }
 
     const user = await this.repository.create({

@@ -61,70 +61,33 @@ export class ArticleEditRepository {
   /**
    * Add favorite
    */
-  async addFavorite(slug: string, userId: number): Promise<ArticleWithRelations> {
-    const article = await this.prisma.article.findUnique({
-      where: { slug },
-      select: { id: true },
-    });
-
-    if (!article) {
-      throw new Error('Article not found');
-    }
-
+  async addFavorite(articleId: number, userId: number): Promise<void> {
     await this.prisma.favorite.upsert({
       where: {
-        userId_articleId: { userId, articleId: article.id },
+        userId_articleId: { userId, articleId },
       },
-      create: { userId, articleId: article.id },
+      create: { userId, articleId },
       update: {},
-    });
-
-    return this.prisma.article.findUniqueOrThrow({
-      where: { slug },
-      include: articleWithRelationsInclude,
     });
   }
 
   /**
    * Remove favorite
    */
-  async removeFavorite(slug: string, userId: number): Promise<ArticleWithRelations> {
-    const article = await this.prisma.article.findUnique({
-      where: { slug },
-      select: { id: true },
-    });
-
-    if (!article) {
-      throw new Error('Article not found');
-    }
-
+  async removeFavorite(articleId: number, userId: number): Promise<void> {
     await this.prisma.favorite.deleteMany({
-      where: { userId, articleId: article.id },
-    });
-
-    return this.prisma.article.findUniqueOrThrow({
-      where: { slug },
-      include: articleWithRelationsInclude,
+      where: { userId, articleId },
     });
   }
 
   /**
    * Create a comment
    */
-  async createComment(slug: string, userId: number, body: string): Promise<CommentWithAuthor> {
-    const article = await this.prisma.article.findUnique({
-      where: { slug },
-      select: { id: true },
-    });
-
-    if (!article) {
-      throw new Error('Article not found');
-    }
-
+  async createComment(articleId: number, userId: number, body: string): Promise<CommentWithAuthor> {
     return this.prisma.comment.create({
       data: {
         body,
-        articleId: article.id,
+        articleId,
         userId,
       },
       include: commentWithAuthorInclude,

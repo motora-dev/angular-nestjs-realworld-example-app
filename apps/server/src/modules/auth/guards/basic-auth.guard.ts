@@ -1,5 +1,8 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+import { ERROR_CODE } from '@monorepo/error-code';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+
+import { UnauthorizedError } from '$errors';
 
 @Injectable()
 export class BasicAuthGuard implements CanActivate {
@@ -12,7 +15,7 @@ export class BasicAuthGuard implements CanActivate {
 
     if (!authHeader || !authHeader.startsWith('Basic ')) {
       response.setHeader('WWW-Authenticate', 'Basic realm="Restricted Area"');
-      throw new UnauthorizedException('Basic authentication required');
+      throw new UnauthorizedError(ERROR_CODE.UNAUTHORIZED);
     }
 
     const base64Credentials = authHeader.slice(6);
@@ -23,11 +26,11 @@ export class BasicAuthGuard implements CanActivate {
     const expectedPassword = this.configService.get<string>('BASIC_AUTH_PASSWORD');
 
     if (!expectedUsername || !expectedPassword) {
-      throw new UnauthorizedException('Basic authentication not configured');
+      throw new UnauthorizedError(ERROR_CODE.UNAUTHORIZED);
     }
 
     if (username !== expectedUsername || password !== expectedPassword) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedError(ERROR_CODE.UNAUTHORIZED);
     }
 
     return true;

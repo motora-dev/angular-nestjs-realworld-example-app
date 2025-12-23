@@ -1,5 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ERROR_CODE } from '@monorepo/error-code';
+import { Injectable } from '@nestjs/common';
 
+import { NotFoundError } from '$errors';
 import { toArticleDto } from '../presenters';
 import { toCommentDto } from '../presenters';
 import { ArticleRepository } from '../repositories';
@@ -17,7 +19,7 @@ export class ArticleService {
     const article = await this.repository.getBySlug(slug);
 
     if (!article) {
-      throw new NotFoundException('Article not found');
+      throw new NotFoundError(ERROR_CODE.ARTICLE_NOT_FOUND);
     }
 
     const isFollowing = currentUserId ? await this.repository.isFollowing(currentUserId, article.user.id) : false;

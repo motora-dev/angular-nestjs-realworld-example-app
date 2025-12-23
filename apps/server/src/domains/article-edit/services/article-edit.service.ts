@@ -1,5 +1,7 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { ERROR_CODE } from '@monorepo/error-code';
+import { Injectable } from '@nestjs/common';
 
+import { ForbiddenError, NotFoundError } from '$errors';
 import { ArticleEditQueryRepository } from '../repositories/article-edit-query.repository';
 import { ArticleEditRepository } from '../repositories/article-edit.repository';
 
@@ -33,11 +35,11 @@ export class ArticleEditService {
     const article = await this.queryRepository.getBySlug(slug);
 
     if (!article) {
-      throw new NotFoundException('Article not found');
+      throw new NotFoundError(ERROR_CODE.ARTICLE_NOT_FOUND);
     }
 
     if (article.userId !== currentUserId) {
-      throw new ForbiddenException('You are not the author of this article');
+      throw new ForbiddenError(ERROR_CODE.FORBIDDEN);
     }
 
     return article;
@@ -54,11 +56,11 @@ export class ArticleEditService {
     const existingArticle = await this.queryRepository.getBySlug(slug);
 
     if (!existingArticle) {
-      throw new NotFoundException('Article not found');
+      throw new NotFoundError(ERROR_CODE.ARTICLE_NOT_FOUND);
     }
 
     if (existingArticle.userId !== currentUserId) {
-      throw new ForbiddenException('You are not the author of this article');
+      throw new ForbiddenError(ERROR_CODE.FORBIDDEN);
     }
 
     return this.repository.update(slug, {
@@ -75,11 +77,11 @@ export class ArticleEditService {
     const article = await this.queryRepository.getBySlug(slug);
 
     if (!article) {
-      throw new NotFoundException('Article not found');
+      throw new NotFoundError(ERROR_CODE.ARTICLE_NOT_FOUND);
     }
 
     if (article.userId !== currentUserId) {
-      throw new ForbiddenException('You are not the author of this article');
+      throw new ForbiddenError(ERROR_CODE.FORBIDDEN);
     }
 
     await this.repository.delete(slug);
@@ -89,14 +91,30 @@ export class ArticleEditService {
    * Favorite an article
    */
   async favoriteArticle(slug: string, currentUserId: number): Promise<ArticleWithRelations> {
-    return this.repository.addFavorite(slug, currentUserId);
+    const article = await this.queryRepository.getBySlug(slug);
+
+    if (!article) {
+      throw new NotFoundError(ERROR_CODE.ARTICLE_NOT_FOUND);
+    }
+
+    await this.repository.addFavorite(article.id, currentUserId);
+
+    return (await this.queryRepository.getBySlug(slug))!;
   }
 
   /**
    * Unfavorite an article
    */
   async unfavoriteArticle(slug: string, currentUserId: number): Promise<ArticleWithRelations> {
-    return this.repository.removeFavorite(slug, currentUserId);
+    const article = await this.queryRepository.getBySlug(slug);
+
+    if (!article) {
+      throw new NotFoundError(ERROR_CODE.ARTICLE_NOT_FOUND);
+    }
+
+    await this.repository.removeFavorite(article.id, currentUserId);
+
+    return (await this.queryRepository.getBySlug(slug))!;
   }
 
   /**
@@ -107,7 +125,13 @@ export class ArticleEditService {
     request: CreateCommentRequestDto,
     currentUserId: number,
   ): Promise<CommentWithAuthor> {
-    return this.repository.createComment(slug, currentUserId, request.comment.body);
+    const article = await this.queryRepository.getBySlug(slug);
+
+    if (!article) {
+      throw new NotFoundError(ERROR_CODE.ARTICLE_NOT_FOUND);
+    }
+
+    return this.repository.createComment(article.id, currentUserId, request.comment.body);
   }
 
   /**
@@ -117,11 +141,11 @@ export class ArticleEditService {
     const comment = await this.queryRepository.getComment(commentId);
 
     if (!comment) {
-      throw new NotFoundException('Comment not found');
+      throw new NotFoundError(ERROR_CODE.COMMENT_NOT_FOUND);
     }
 
     if (comment.user.id !== currentUserId) {
-      throw new ForbiddenException('You are not the author of this comment');
+      throw new ForbiddenError(ERROR_CODE.FORBIDDEN);
     }
 
     await this.repository.deleteComment(commentId, currentUserId);

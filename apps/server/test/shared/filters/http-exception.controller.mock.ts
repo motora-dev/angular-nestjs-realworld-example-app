@@ -1,4 +1,11 @@
-import { BadRequestError, ForbiddenError, InternalServerError, NotFoundError, UnauthorizedError } from '$errors';
+import {
+  BadRequestError,
+  ConflictError,
+  ForbiddenError,
+  InternalServerError,
+  NotFoundError,
+  UnauthorizedError,
+} from '$errors';
 import { ERROR_CODE } from '@monorepo/error-code';
 import { Controller, Get, HttpException, HttpStatus } from '@nestjs/common';
 
@@ -6,7 +13,7 @@ import { Controller, Get, HttpException, HttpStatus } from '@nestjs/common';
 export class HttpExceptionControllerMock {
   @Get('bad-request')
   throwBadRequest(): never {
-    throw new BadRequestError(ERROR_CODE.EMAIL_ALREADY_EXISTS, { field: 'filename' });
+    throw new BadRequestError(ERROR_CODE.VALIDATION_ERROR, { field: 'filename' });
   }
 
   @Get('unauthorized')
@@ -22,6 +29,11 @@ export class HttpExceptionControllerMock {
   @Get('not-found')
   throwNotFound(): never {
     throw new NotFoundError(ERROR_CODE.USER_NOT_FOUND, { userId: 'user-123' });
+  }
+
+  @Get('conflict')
+  throwConflict(): never {
+    throw new ConflictError(ERROR_CODE.USERNAME_ALREADY_EXISTS, { username: 'johndoe' });
   }
 
   @Get('internal-server-error')

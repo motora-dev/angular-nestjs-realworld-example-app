@@ -1,5 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ERROR_CODE } from '@monorepo/error-code';
+import { Injectable } from '@nestjs/common';
 
+import { NotFoundError } from '$errors';
 import { toProfileDto } from '../presenters';
 import { ProfileRepository } from '../repositories';
 
@@ -16,7 +18,7 @@ export class ProfileService {
     const user = await this.repository.getByUsername(username);
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundError(ERROR_CODE.USER_NOT_FOUND);
     }
 
     const isFollowing = currentUserId ? await this.repository.isFollowing(currentUserId, user.id) : false;
@@ -31,7 +33,7 @@ export class ProfileService {
     const user = await this.repository.getByUsername(username);
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundError(ERROR_CODE.USER_NOT_FOUND);
     }
 
     await this.repository.follow(currentUserId, user.id);
@@ -46,7 +48,7 @@ export class ProfileService {
     const user = await this.repository.getByUsername(username);
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundError(ERROR_CODE.USER_NOT_FOUND);
     }
 
     await this.repository.unfollow(currentUserId, user.id);

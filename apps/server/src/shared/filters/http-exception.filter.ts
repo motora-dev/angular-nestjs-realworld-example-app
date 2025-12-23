@@ -2,7 +2,15 @@ import { ERROR_CODE } from '@monorepo/error-code';
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common';
 import { Response } from 'express';
 
-import { AppError, BadRequestError, ForbiddenError, NotFoundError, UnauthorizedError } from '$errors';
+import {
+  AppError,
+  BadRequestError,
+  ConflictError,
+  ForbiddenError,
+  InternalServerError,
+  NotFoundError,
+  UnauthorizedError,
+} from '$errors';
 
 import type { ErrorParams } from '$errors';
 
@@ -64,6 +72,12 @@ const getStatusCode = (exception: AppError): number => {
   }
   if (exception instanceof NotFoundError) {
     return HttpStatus.NOT_FOUND;
+  }
+  if (exception instanceof ConflictError) {
+    return HttpStatus.CONFLICT;
+  }
+  if (exception instanceof InternalServerError) {
+    return HttpStatus.INTERNAL_SERVER_ERROR;
   }
   return HttpStatus.INTERNAL_SERVER_ERROR;
 };
