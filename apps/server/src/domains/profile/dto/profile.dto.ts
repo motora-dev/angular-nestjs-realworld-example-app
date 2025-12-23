@@ -17,4 +17,3 @@ export interface ProfileDto {
 export interface ProfileResponseDto {
   profile: ProfileDto;
 }
-

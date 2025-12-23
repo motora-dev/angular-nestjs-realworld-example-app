@@ -5,4 +5,3 @@ export * from './favorite-article';
 export * from './unfavorite-article';
 export * from './create-comment';
 export * from './delete-comment';
-

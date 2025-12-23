@@ -1,13 +1,9 @@
-import { inject, Injectable } from "@angular/core";
-import { Store } from "@ngxs/store";
+import { inject, Injectable } from '@angular/core';
+import { Store } from '@ngxs/store';
 
-import { SpinnerFacade } from "$modules/spinner";
-import { ArticlePageApi } from "./api";
-import {
-  ArticlePageState,
-  SetClickedTocId,
-  SetScrollActiveTocId,
-} from "./store";
+import { SpinnerFacade } from '$modules/spinner';
+import { ArticlePageApi } from './api';
+import { ArticlePageState, SetClickedTocId, SetScrollActiveTocId } from './store';
 
 @Injectable()
 export class ArticlePageFacade {
@@ -34,9 +30,6 @@ export class ArticlePageFacade {
   }
 
   loadPage(articleId: string, pageId: string): void {
-    this.api
-      .getPage(articleId, pageId)
-      .pipe(this.spinnerFacade.withSpinner())
-      .subscribe();
+    this.api.getPage(articleId, pageId).pipe(this.spinnerFacade.withSpinner()).subscribe();
   }
 }

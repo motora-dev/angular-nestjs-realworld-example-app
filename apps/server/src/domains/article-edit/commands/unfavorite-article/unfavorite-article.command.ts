@@ -4,4 +4,3 @@ export class UnfavoriteArticleCommand {
     public readonly currentUserId: number,
   ) {}
 }
-

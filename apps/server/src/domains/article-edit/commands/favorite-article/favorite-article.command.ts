@@ -4,4 +4,3 @@ export class FavoriteArticleCommand {
     public readonly currentUserId: number,
   ) {}
 }
-

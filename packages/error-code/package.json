@@ -1,0 +1,45 @@
+{
+  "name": "@monorepo/error-code",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "clean": "rimraf .turbo coverage dist node_modules",
+    "clean:cache": "rimraf .turbo coverage dist",
+    "prebuild": "rm -rf dist",
+    "build": "pnpm prebuild && tsc --project tsconfig.build.json",
+    "tsc": "pnpm tsc:src && pnpm tsc:spec",
+    "tsc:src": "tsc --noEmit -p tsconfig.build.json",
+    "tsc:spec": "tsc --noEmit -p tsconfig.spec.json",
+    "format": "prettier --check \"src/**/*.ts\"",
+    "format:fix": "prettier --write \"src/**/*.ts\"",
+    "lint": "pnpm lint:eslint",
+    "lint:fix": "pnpm lint:eslint:fix",
+    "lint:eslint": "eslint src --config eslint.config.mjs --max-warnings 0",
+    "lint:eslint:fix": "pnpm lint:eslint --fix",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage"
+  },
+  "devDependencies": {
+    "@monorepo/eslint-config": "workspace:*",
+    "@monorepo/typescript-config": "workspace:*",
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "eslint": "catalog:",
+    "rimraf": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "volta": {
+    "extends": "../../package.json"
+  }
+}

@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@monorepo/database": "workspace:*",
+    "@monorepo/error-code": "workspace:*",
     "@nestjs/common": "catalog:",
     "@nestjs/config": "catalog:",
     "@nestjs/core": "catalog:",

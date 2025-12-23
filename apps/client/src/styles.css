@@ -1,9 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import 'tailwindcss';
-@import 'highlight.js/styles/tomorrow-night-blue.css';
-@import 'katex/dist/katex.min.css';
-
 @plugin '@tailwindcss/typography';
 
 /* グローバルフォント設定 */

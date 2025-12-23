@@ -4,4 +4,3 @@ export class FollowUserCommand {
     public readonly currentUserId: number,
   ) {}
 }
-

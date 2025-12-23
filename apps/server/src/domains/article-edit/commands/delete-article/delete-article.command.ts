@@ -4,4 +4,3 @@ export class DeleteArticleCommand {
     public readonly currentUserId: number,
   ) {}
 }
-

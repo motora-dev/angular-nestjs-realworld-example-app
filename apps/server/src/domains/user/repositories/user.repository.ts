@@ -68,15 +68,12 @@ export class UserRepository {
   /**
    * Get user by OAuth account
    */
-  async getByOAuthAccount(
-    provider: string,
-    providerId: string,
-  ): Promise<UserWithAccount | null> {
+  async getByOAuthAccount(provider: string, providerId: string): Promise<UserWithAccount | null> {
     const account = await this.prisma.account.findUnique({
       where: {
-        provider_providerAccountId: {
+        provider_sub: {
           provider,
-          providerAccountId: providerId,
+          sub: providerId,
         },
       },
       include: {
@@ -106,9 +103,9 @@ export class UserRepository {
         image: params.image,
         accounts: {
           create: {
-            type: 'oauth',
             provider: params.provider,
-            providerAccountId: params.providerId,
+            sub: params.providerId,
+            email: params.email,
           },
         },
       },
@@ -151,10 +148,7 @@ export class UserRepository {
   /**
    * Check if username is taken (excluding current user)
    */
-  async isUsernameTaken(
-    username: string,
-    excludeUserId?: number,
-  ): Promise<boolean> {
+  async isUsernameTaken(username: string, excludeUserId?: number): Promise<boolean> {
     const user = await this.prisma.user.findFirst({
       where: {
         username,

@@ -50,4 +50,3 @@ export interface CreateUserDto {
 export interface CreateUserResponseDto {
   user: UserDto;
 }
-

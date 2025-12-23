@@ -4,4 +4,3 @@ export class GetProfileQuery {
     public readonly currentUserId?: number,
   ) {}
 }
-

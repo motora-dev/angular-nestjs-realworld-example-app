@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
 import { PrismaAdapter } from '$adapters';
-import { generatePublicId } from '$utils';
 
 import type { User } from '@monorepo/database/client';
 
@@ -46,7 +45,7 @@ export class AuthRepository {
     if (accountWithEmail) {
       // そのUserに新しいAccountを紐付ける
       await this.prisma.account.create({
-        data: { publicId: generatePublicId(), provider, sub, email, userId: accountWithEmail.userId },
+        data: { provider, sub, email, userId: accountWithEmail.userId },
       });
       return accountWithEmail.user;
     }
@@ -57,14 +56,14 @@ export class AuthRepository {
       where: { email },
       update: {
         accounts: {
-          create: { publicId: generatePublicId(), provider, sub, email },
+          create: { provider, sub, email },
         },
       },
       create: {
-        publicId: generatePublicId(),
         email,
+        username: email.split('@')[0], // Temporary username from email
         accounts: {
-          create: { publicId: generatePublicId(), provider, sub, email },
+          create: { provider, sub, email },
         },
       },
     });

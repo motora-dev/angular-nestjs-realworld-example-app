@@ -12,6 +12,8 @@
       "$adapters": ["src/shared/adapters"],
       "$decorators": ["src/shared/decorators"],
       "$domains/*": ["src/domains/*"],
+      "$errors": ["src/shared/errors"],
+      "$filters": ["src/shared/filters"],
       "$guards": ["src/shared/guards"],
       "$interceptors": ["src/shared/interceptors"],
       "$modules/*": ["src/modules/*"],

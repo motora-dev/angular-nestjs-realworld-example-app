@@ -1,6 +1,6 @@
-import { isPlatformBrowser } from "@angular/common";
-import { Component, DOCUMENT, inject, PLATFORM_ID } from "@angular/core";
-import { RouterOutlet } from "@angular/router";
+import { isPlatformBrowser } from '@angular/common';
+import { Component, DOCUMENT, inject, PLATFORM_ID } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 
 import {
   CookieConsentComponent,
@@ -9,15 +9,15 @@ import {
   HeaderComponent,
   SnackbarComponent,
   SpinnerComponent,
-} from "$components/layouts";
-import { AuthFacade } from "$modules/auth";
+} from '$components/layouts';
+import { AuthFacade } from '$modules/auth';
 
 /** Material Symbols Outlined フォントURL*/
 const MATERIAL_SYMBOLS_URL =
-  "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap";
+  'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap';
 
 @Component({
-  selector: "app-root",
+  selector: 'app-root',
   standalone: true,
   imports: [
     RouterOutlet,
@@ -28,8 +28,8 @@ const MATERIAL_SYMBOLS_URL =
     ErrorDialogComponent,
     CookieConsentComponent,
   ],
-  templateUrl: "./app.html",
-  styleUrl: "./app.css",
+  templateUrl: './app.html',
+  styleUrl: './app.css',
 })
 export class App {
   private readonly authFacade = inject(AuthFacade);
@@ -43,7 +43,7 @@ export class App {
       return;
     }
 
-    if (typeof requestIdleCallback !== "undefined") {
+    if (typeof requestIdleCallback !== 'undefined') {
       requestIdleCallback(() => this.preload());
     } else {
       setTimeout(() => this.preload(), 100);
@@ -66,8 +66,8 @@ export class App {
   }
 
   private preloadMaterialSymbolsFont(): void {
-    const link = this.document.createElement("link");
-    link.rel = "stylesheet";
+    const link = this.document.createElement('link');
+    link.rel = 'stylesheet';
     link.href = MATERIAL_SYMBOLS_URL;
     this.document.head.appendChild(link);
   }

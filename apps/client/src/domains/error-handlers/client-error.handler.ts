@@ -1,18 +1,18 @@
-import { isPlatformBrowser } from "@angular/common";
-import { HttpErrorResponse } from "@angular/common/http";
-import { ErrorHandler, inject, Injectable, PLATFORM_ID } from "@angular/core";
-import { Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
+import { isPlatformBrowser } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ErrorHandler, inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 
-import { ErrorFacade } from "$modules/error";
-import { NotFoundError } from "$modules/error/client-errors";
-import { ClientError } from "$modules/error/error.model";
+import { ErrorFacade } from '$modules/error';
+import { NotFoundError } from '$modules/error/client-errors';
+import { ClientError } from '$modules/error/error.model';
 
 /** ページ遷移対象のステータスコードとルートのマッピング */
 const PAGE_NAVIGATE_ROUTES: Record<number, string> = {
-  401: "/error/401",
-  403: "/error/403",
-  404: "/error/404",
+  401: '/error/401',
+  403: '/error/403',
+  404: '/error/404',
 };
 
 /**
@@ -59,11 +59,8 @@ export class ClientErrorHandler implements ErrorHandler {
 
     // HttpErrorResponse 以外（純粋なクライアントエラー）→ ダイアログ表示
     const clientError: ClientError = {
-      type: "client",
-      message:
-        error instanceof Error
-          ? error.message
-          : this.translate.instant("An unexpected error occurred"),
+      type: 'client',
+      message: error instanceof Error ? error.message : this.translate.instant('An unexpected error occurred'),
     };
 
     this.errorFacade.showError(clientError);

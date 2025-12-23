@@ -4,4 +4,3 @@ export class GetArticleForEditQuery {
     public readonly currentUserId: number,
   ) {}
 }
-

@@ -4,4 +4,3 @@ export class DeleteCommentCommand {
     public readonly currentUserId: number,
   ) {}
 }
-

@@ -11,9 +11,10 @@ describe('AuthRepository', () => {
 
   const mockUser: User = {
     id: 2,
-    publicId: 'google-user-ulid',
     email: 'test@gmail.com',
-    name: 'Google User',
+    username: 'testuser',
+    bio: null,
+    image: null,
     createdAt: new Date('2023-01-01'),
     updatedAt: new Date('2023-01-01'),
   };

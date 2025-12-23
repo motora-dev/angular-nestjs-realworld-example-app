@@ -1,9 +1,9 @@
-import { Test, TestingModule } from "@nestjs/testing";
+import { Test, TestingModule } from '@nestjs/testing';
 
-import { PrismaAdapter } from "./prisma.adapter";
-import { PrismaAdapterModule } from "./prisma.adapter.module";
+import { PrismaAdapter } from './prisma.adapter';
+import { PrismaAdapterModule } from './prisma.adapter.module';
 
-describe("PrismaAdapterModule", () => {
+describe('PrismaAdapterModule', () => {
   let module: TestingModule;
 
   beforeEach(async () => {
@@ -12,31 +12,31 @@ describe("PrismaAdapterModule", () => {
     }).compile();
   });
 
-  it("should compile the module", () => {
+  it('should compile the module', () => {
     expect(module).toBeDefined();
   });
 
-  describe("Module Structure", () => {
-    it("should provide PrismaAdapter", () => {
-      const providers = Reflect.getMetadata("providers", PrismaAdapterModule);
+  describe('Module Structure', () => {
+    it('should provide PrismaAdapter', () => {
+      const providers = Reflect.getMetadata('providers', PrismaAdapterModule);
       expect(providers).toContain(PrismaAdapter);
     });
 
-    it("should export PrismaAdapter", () => {
-      const exports = Reflect.getMetadata("exports", PrismaAdapterModule);
+    it('should export PrismaAdapter', () => {
+      const exports = Reflect.getMetadata('exports', PrismaAdapterModule);
       expect(exports).toContain(PrismaAdapter);
     });
   });
 
-  describe("Dependencies", () => {
-    it("should resolve PrismaAdapter", () => {
+  describe('Dependencies', () => {
+    it('should resolve PrismaAdapter', () => {
       const adapter = module.get<PrismaAdapter>(PrismaAdapter);
       expect(adapter).toBeDefined();
       expect(adapter.$connect).toBeDefined();
       expect(adapter.$disconnect).toBeDefined();
     });
 
-    it("should provide singleton instance of PrismaAdapter", () => {
+    it('should provide singleton instance of PrismaAdapter', () => {
       const adapter1 = module.get<PrismaAdapter>(PrismaAdapter);
       const adapter2 = module.get<PrismaAdapter>(PrismaAdapter);
       expect(adapter1).toBe(adapter2);
