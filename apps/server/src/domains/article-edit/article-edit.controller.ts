@@ -1,19 +1,7 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Param,
-  ParseIntPipe,
-  Post,
-  Put,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 
 import { CurrentUser } from '$decorators';
-
 import {
   CreateArticleCommand,
   CreateCommentCommand,
@@ -23,14 +11,15 @@ import {
   UnfavoriteArticleCommand,
   UpdateArticleCommand,
 } from './commands';
+import { GetArticleForEditQuery } from './queries';
+
 import type {
   CreateArticleRequestDto,
   CreateCommentRequestDto,
   SingleArticleDto,
   SingleCommentDto,
   UpdateArticleRequestDto,
-} from './dto';
-import { GetArticleForEditQuery } from './queries';
+} from './contracts';
 
 interface CurrentUserType {
   id: number;
@@ -84,9 +73,7 @@ export class ArticleEditController {
     @Body() request: UpdateArticleRequestDto,
     @CurrentUser() user: CurrentUserType,
   ): Promise<SingleArticleDto> {
-    return this.commandBus.execute(
-      new UpdateArticleCommand(slug, request, user.id),
-    );
+    return this.commandBus.execute(new UpdateArticleCommand(slug, request, user.id));
   }
 
   /**
@@ -96,10 +83,7 @@ export class ArticleEditController {
    */
   @Delete(':slug')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async deleteArticle(
-    @Param('slug') slug: string,
-    @CurrentUser() user: CurrentUserType,
-  ): Promise<void> {
+  async deleteArticle(@Param('slug') slug: string, @CurrentUser() user: CurrentUserType): Promise<void> {
     return this.commandBus.execute(new DeleteArticleCommand(slug, user.id));
   }
 
@@ -110,10 +94,7 @@ export class ArticleEditController {
    */
   @Post(':slug/favorite')
   @HttpCode(HttpStatus.OK)
-  async favoriteArticle(
-    @Param('slug') slug: string,
-    @CurrentUser() user: CurrentUserType,
-  ): Promise<SingleArticleDto> {
+  async favoriteArticle(@Param('slug') slug: string, @CurrentUser() user: CurrentUserType): Promise<SingleArticleDto> {
     return this.commandBus.execute(new FavoriteArticleCommand(slug, user.id));
   }
 
@@ -128,9 +109,7 @@ export class ArticleEditController {
     @Param('slug') slug: string,
     @CurrentUser() user: CurrentUserType,
   ): Promise<SingleArticleDto> {
-    return this.commandBus.execute(
-      new UnfavoriteArticleCommand(slug, user.id),
-    );
+    return this.commandBus.execute(new UnfavoriteArticleCommand(slug, user.id));
   }
 
   /**
@@ -145,9 +124,7 @@ export class ArticleEditController {
     @Body() request: CreateCommentRequestDto,
     @CurrentUser() user: CurrentUserType,
   ): Promise<SingleCommentDto> {
-    return this.commandBus.execute(
-      new CreateCommentCommand(slug, request, user.id),
-    );
+    return this.commandBus.execute(new CreateCommentCommand(slug, request, user.id));
   }
 
   /**

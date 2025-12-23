@@ -1,4 +1,4 @@
-import type { UpdateArticleRequestDto } from '../../dto';
+import type { UpdateArticleRequestDto } from '../../contracts';
 
 export class UpdateArticleCommand {
   constructor(

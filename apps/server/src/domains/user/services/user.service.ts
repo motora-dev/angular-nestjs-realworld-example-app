@@ -1,17 +1,8 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 
-import type {
-  CreateUserDto,
-  CreateUserResponseDto,
-  UpdateUserRequestDto,
-  UserDto,
-  UserResponseDto,
-} from '../dto';
 import { UserRepository, UserWithAccount } from '../repositories/user.repository';
+
+import type { CreateUserDto, CreateUserResponseDto, UpdateUserRequestDto, UserDto, UserResponseDto } from '../dto';
 
 @Injectable()
 export class UserService {
@@ -33,10 +24,7 @@ export class UserService {
   /**
    * Update current user
    */
-  async updateUser(
-    userId: number,
-    request: UpdateUserRequestDto,
-  ): Promise<UserResponseDto> {
+  async updateUser(userId: number, request: UpdateUserRequestDto): Promise<UserResponseDto> {
     const existingUser = await this.repository.getById(userId);
 
     if (!existingUser) {
@@ -45,10 +33,7 @@ export class UserService {
 
     // Check username uniqueness
     if (request.user.username) {
-      const isTaken = await this.repository.isUsernameTaken(
-        request.user.username,
-        userId,
-      );
+      const isTaken = await this.repository.isUsernameTaken(request.user.username, userId);
       if (isTaken) {
         throw new ConflictException('Username is already taken');
       }
@@ -56,10 +41,7 @@ export class UserService {
 
     // Check email uniqueness
     if (request.user.email) {
-      const isTaken = await this.repository.isEmailTaken(
-        request.user.email,
-        userId,
-      );
+      const isTaken = await this.repository.isEmailTaken(request.user.email, userId);
       if (isTaken) {
         throw new ConflictException('Email is already taken');
       }
@@ -78,10 +60,7 @@ export class UserService {
   /**
    * Get or create user by OAuth account
    */
-  async getOrCreateUser(
-    provider: string,
-    providerId: string,
-  ): Promise<UserResponseDto | null> {
+  async getOrCreateUser(provider: string, providerId: string): Promise<UserResponseDto | null> {
     const user = await this.repository.getByOAuthAccount(provider, providerId);
 
     if (!user) {

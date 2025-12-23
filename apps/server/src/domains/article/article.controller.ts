@@ -2,9 +2,9 @@ import { Controller, Get, HttpCode, HttpStatus, Param } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
 
 import { CurrentUser } from '$decorators';
+import { GetArticleQuery, GetCommentsQuery } from './queries';
 
 import type { MultipleCommentsDto, SingleArticleDto } from './dto';
-import { GetArticleQuery, GetCommentsQuery } from './queries';
 
 interface CurrentUserType {
   id: number;

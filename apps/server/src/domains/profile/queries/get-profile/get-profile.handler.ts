@@ -1,8 +1,9 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 
-import type { ProfileResponseDto } from '../../dto';
-import { ProfileService } from '../../services/profile.service';
 import { GetProfileQuery } from './get-profile.query';
+import { ProfileService } from '../../services/profile.service';
+
+import type { ProfileResponseDto } from '../../dto';
 
 @QueryHandler(GetProfileQuery)
 export class GetProfileHandler implements IQueryHandler<GetProfileQuery> {
@@ -12,4 +13,3 @@ export class GetProfileHandler implements IQueryHandler<GetProfileQuery> {
     return this.service.getProfile(query.username, query.currentUserId);
   }
 }
-

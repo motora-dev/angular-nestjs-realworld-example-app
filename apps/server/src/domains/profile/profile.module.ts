@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 
 import { PrismaAdapterModule } from '$adapters';
-
 import { FollowUserHandler, UnfollowUserHandler } from './commands';
 import { ProfileController } from './profile.controller';
 import { GetProfileHandler } from './queries';
@@ -15,12 +14,6 @@ const QueryHandlers = [GetProfileHandler];
 @Module({
   imports: [CqrsModule, PrismaAdapterModule],
   controllers: [ProfileController],
-  providers: [
-    ProfileService,
-    ProfileRepository,
-    ...CommandHandlers,
-    ...QueryHandlers,
-  ],
+  providers: [ProfileService, ProfileRepository, ...CommandHandlers, ...QueryHandlers],
 })
 export class ProfileModule {}
-

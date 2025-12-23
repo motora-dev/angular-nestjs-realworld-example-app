@@ -1,7 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 
-import type { ProfileDto, ProfileResponseDto } from '../dto';
 import { ProfileRepository } from '../repositories/profile.repository';
+
+import type { ProfileDto, ProfileResponseDto } from '../dto';
 
 @Injectable()
 export class ProfileService {
@@ -10,19 +11,14 @@ export class ProfileService {
   /**
    * Get profile by username
    */
-  async getProfile(
-    username: string,
-    currentUserId?: number,
-  ): Promise<ProfileResponseDto> {
+  async getProfile(username: string, currentUserId?: number): Promise<ProfileResponseDto> {
     const user = await this.repository.getByUsername(username);
 
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
-    const isFollowing = currentUserId
-      ? await this.repository.isFollowing(currentUserId, user.id)
-      : false;
+    const isFollowing = currentUserId ? await this.repository.isFollowing(currentUserId, user.id) : false;
 
     const profile: ProfileDto = {
       username: user.username,
@@ -37,10 +33,7 @@ export class ProfileService {
   /**
    * Follow a user
    */
-  async followUser(
-    username: string,
-    currentUserId: number,
-  ): Promise<ProfileResponseDto> {
+  async followUser(username: string, currentUserId: number): Promise<ProfileResponseDto> {
     const user = await this.repository.getByUsername(username);
 
     if (!user) {
@@ -62,10 +55,7 @@ export class ProfileService {
   /**
    * Unfollow a user
    */
-  async unfollowUser(
-    username: string,
-    currentUserId: number,
-  ): Promise<ProfileResponseDto> {
+  async unfollowUser(username: string, currentUserId: number): Promise<ProfileResponseDto> {
     const user = await this.repository.getByUsername(username);
 
     if (!user) {
@@ -84,4 +74,3 @@ export class ProfileService {
     return { profile };
   }
 }
-

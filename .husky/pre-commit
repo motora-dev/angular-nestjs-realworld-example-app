@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+
+# clientアプリのlint-stagedを実行
+if git diff --cached --name-only | grep -q "^apps/client/"; then
+  echo "Running client lint-staged..."
+  (cd apps/client && npx lint-staged) || exit 1
+fi
+
+# serverアプリのlint-stagedを実行
+if git diff --cached --name-only | grep -q "^apps/server/"; then
+  echo "Running server lint-staged..."
+  (cd apps/server && npx lint-staged) || exit 1
+fi
+
+# ルートで型チェックを実行
+echo "Running type check..."
+pnpm tsc

@@ -1,8 +1,8 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 
+import { GetFeedQuery } from './get-feed.query';
 import { MultipleArticlesDto } from '../../dto';
 import { ArticleListService } from '../../services/article-list.service';
-import { GetFeedQuery } from './get-feed.query';
 
 @QueryHandler(GetFeedQuery)
 export class GetFeedHandler implements IQueryHandler<GetFeedQuery> {

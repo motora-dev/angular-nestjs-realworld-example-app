@@ -1,8 +1,9 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 
-import type { MultipleCommentsDto } from '../../dto';
-import { ArticleService } from '../../services/article.service';
 import { GetCommentsQuery } from './get-comments.query';
+import { ArticleService } from '../../services/article.service';
+
+import type { MultipleCommentsDto } from '../../dto';
 
 @QueryHandler(GetCommentsQuery)
 export class GetCommentsHandler implements IQueryHandler<GetCommentsQuery> {

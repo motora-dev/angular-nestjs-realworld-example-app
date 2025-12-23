@@ -1,8 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-import type { UserResponseDto } from '../../dto';
-import { UserService } from '../../services/user.service';
 import { UpdateUserCommand } from './update-user.command';
+import { UserService } from '../../services/user.service';
+
+import type { UserResponseDto } from '../../dto';
 
 @CommandHandler(UpdateUserCommand)
 export class UpdateUserHandler implements ICommandHandler<UpdateUserCommand> {
@@ -12,4 +13,3 @@ export class UpdateUserHandler implements ICommandHandler<UpdateUserCommand> {
     return this.service.updateUser(command.userId, command.request);
   }
 }
-

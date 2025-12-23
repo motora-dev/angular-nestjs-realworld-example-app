@@ -1,4 +1,4 @@
-import type { CreateCommentRequestDto } from '../../dto';
+import type { CreateCommentRequestDto } from '../../contracts';
 
 export class CreateCommentCommand {
   constructor(
@@ -7,4 +7,3 @@ export class CreateCommentCommand {
     public readonly currentUserId: number,
   ) {}
 }
-

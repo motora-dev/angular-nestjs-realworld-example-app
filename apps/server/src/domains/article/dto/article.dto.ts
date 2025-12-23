@@ -50,4 +50,3 @@ export interface CommentDto {
 export interface MultipleCommentsDto {
   comments: CommentDto[];
 }
-

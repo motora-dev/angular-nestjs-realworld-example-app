@@ -1,17 +1,19 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-import type { SingleArticleDto } from '../../dto';
-import { ArticleEditService } from '../../services/article-edit.service';
 import { UnfavoriteArticleCommand } from './unfavorite-article.command';
+import { toArticleDto } from '../../presenters';
+import { ArticleEditService } from '../../services/article-edit.service';
+
+import type { SingleArticleDto } from '../../contracts';
 
 @CommandHandler(UnfavoriteArticleCommand)
-export class UnfavoriteArticleHandler
-  implements ICommandHandler<UnfavoriteArticleCommand>
-{
+export class UnfavoriteArticleHandler implements ICommandHandler<UnfavoriteArticleCommand> {
   constructor(private readonly service: ArticleEditService) {}
 
   async execute(command: UnfavoriteArticleCommand): Promise<SingleArticleDto> {
-    return this.service.unfavoriteArticle(command.slug, command.currentUserId);
+    const article = await this.service.unfavoriteArticle(command.slug, command.currentUserId);
+    const isFollowing = await this.service.isFollowing(command.currentUserId, article.user.id);
+    const articleDto = toArticleDto(article, command.currentUserId, isFollowing);
+    return { article: articleDto };
   }
 }
-

@@ -1,18 +1,11 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Put,
-} from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Put } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 
 import { CurrentUser } from '$decorators';
-
 import { UpdateUserCommand } from './commands';
-import type { UpdateUserRequestDto, UserResponseDto } from './dto';
 import { GetCurrentUserQuery } from './queries';
+
+import type { UpdateUserRequestDto, UserResponseDto } from './dto';
 
 interface CurrentUserType {
   id: number;
@@ -33,9 +26,7 @@ export class UserController {
    */
   @Get()
   @HttpCode(HttpStatus.OK)
-  async getCurrentUser(
-    @CurrentUser() user: CurrentUserType,
-  ): Promise<UserResponseDto> {
+  async getCurrentUser(@CurrentUser() user: CurrentUserType): Promise<UserResponseDto> {
     return this.queryBus.execute(new GetCurrentUserQuery(user.id));
   }
 

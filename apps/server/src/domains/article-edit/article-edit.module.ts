@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 
 import { PrismaAdapterModule } from '$adapters';
-
 import { ArticleEditController } from './article-edit.controller';
 import {
   CreateArticleHandler,
@@ -14,7 +13,7 @@ import {
   UpdateArticleHandler,
 } from './commands';
 import { GetArticleForEditHandler } from './queries';
-import { ArticleEditRepository } from './repositories';
+import { ArticleEditRepository, ArticleEditQueryRepository } from './repositories';
 import { ArticleEditService } from './services';
 
 const CommandHandlers = [
@@ -35,6 +34,7 @@ const QueryHandlers = [GetArticleForEditHandler];
   providers: [
     ArticleEditService,
     ArticleEditRepository,
+    ArticleEditQueryRepository,
     ...CommandHandlers,
     ...QueryHandlers,
   ],

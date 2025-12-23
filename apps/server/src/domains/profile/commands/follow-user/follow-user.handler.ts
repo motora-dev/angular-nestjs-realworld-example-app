@@ -1,8 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-import type { ProfileResponseDto } from '../../dto';
-import { ProfileService } from '../../services/profile.service';
 import { FollowUserCommand } from './follow-user.command';
+import { ProfileService } from '../../services/profile.service';
+
+import type { ProfileResponseDto } from '../../dto';
 
 @CommandHandler(FollowUserCommand)
 export class FollowUserHandler implements ICommandHandler<FollowUserCommand> {
@@ -12,4 +13,3 @@ export class FollowUserHandler implements ICommandHandler<FollowUserCommand> {
     return this.service.followUser(command.username, command.currentUserId);
   }
 }
-
