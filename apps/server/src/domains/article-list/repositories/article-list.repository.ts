@@ -1,40 +1,12 @@
 import { Injectable } from '@nestjs/common';
 
 import { PrismaAdapter } from '$adapters';
-
-export interface GetArticlesParams {
-  tag?: string;
-  author?: string;
-  favorited?: string;
-  offset?: number;
-  limit?: number;
-  currentUserId?: number;
-}
-
-export interface GetFeedParams {
-  offset?: number;
-  limit?: number;
-  currentUserId: number;
-}
-
-export interface ArticleWithRelations {
-  id: number;
-  slug: string;
-  title: string;
-  description: string | null;
-  body: string;
-  tags: string[];
-  createdAt: Date;
-  updatedAt: Date;
-  user: {
-    id: number;
-    username: string;
-    bio: string | null;
-    image: string | null;
-  };
-  favorites: { userId: number }[];
-  _count: { favorites: number };
-}
+import {
+  articleWithRelationsInclude,
+  type ArticleWithRelations,
+  type GetArticlesParams,
+  type GetFeedParams,
+} from '../contracts';
 
 @Injectable()
 export class ArticleListRepository {
@@ -76,27 +48,12 @@ export class ArticleListRepository {
         orderBy: { createdAt: 'desc' },
         skip: offset,
         take: limit,
-        include: {
-          user: {
-            select: {
-              id: true,
-              username: true,
-              bio: true,
-              image: true,
-            },
-          },
-          favorites: {
-            select: { userId: true },
-          },
-          _count: {
-            select: { favorites: true },
-          },
-        },
+        include: articleWithRelationsInclude,
       }),
       this.prisma.article.count({ where }),
     ]);
 
-    return { articles: articles as ArticleWithRelations[], count };
+    return { articles, count };
   }
 
   /**
@@ -122,27 +79,12 @@ export class ArticleListRepository {
         orderBy: { createdAt: 'desc' },
         skip: offset,
         take: limit,
-        include: {
-          user: {
-            select: {
-              id: true,
-              username: true,
-              bio: true,
-              image: true,
-            },
-          },
-          favorites: {
-            select: { userId: true },
-          },
-          _count: {
-            select: { favorites: true },
-          },
-        },
+        include: articleWithRelationsInclude,
       }),
       this.prisma.article.count({ where }),
     ]);
 
-    return { articles: articles as ArticleWithRelations[], count };
+    return { articles, count };
   }
 
   /**

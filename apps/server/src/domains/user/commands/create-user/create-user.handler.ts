@@ -3,7 +3,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { CreateUserCommand } from './create-user.command';
 import { UserService } from '../../services/user.service';
 
-import type { CreateUserResponseDto } from '../../dto';
+import type { CreateUserResponseDto } from '../../contracts';
 
 @CommandHandler(CreateUserCommand)
 export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {

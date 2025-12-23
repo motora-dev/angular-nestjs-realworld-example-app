@@ -3,7 +3,7 @@ import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetProfileQuery } from './get-profile.query';
 import { ProfileService } from '../../services/profile.service';
 
-import type { ProfileResponseDto } from '../../dto';
+import type { ProfileResponseDto } from '../../contracts';
 
 @QueryHandler(GetProfileQuery)
 export class GetProfileHandler implements IQueryHandler<GetProfileQuery> {

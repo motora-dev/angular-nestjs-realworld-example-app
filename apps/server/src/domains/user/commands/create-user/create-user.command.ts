@@ -1,4 +1,4 @@
-import type { CreateUserDto } from '../../dto';
+import type { CreateUserDto } from '../../contracts';
 
 export class CreateUserCommand {
   constructor(public readonly dto: CreateUserDto) {}

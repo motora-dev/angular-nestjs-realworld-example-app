@@ -3,7 +3,7 @@ import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetCurrentUserQuery } from './get-current-user.query';
 import { UserService } from '../../services/user.service';
 
-import type { UserResponseDto } from '../../dto';
+import type { UserResponseDto } from '../../contracts';
 
 @QueryHandler(GetCurrentUserQuery)
 export class GetCurrentUserHandler implements IQueryHandler<GetCurrentUserQuery> {

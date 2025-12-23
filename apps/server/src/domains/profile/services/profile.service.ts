@@ -1,8 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 
-import { ProfileRepository } from '../repositories/profile.repository';
+import { toProfileDto } from '../presenters';
+import { ProfileRepository } from '../repositories';
 
-import type { ProfileDto, ProfileResponseDto } from '../dto';
+import type { ProfileResponseDto } from '../contracts';
 
 @Injectable()
 export class ProfileService {
@@ -20,14 +21,7 @@ export class ProfileService {
 
     const isFollowing = currentUserId ? await this.repository.isFollowing(currentUserId, user.id) : false;
 
-    const profile: ProfileDto = {
-      username: user.username,
-      bio: user.bio,
-      image: user.image,
-      following: isFollowing,
-    };
-
-    return { profile };
+    return { profile: toProfileDto(user, isFollowing) };
   }
 
   /**
@@ -42,14 +36,7 @@ export class ProfileService {
 
     await this.repository.follow(currentUserId, user.id);
 
-    const profile: ProfileDto = {
-      username: user.username,
-      bio: user.bio,
-      image: user.image,
-      following: true,
-    };
-
-    return { profile };
+    return { profile: toProfileDto(user, true) };
   }
 
   /**
@@ -64,13 +51,6 @@ export class ProfileService {
 
     await this.repository.unfollow(currentUserId, user.id);
 
-    const profile: ProfileDto = {
-      username: user.username,
-      bio: user.bio,
-      image: user.image,
-      following: false,
-    };
-
-    return { profile };
+    return { profile: toProfileDto(user, false) };
   }
 }

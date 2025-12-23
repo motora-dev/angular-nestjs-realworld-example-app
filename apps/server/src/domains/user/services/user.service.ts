@@ -1,8 +1,9 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 
-import { UserRepository, UserWithAccount } from '../repositories/user.repository';
+import { toUserDto } from '../presenters';
+import { UserRepository } from '../repositories';
 
-import type { CreateUserDto, CreateUserResponseDto, UpdateUserRequestDto, UserDto, UserResponseDto } from '../dto';
+import type { CreateUserDto, CreateUserResponseDto, UpdateUserRequestDto, UserResponseDto } from '../contracts';
 
 @Injectable()
 export class UserService {
@@ -18,7 +19,7 @@ export class UserService {
       throw new NotFoundException('User not found');
     }
 
-    return { user: this.mapUserToDto(user) };
+    return { user: toUserDto(user) };
   }
 
   /**
@@ -54,7 +55,7 @@ export class UserService {
       image: request.user.image,
     });
 
-    return { user: this.mapUserToDto(user) };
+    return { user: toUserDto(user) };
   }
 
   /**
@@ -67,7 +68,7 @@ export class UserService {
       return null;
     }
 
-    return { user: this.mapUserToDto(user) };
+    return { user: toUserDto(user) };
   }
 
   /**
@@ -88,18 +89,6 @@ export class UserService {
       image: dto.image,
     });
 
-    return { user: this.mapUserToDto(user) };
-  }
-
-  /**
-   * Map database user to DTO
-   */
-  private mapUserToDto(user: UserWithAccount): UserDto {
-    return {
-      email: user.email,
-      username: user.username,
-      bio: user.bio,
-      image: user.image,
-    };
+    return { user: toUserDto(user) };
   }
 }

@@ -5,7 +5,7 @@ import { CurrentUser } from '$decorators';
 import { FollowUserCommand, UnfollowUserCommand } from './commands';
 import { GetProfileQuery } from './queries';
 
-import type { ProfileResponseDto } from './dto';
+import type { ProfileResponseDto } from './contracts';
 
 interface CurrentUserType {
   id: number;

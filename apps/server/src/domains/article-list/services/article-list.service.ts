@@ -1,7 +1,15 @@
 import { Injectable } from '@nestjs/common';
 
-import { ArticleDto, AuthorDto, GetArticlesQueryDto, GetFeedQueryDto, MultipleArticlesDto, TagsDto } from '../dto';
-import { ArticleListRepository, ArticleWithRelations } from '../repositories/article-list.repository';
+import { toArticleDto } from '../presenters';
+import { ArticleListRepository } from '../repositories';
+
+import type {
+  ArticleWithRelations,
+  GetArticlesQueryDto,
+  GetFeedQueryDto,
+  MultipleArticlesDto,
+  TagsDto,
+} from '../contracts';
 
 @Injectable()
 export class ArticleListService {
@@ -57,31 +65,14 @@ export class ArticleListService {
   /**
    * Map database articles to DTOs
    */
-  private async mapArticlesToDto(articles: ArticleWithRelations[], currentUserId?: number): Promise<ArticleDto[]> {
+  private async mapArticlesToDto(
+    articles: ArticleWithRelations[],
+    currentUserId?: number,
+  ): Promise<ReturnType<typeof toArticleDto>[]> {
     return Promise.all(
       articles.map(async (article) => {
-        const isFavorited = currentUserId ? article.favorites.some((f) => f.userId === currentUserId) : false;
-
         const isFollowing = currentUserId ? await this.repository.isFollowing(currentUserId, article.user.id) : false;
-
-        const author: AuthorDto = {
-          username: article.user.username,
-          bio: article.user.bio,
-          image: article.user.image,
-          following: isFollowing,
-        };
-
-        return {
-          slug: article.slug,
-          title: article.title,
-          description: article.description,
-          tagList: article.tags,
-          createdAt: article.createdAt.toISOString(),
-          updatedAt: article.updatedAt.toISOString(),
-          favorited: isFavorited,
-          favoritesCount: article._count.favorites,
-          author,
-        };
+        return toArticleDto(article, currentUserId, isFollowing);
       }),
     );
   }

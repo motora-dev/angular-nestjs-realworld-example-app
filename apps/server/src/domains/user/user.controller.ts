@@ -5,7 +5,7 @@ import { CurrentUser } from '$decorators';
 import { UpdateUserCommand } from './commands';
 import { GetCurrentUserQuery } from './queries';
 
-import type { UpdateUserRequestDto, UserResponseDto } from './dto';
+import type { UpdateUserRequestDto, UserResponseDto } from './contracts';
 
 interface CurrentUserType {
   id: number;

@@ -1,7 +1,7 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 
 import { GetArticlesQuery } from './get-articles.query';
-import { MultipleArticlesDto } from '../../dto';
+import { MultipleArticlesDto } from '../../contracts';
 import { ArticleListService } from '../../services/article-list.service';
 
 @QueryHandler(GetArticlesQuery)

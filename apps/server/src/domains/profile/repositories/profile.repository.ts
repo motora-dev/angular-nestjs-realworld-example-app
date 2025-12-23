@@ -2,12 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { PrismaAdapter } from '$adapters';
 
-export interface UserProfile {
-  id: number;
-  username: string;
-  bio: string | null;
-  image: string | null;
-}
+import type { UserProfile } from '../contracts';
 
 @Injectable()
 export class ProfileRepository {

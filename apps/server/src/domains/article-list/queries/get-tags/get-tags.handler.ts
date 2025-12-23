@@ -1,7 +1,7 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 
 import { GetTagsQuery } from './get-tags.query';
-import { TagsDto } from '../../dto';
+import { TagsDto } from '../../contracts';
 import { ArticleListService } from '../../services/article-list.service';
 
 @QueryHandler(GetTagsQuery)

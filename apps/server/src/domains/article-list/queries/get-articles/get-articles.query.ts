@@ -1,4 +1,4 @@
-import { GetArticlesQueryDto } from '../../dto';
+import { GetArticlesQueryDto } from '../../contracts';
 
 export class GetArticlesQuery {
   constructor(

@@ -1,4 +1,4 @@
-import { GetFeedQueryDto } from '../../dto';
+import { GetFeedQueryDto } from '../../contracts';
 
 export class GetFeedQuery {
   constructor(

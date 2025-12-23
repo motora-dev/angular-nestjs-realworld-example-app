@@ -4,7 +4,7 @@ import { QueryBus } from '@nestjs/cqrs';
 import { CurrentUser } from '$decorators';
 import { GetArticleQuery, GetCommentsQuery } from './queries';
 
-import type { MultipleCommentsDto, SingleArticleDto } from './dto';
+import type { MultipleCommentsDto, SingleArticleDto } from './contracts';
 
 interface CurrentUserType {
   id: number;

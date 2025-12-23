@@ -4,7 +4,7 @@ import { QueryBus } from '@nestjs/cqrs';
 import { CurrentUser } from '$decorators';
 import { GetArticlesQuery, GetFeedQuery, GetTagsQuery } from './queries';
 
-import type { GetArticlesQueryDto, GetFeedQueryDto, MultipleArticlesDto, TagsDto } from './dto';
+import type { GetArticlesQueryDto, GetFeedQueryDto, MultipleArticlesDto, TagsDto } from './contracts';
 
 // TODO: Create and import proper auth guard
 // import { OptionalAuthGuard, AuthGuard } from '$guards';

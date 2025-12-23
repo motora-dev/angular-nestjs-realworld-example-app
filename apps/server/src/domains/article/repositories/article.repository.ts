@@ -1,38 +1,12 @@
 import { Injectable } from '@nestjs/common';
 
 import { PrismaAdapter } from '$adapters';
-
-export interface ArticleWithRelations {
-  id: number;
-  slug: string;
-  title: string;
-  description: string | null;
-  body: string;
-  tags: string[];
-  createdAt: Date;
-  updatedAt: Date;
-  user: {
-    id: number;
-    username: string;
-    bio: string | null;
-    image: string | null;
-  };
-  favorites: { userId: number }[];
-  _count: { favorites: number };
-}
-
-export interface CommentWithAuthor {
-  id: number;
-  createdAt: Date;
-  updatedAt: Date;
-  body: string;
-  user: {
-    id: number;
-    username: string;
-    bio: string | null;
-    image: string | null;
-  };
-}
+import {
+  articleWithRelationsInclude,
+  commentWithAuthorInclude,
+  type ArticleWithRelations,
+  type CommentWithAuthor,
+} from '../contracts';
 
 @Injectable()
 export class ArticleRepository {
@@ -44,25 +18,10 @@ export class ArticleRepository {
   async getBySlug(slug: string): Promise<ArticleWithRelations | null> {
     const article = await this.prisma.article.findUnique({
       where: { slug },
-      include: {
-        user: {
-          select: {
-            id: true,
-            username: true,
-            bio: true,
-            image: true,
-          },
-        },
-        favorites: {
-          select: { userId: true },
-        },
-        _count: {
-          select: { favorites: true },
-        },
-      },
+      include: articleWithRelationsInclude,
     });
 
-    return article as ArticleWithRelations | null;
+    return article;
   }
 
   /**
@@ -81,19 +40,10 @@ export class ArticleRepository {
     const comments = await this.prisma.comment.findMany({
       where: { articleId: article.id },
       orderBy: { createdAt: 'desc' },
-      include: {
-        user: {
-          select: {
-            id: true,
-            username: true,
-            bio: true,
-            image: true,
-          },
-        },
-      },
+      include: commentWithAuthorInclude,
     });
 
-    return comments as CommentWithAuthor[];
+    return comments;
   }
 
   /**
