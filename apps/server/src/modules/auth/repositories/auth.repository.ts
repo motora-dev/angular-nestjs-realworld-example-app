@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { PrismaAdapter } from '$adapters';
+import { generatePublicId } from '$shared/utils/id-generator';
 
 import type { User } from '@monorepo/database/client';
 
@@ -29,39 +30,43 @@ export class AuthRepository {
     return account?.user ?? null;
   }
 
-  async findOrCreateUser(provider: string, sub: string, email: string): Promise<User> {
-    const existUser = await this.getUserByProvider(provider, sub);
-    if (existUser) {
-      return existUser;
-    }
+  /**
+   * Find user by OAuth provider credentials only (no auto-creation)
+   */
+  async findUserByProvider(provider: string, sub: string): Promise<User | null> {
+    return this.getUserByProvider(provider, sub);
+  }
 
-    // 2. まず子テーブル(Account)をemailで検索し、関連するUserを取得
-    const accountWithEmail = await this.prisma.account.findFirst({
+  /**
+   * Find user by email
+   */
+  async findUserByEmail(email: string): Promise<User | null> {
+    return this.prisma.user.findUnique({
       where: { email },
-      include: { user: true },
     });
+  }
 
-    // 3. 紐づくべきUserがAccount経由で見つかった場合
-    if (accountWithEmail) {
-      // そのUserに新しいAccountを紐付ける
-      await this.prisma.account.create({
-        data: { provider, sub, email, userId: accountWithEmail.userId },
-      });
-      return accountWithEmail.user;
-    }
+  /**
+   * Check if username is already taken
+   */
+  async isUsernameTaken(username: string): Promise<boolean> {
+    const user = await this.prisma.user.findUnique({
+      where: { username },
+    });
+    return user !== null;
+  }
 
-    // 4. Account経由で見つからなかった場合、Userのプライマリemailを基準にupsert
-    //    これにより「UserがいればAccountを追加」「いなければUserごと作成」を一度に行う
-    return this.prisma.user.upsert({
-      where: { email },
-      update: {
-        accounts: {
-          create: { provider, sub, email },
-        },
-      },
-      create: {
+  /**
+   * Create a new user with OAuth account (explicit registration)
+   */
+  async createUser(provider: string, sub: string, email: string, username: string): Promise<User> {
+    const publicId = generatePublicId();
+
+    return this.prisma.user.create({
+      data: {
+        publicId,
         email,
-        username: email.split('@')[0], // Temporary username from email
+        username,
         accounts: {
           create: { provider, sub, email },
         },

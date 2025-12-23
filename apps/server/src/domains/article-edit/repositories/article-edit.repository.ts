@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { createId } from '@paralleldrive/cuid2';
 
 import { PrismaAdapter } from '$adapters';
+import { generatePublicId } from '$shared/utils/id-generator';
 import {
   articleWithRelationsInclude,
   commentWithAuthorInclude,
@@ -19,7 +19,7 @@ export class ArticleEditRepository {
    * Create a new article
    */
   async create(params: CreateArticleParams): Promise<ArticleWithRelations> {
-    const slug = createId();
+    const slug = generatePublicId();
 
     return this.prisma.article.create({
       data: {
@@ -84,8 +84,11 @@ export class ArticleEditRepository {
    * Create a comment
    */
   async createComment(articleId: number, userId: number, body: string): Promise<CommentWithAuthor> {
+    const publicId = generatePublicId();
+
     return this.prisma.comment.create({
       data: {
+        publicId,
         body,
         articleId,
         userId,

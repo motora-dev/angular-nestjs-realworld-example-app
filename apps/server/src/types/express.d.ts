@@ -5,7 +5,14 @@ declare global {
   namespace Express {
     interface UserPayload {
       id: number;
+      publicId: string;
       username: string;
+    }
+
+    interface PendingRegistration {
+      provider: string;
+      sub: string;
+      email: string;
     }
 
     interface Request {
@@ -18,5 +25,6 @@ declare global {
 declare module 'express-session' {
   interface SessionData {
     user?: Express.UserPayload;
+    pendingRegistration?: Express.PendingRegistration;
   }
 }

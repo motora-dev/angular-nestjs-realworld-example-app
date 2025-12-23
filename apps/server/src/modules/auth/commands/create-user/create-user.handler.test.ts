@@ -1,5 +1,7 @@
+import { ERROR_CODE } from '@monorepo/error-code';
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { NotFoundError } from '$errors';
 import { AuthService } from '$modules/auth/services/auth.service';
 import { CreateUserCommand } from './create-user.command';
 import { CreateUserFromGoogleHandler } from './create-user.handler';
@@ -10,21 +12,16 @@ describe('CreateUserFromGoogleHandler', () => {
 
   const mockUser = {
     id: 1,
-    microsoftId: null,
-    microsoftEmail: null,
-    googleId: 'test-google-id',
-    googleEmail: 'test@gmail.com',
-    name: 'Test Google User',
-    userName: null,
+    publicId: 'test-public-id',
+    email: 'test@gmail.com',
+    username: 'testuser',
     createdAt: new Date(),
     updatedAt: new Date(),
-    isDeleted: false,
-    stories: [],
   };
 
   beforeEach(async () => {
     mockAuthService = {
-      findOrCreateUser: vi.fn().mockResolvedValue(mockUser),
+      findUser: vi.fn().mockResolvedValue(mockUser),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -49,8 +46,8 @@ describe('CreateUserFromGoogleHandler', () => {
   });
 
   describe('execute', () => {
-    it('should process CreateUserFromGoogle command', async () => {
-      mockAuthService.findOrCreateUser.mockResolvedValue(mockUser as any);
+    it('should succeed when user exists', async () => {
+      mockAuthService.findUser.mockResolvedValue(mockUser as any);
 
       const googleId = 'test-google-id';
       const googleEmail = 'test@gmail.com';
@@ -58,17 +55,16 @@ describe('CreateUserFromGoogleHandler', () => {
 
       await handler.execute(command);
 
-      expect(mockAuthService.findOrCreateUser).toHaveBeenCalledWith('google', googleId, googleEmail);
+      expect(mockAuthService.findUser).toHaveBeenCalledWith('google', googleId);
     });
 
-    it('should handle error from auth service', async () => {
-      const error = new Error('Google認証エラー');
-      mockAuthService.findOrCreateUser.mockRejectedValue(error);
+    it('should throw NotFoundError when user not found', async () => {
+      mockAuthService.findUser.mockResolvedValue(null);
 
-      const command = new CreateUserCommand('google', 'invalid-google-id', 'invalid@gmail.com');
+      const command = new CreateUserCommand('google', 'new-google-id', 'new@gmail.com');
 
-      await expect(handler.execute(command)).rejects.toThrow('Google認証エラー');
-      expect(mockAuthService.findOrCreateUser).toHaveBeenCalledWith('google', 'invalid-google-id', 'invalid@gmail.com');
+      await expect(handler.execute(command)).rejects.toThrow(new NotFoundError(ERROR_CODE.USER_NOT_FOUND));
+      expect(mockAuthService.findUser).toHaveBeenCalledWith('google', 'new-google-id');
     });
   });
 });

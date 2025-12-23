@@ -11,7 +11,7 @@
     "check-all": "pnpm lint && pnpm format && pnpm build && pnpm tsc && pnpm test",
     "format": "prettier --check \"src/**/*.ts\"",
     "format:fix": "prettier --write \"src/**/*.ts\"",
-    "lint": "eslint \"src/**/*.{ts,html}\" --config eslint.config.mjs",
+    "lint": "eslint \"src/**/*.{ts,html}\" --config eslint.config.mjs --max-warnings 0",
     "lint:fix": "pnpm lint --fix",
     "tsc": "pnpm tsc:build && pnpm tsc:test",
     "tsc:build": "tsc --noEmit --project tsconfig.build.json",
@@ -82,10 +82,10 @@
   "lint-staged": {
     "src/**/*.ts": [
       "prettier --write",
-      "eslint --fix --config eslint.config.mjs"
+      "eslint --fix --config eslint.config.mjs --max-warnings 0"
     ],
     "src/**/*.html": [
-      "eslint --fix --config eslint.config.mjs"
+      "eslint --fix --config eslint.config.mjs --max-warnings 0"
     ]
   },
   "volta": {

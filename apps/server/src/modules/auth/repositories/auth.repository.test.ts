@@ -11,6 +11,7 @@ describe('AuthRepository', () => {
 
   const mockUser: User = {
     id: 2,
+    publicId: 'test-public-id',
     email: 'test@gmail.com',
     username: 'testuser',
     bio: null,
@@ -23,12 +24,10 @@ describe('AuthRepository', () => {
     mockPrismaAdapter = {
       user: {
         findUnique: vi.fn(),
-        upsert: vi.fn(),
+        create: vi.fn(),
       },
       account: {
         findUnique: vi.fn(),
-        findFirst: vi.fn(),
-        create: vi.fn(),
       },
     };
 
@@ -98,25 +97,51 @@ describe('AuthRepository', () => {
     });
   });
 
-  describe('findOrCreateUser', () => {
-    it('should link to existing user by email via account and return user', async () => {
-      mockPrismaAdapter.account.findUnique.mockResolvedValue(null);
-      mockPrismaAdapter.account.findFirst.mockResolvedValue({ user: mockUser, userId: mockUser.id });
-      mockPrismaAdapter.account.create.mockResolvedValue({});
+  describe('findUserByProvider', () => {
+    it('should delegate to getUserByProvider', async () => {
+      mockPrismaAdapter.account.findUnique.mockResolvedValue({ user: mockUser });
 
-      const result = await repository.findOrCreateUser('google', 'sub', 'test@gmail.com');
+      const result = await repository.findUserByProvider('google', 'google_123');
+
       expect(result).toEqual(mockUser);
     });
+  });
 
-    it('should upsert user by email when not linked yet', async () => {
-      const upserted = { ...mockUser } as User;
-      mockPrismaAdapter.account.findUnique.mockResolvedValue(null);
-      mockPrismaAdapter.account.findFirst.mockResolvedValue(null);
-      mockPrismaAdapter.user.upsert.mockResolvedValue(upserted);
+  describe('createUser', () => {
+    it('should create a new user with OAuth account', async () => {
+      mockPrismaAdapter.user.create.mockResolvedValue(mockUser);
 
-      const result = await repository.findOrCreateUser('google', 'sub', 'test@gmail.com');
-      expect(mockPrismaAdapter.user.upsert).toHaveBeenCalled();
-      expect(result).toEqual(upserted);
+      const result = await repository.createUser('google', 'sub123', 'test@gmail.com', 'testuser');
+
+      expect(mockPrismaAdapter.user.create).toHaveBeenCalledWith({
+        data: expect.objectContaining({
+          publicId: expect.any(String),
+          email: 'test@gmail.com',
+          username: 'testuser',
+          accounts: {
+            create: { provider: 'google', sub: 'sub123', email: 'test@gmail.com' },
+          },
+        }),
+      });
+      expect(result).toEqual(mockUser);
+    });
+  });
+
+  describe('isUsernameTaken', () => {
+    it('should return true when username exists', async () => {
+      mockPrismaAdapter.user.findUnique.mockResolvedValue(mockUser);
+
+      const result = await repository.isUsernameTaken('testuser');
+
+      expect(result).toBe(true);
+    });
+
+    it('should return false when username does not exist', async () => {
+      mockPrismaAdapter.user.findUnique.mockResolvedValue(null);
+
+      const result = await repository.isUsernameTaken('newuser');
+
+      expect(result).toBe(false);
     });
   });
 });

@@ -1,17 +1,39 @@
-import { Controller, Get, HttpCode, HttpStatus, Post, Query, Req, Res, UseGuards } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Query,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { OAuth2Client } from 'google-auth-library';
 
 import type { CurrentUserType } from '$decorators';
-import { CurrentUser } from '$decorators';
+import { CurrentUser, Public } from '$decorators';
 import { GoogleAuthGuard } from '$guards';
 import { AuthService } from './services/auth.service';
 
 import type { Request, Response } from 'express';
 
 interface UserResponse {
-  id: number;
+  id: string; // publicId
   username: string;
+}
+
+interface RegisterDto {
+  username: string;
+}
+
+interface RegisterResponse {
+  id: string; // publicId
+  username: string;
+  email: string;
 }
 
 @Controller('api/auth')
@@ -46,8 +68,8 @@ export class AuthController {
 
   /**
    * Handles Google OAuth callback.
-   * Exchanges authorization code for tokens, creates/finds user, sets session,
-   * and redirects to the client application.
+   * If user exists, sets session and redirects to home.
+   * If user does not exist, stores Google info in session and redirects to register page.
    */
   @Get('callback')
   async callback(
@@ -90,21 +112,103 @@ export class AuthController {
         return;
       }
 
-      // Find or create user in database
-      const user = await this.authService.findOrCreateUser('google', payload.sub, payload.email);
+      // Check if user exists
+      const user = await this.authService.findUser('google', payload.sub);
 
-      // Store user in session
-      req.session.user = {
-        id: user.id,
-        username: user.username,
-      };
-
-      // Redirect to client callback page
-      res.redirect(`${clientUrl}/auth/callback`);
+      if (user) {
+        // User exists - set session and redirect to callback
+        req.session.user = {
+          id: user.id,
+          publicId: user.publicId,
+          username: user.username,
+        };
+        res.redirect(`${clientUrl}/auth/callback?isNewUser=false`);
+      } else {
+        // User does not exist - store Google info in session for registration
+        req.session.pendingRegistration = {
+          provider: 'google',
+          sub: payload.sub,
+          email: payload.email,
+        };
+        res.redirect(`${clientUrl}/auth/callback?isNewUser=true&email=${encodeURIComponent(payload.email)}`);
+      }
     } catch (err) {
       console.error('OAuth callback error:', err);
       res.redirect(`${clientUrl}/login?error=auth_failed`);
     }
+  }
+
+  /**
+   * Register a new user.
+   * Uses pending registration data from session (set during OAuth callback).
+   */
+  @Public()
+  @Post('register')
+  @HttpCode(HttpStatus.CREATED)
+  async register(@Body() body: RegisterDto, @Req() req: Request): Promise<RegisterResponse> {
+    const { username } = body;
+
+    // Validate username
+    if (!username || username.length < 3) {
+      throw new BadRequestException('Username must be at least 3 characters');
+    }
+
+    // Username format validation (alphanumeric and underscore only)
+    if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+      throw new BadRequestException('Username can only contain letters, numbers, and underscores');
+    }
+
+    // Get pending registration from session
+    const pending = req.session.pendingRegistration;
+    if (!pending) {
+      throw new BadRequestException('No pending registration found. Please start the login process again.');
+    }
+
+    // Check if username is already taken
+    const isUsernameTaken = await this.authService.isUsernameTaken(username);
+    if (isUsernameTaken) {
+      throw new BadRequestException('Username is already taken');
+    }
+
+    // Check if email is already registered
+    const existingUser = await this.authService.findUserByEmail(pending.email);
+    if (existingUser) {
+      throw new BadRequestException('Email is already registered');
+    }
+
+    // Create user
+    const user = await this.authService.registerUser(pending.provider, pending.sub, pending.email, username);
+
+    // Clear pending registration
+    delete req.session.pendingRegistration;
+
+    // Set user session
+    req.session.user = {
+      id: user.id,
+      publicId: user.publicId,
+      username: user.username,
+    };
+
+    return {
+      id: user.publicId,
+      username: user.username,
+      email: user.email,
+    };
+  }
+
+  /**
+   * Get pending registration email.
+   * Used by the register page to display the email from Google.
+   */
+  @Public()
+  @Get('pending-registration')
+  @HttpCode(HttpStatus.OK)
+  async getPendingRegistration(@Req() req: Request): Promise<{ email: string } | null> {
+    const pending = req.session.pendingRegistration;
+    if (!pending) {
+      return null;
+    }
+    return { email: pending.email };
   }
 
   /**
@@ -135,7 +239,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async getCurrentUser(@CurrentUser() user: CurrentUserType): Promise<UserResponse> {
     return {
-      id: user.id,
+      id: user.publicId,
       username: user.username,
     };
   }

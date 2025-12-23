@@ -1,36 +1,81 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
-import { take } from 'rxjs';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
+import { RxLet } from '@rx-angular/template/let';
+import { RxPush } from '@rx-angular/template/push';
 
-import { ArticleFacade } from '$domains/article';
-import { NotFoundError } from '$modules/error/client-errors';
+import { Article, ArticleFacade } from '$domains/article';
+import { Comment, CommentsFacade } from '$domains/comments';
+import { Profile } from '$domains/profile';
+import { AuthFacade, User } from '$modules/auth';
+import { MarkdownPipe } from '$shared/lib';
+import { ArticleCommentComponent } from './components/article-comment/article-comment';
+import { ArticleMetaComponent } from './components/article-meta/article-meta';
+import { CommentFormComponent } from './components/comment-form/comment-form';
 
 @Component({
   selector: 'app-article',
   standalone: true,
-  template: '',
-  providers: [ArticleFacade],
+  imports: [
+    RxLet,
+    RxPush,
+    RouterLink,
+    TranslatePipe,
+    MarkdownPipe,
+    ArticleMetaComponent,
+    ArticleCommentComponent,
+    CommentFormComponent,
+  ],
+  providers: [ArticleFacade, CommentsFacade],
+  templateUrl: './article.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ArticleComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly facade = inject(ArticleFacade);
-  private readonly translate = inject(TranslateService);
+  private readonly articleFacade = inject(ArticleFacade);
+  private readonly commentsFacade = inject(CommentsFacade);
+  private readonly authFacade = inject(AuthFacade);
+
+  readonly article$ = this.articleFacade.article$;
+  readonly comments$ = this.commentsFacade.comments$;
+  readonly isAuthenticated$ = this.authFacade.isAuthenticated$;
+  readonly currentUser$ = this.authFacade.currentUser$;
+
+  readonly isDeleting = signal(false);
 
   constructor() {
-    const articleId = this.route.snapshot.paramMap.get('articleId') || '';
+    const slug = this.route.snapshot.params['slug'];
+    this.articleFacade.loadArticle(slug);
+    this.commentsFacade.loadComments(slug);
+  }
 
-    if (!articleId) {
-      throw new NotFoundError(this.translate.instant('article.errors.articleIdRequired'));
+  canModify(article: Article, currentUser: User | null): boolean {
+    return currentUser?.username === article.author.username;
+  }
+
+  onToggleFavorite(article: Article): void {
+    if (article.favorited) {
+      this.articleFacade.unfavoriteArticle(article.slug).subscribe();
+    } else {
+      this.articleFacade.favoriteArticle(article.slug).subscribe();
     }
+  }
 
-    this.facade
-      .getFirstPageId(articleId)
-      .pipe(take(1))
-      .subscribe((firstPageId) => {
-        this.router.navigate(['/article', articleId, firstPageId], { replaceUrl: true });
-      });
+  toggleFollowing(_profile: Profile): void {
+    // This would be handled by ProfileFacade
+  }
+
+  deleteArticle(slug: string): void {
+    this.isDeleting.set(true);
+    this.articleFacade.deleteArticle(slug).subscribe();
+  }
+
+  addComment(slug: string, body: string): void {
+    this.commentsFacade.addComment(slug, body).subscribe();
+  }
+
+  deleteComment(comment: Comment, slug: string): void {
+    this.commentsFacade.deleteComment(comment.id, slug).subscribe();
   }
 }

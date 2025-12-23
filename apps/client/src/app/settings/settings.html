@@ -1,0 +1,87 @@
+<div class="min-h-screen bg-gray-50 py-8">
+  <div class="container mx-auto max-w-xl px-4">
+    <h1 class="mb-8 text-center text-3xl font-bold text-gray-900">{{ 'settings.title' | translate }}</h1>
+
+    <app-list-errors [errors]="errors()" />
+
+    <form [formGroup]="settingsForm" class="space-y-6 rounded-lg bg-white p-6 shadow-sm">
+      <fieldset [disabled]="isSubmitting()">
+        <div class="space-y-4">
+          <div>
+            <label for="image" class="mb-1 block text-sm font-medium text-gray-700"
+              >{{ 'settings.image' | translate }}</label
+            >
+            <input
+              id="image"
+              class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-emerald-500 focus:outline-none"
+              formControlName="image"
+              type="text"
+              [placeholder]="'settings.imagePlaceholder' | translate"
+            />
+          </div>
+
+          <div>
+            <label for="username" class="mb-1 block text-sm font-medium text-gray-700"
+              >{{ 'settings.username' | translate }}</label
+            >
+            <input
+              id="username"
+              class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-emerald-500 focus:outline-none"
+              formControlName="username"
+              type="text"
+              [placeholder]="'settings.usernamePlaceholder' | translate"
+            />
+          </div>
+
+          <div>
+            <label for="bio" class="mb-1 block text-sm font-medium text-gray-700"
+              >{{ 'settings.bio' | translate }}</label
+            >
+            <textarea
+              id="bio"
+              class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-emerald-500 focus:outline-none"
+              formControlName="bio"
+              rows="4"
+              [placeholder]="'settings.bioPlaceholder' | translate"
+            ></textarea>
+          </div>
+
+          <div>
+            <label for="email" class="mb-1 block text-sm font-medium text-gray-700"
+              >{{ 'settings.email' | translate }}</label
+            >
+            <input
+              id="email"
+              class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-emerald-500 focus:outline-none"
+              formControlName="email"
+              type="email"
+              [placeholder]="'settings.emailPlaceholder' | translate"
+            />
+          </div>
+
+          <div class="flex justify-end">
+            <button
+              class="rounded-lg bg-emerald-500 px-6 py-2 font-medium text-white hover:bg-emerald-600 disabled:opacity-50"
+              type="button"
+              [disabled]="isSubmitting() || settingsForm.invalid"
+              (click)="submitForm()"
+            >
+              {{ 'settings.update' | translate }}
+            </button>
+          </div>
+        </div>
+      </fieldset>
+    </form>
+
+    <hr class="my-8 border-gray-200" />
+
+    <div class="text-center">
+      <button
+        class="rounded-lg border border-red-500 px-6 py-2 text-red-500 hover:bg-red-500 hover:text-white"
+        (click)="logout()"
+      >
+        {{ 'settings.logout' | translate }}
+      </button>
+    </div>
+  </div>
+</div>

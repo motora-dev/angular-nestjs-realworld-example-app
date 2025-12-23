@@ -1,19 +1,15 @@
 {
-  "common": {
-    "backToHome": "トップページへ戻る",
-    "close": "閉じる"
-  },
-  "header": {
-    "siteName": "もとら's dev",
-    "articles": "記事一覧",
-    "openMenu": "メニューを開く"
-  },
-  "footer": {
-    "privacyPolicy": "プライバシーポリシー",
-    "cookieSettings": "Cookie設定",
-    "copyright": "© 2025 もとら's dev"
-  },
   "article": {
+    "signIn": "サインイン",
+    "signUp": "サインアップ",
+    "or": "または",
+    "toAddComments": "してコメントを追加",
+    "edit": "編集",
+    "delete": "削除",
+    "favorite": "お気に入り",
+    "unfavorite": "お気に入り解除",
+    "writeComment": "コメントを書く...",
+    "postComment": "コメントを投稿",
     "errors": {
       "articleIdRequired": "記事IDが指定されていません"
     }
@@ -77,7 +73,22 @@
   "callback": {
     "title": "ログイン完了",
     "message": "ログインに成功しました",
-    "redirecting": "ホームページへ移動中..."
+    "redirecting": "ホームページへ移動中...",
+    "newUserTitle": "ようこそ！",
+    "newUserMessage": "アカウント登録に進みます"
+  },
+  "common": {
+    "backToHome": "トップページへ戻る",
+    "close": "閉じる"
+  },
+  "editor": {
+    "newArticle": "新規記事",
+    "editArticle": "記事を編集",
+    "titlePlaceholder": "記事タイトル",
+    "descriptionPlaceholder": "この記事について",
+    "bodyPlaceholder": "Markdownで記事を書く",
+    "tagsPlaceholder": "タグを入力",
+    "publish": "公開"
   },
   "error": {
     "dialogTitle": "エラーが発生しました",
@@ -96,10 +107,65 @@
       "message": "お探しのページは存在しないか、移動した可能性があります。"
     }
   },
+  "footer": {
+    "privacyPolicy": "プライバシーポリシー",
+    "cookieSettings": "Cookie設定",
+    "copyright": "© 2025 もとら's dev"
+  },
+  "header": {
+    "siteName": "conduit",
+    "articles": "記事一覧",
+    "openMenu": "メニューを開く"
+  },
+  "home": {
+    "tagline": "Angularの知識を共有する場所",
+    "yourFeed": "あなたのフィード",
+    "globalFeed": "全体フィード",
+    "popularTags": "人気のタグ",
+    "noArticles": "記事がありません",
+    "noTags": "タグがありません",
+    "readMore": "続きを読む →"
+  },
   "login": {
     "title": "ログイン",
     "description": "アカウントにログインしてください",
     "googleButton": "Googleでログイン"
+  },
+  "profile": {
+    "myArticles": "投稿した記事",
+    "favoritedArticles": "お気に入りの記事",
+    "noArticles": "記事がありません",
+    "editSettings": "設定を編集",
+    "follow": "フォロー",
+    "unfollow": "フォロー解除"
+  },
+  "register": {
+    "title": "アカウント登録",
+    "description": "Conduitへようこそ！ユーザー名を設定してください",
+    "email": "メールアドレス",
+    "username": "ユーザー名",
+    "usernamePlaceholder": "ユーザー名を入力",
+    "usernameHint": "3文字以上、英数字とアンダースコアのみ",
+    "agreeToTerms": "利用規約に同意する",
+    "submit": "登録",
+    "submitting": "登録中...",
+    "alreadyHaveAccount": "既にアカウントをお持ちの方は",
+    "login": "ログイン",
+    "noPendingRegistration": "登録情報がありません。ログインからやり直してください。",
+    "goToLogin": "ログインへ"
+  },
+  "settings": {
+    "title": "設定",
+    "image": "プロフィール画像URL",
+    "imagePlaceholder": "プロフィール画像のURL",
+    "username": "ユーザー名",
+    "usernamePlaceholder": "ユーザー名を入力",
+    "bio": "自己紹介",
+    "bioPlaceholder": "自己紹介を入力",
+    "email": "メールアドレス",
+    "emailPlaceholder": "メールアドレスを入力",
+    "update": "更新",
+    "logout": "ログアウト"
   },
   "spinner": {
     "defaultMessage": "読み込み中..."

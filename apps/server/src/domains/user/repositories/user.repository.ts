@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { PrismaAdapter } from '$adapters';
+import { generatePublicId } from '$shared/utils/id-generator';
 
 import type { CreateUserParams, UpdateUserParams, UserWithAccount } from '../contracts';
 
@@ -75,8 +76,11 @@ export class UserRepository {
    * Create user with OAuth account
    */
   async create(params: CreateUserParams): Promise<UserWithAccount> {
+    const publicId = generatePublicId();
+
     const user = await this.prisma.user.create({
       data: {
+        publicId,
         email: params.email,
         username: params.username,
         image: params.image,

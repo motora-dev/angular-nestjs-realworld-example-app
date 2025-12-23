@@ -3,27 +3,27 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
   {
     path: '',
-    loadChildren: () => import('./article-list/article-list.routes').then((m) => m.ARTICLE_LIST_ROUTES),
+    loadChildren: () => import('./home/home.routes').then((m) => m.HOME_ROUTES),
   },
   {
-    path: 'article/:articleId/:pageId/edit',
-    loadChildren: () => import('./article-page-edit/article-page-edit.routes').then((m) => m.ARTICLE_PAGE_EDIT_ROUTES),
-  },
-  {
-    path: 'article/:articleId/edit',
-    loadChildren: () => import('./article-edit/article-edit.routes').then((m) => m.ARTICLE_EDIT_ROUTES),
-  },
-  {
-    path: 'article/:articleId/:pageId',
-    loadChildren: () => import('./article-page/article-page.routes').then((m) => m.ARTICLE_PAGE_ROUTES),
-  },
-  {
-    path: 'article/:articleId',
+    path: 'article/:slug',
     loadChildren: () => import('./article/article.routes').then((m) => m.ARTICLE_ROUTES),
   },
   {
-    path: 'privacy-policy',
-    loadChildren: () => import('./privacy-policy/privacy-policy.routes').then((m) => m.PRIVACY_POLICY_ROUTES),
+    path: 'editor',
+    loadChildren: () => import('./editor/editor.routes').then((m) => m.EDITOR_ROUTES),
+  },
+  {
+    path: 'editor/:slug',
+    loadChildren: () => import('./editor/editor.routes').then((m) => m.EDITOR_ROUTES),
+  },
+  {
+    path: 'profile/:username',
+    loadChildren: () => import('./profile/profile.routes').then((m) => m.PROFILE_ROUTES),
+  },
+  {
+    path: 'settings',
+    loadChildren: () => import('./settings/settings.routes').then((m) => m.SETTINGS_ROUTES),
   },
   {
     path: 'login',

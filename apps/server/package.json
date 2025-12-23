@@ -69,7 +69,7 @@
   "lint-staged": {
     "src/**/*.ts": [
       "prettier --write",
-      "eslint --fix --config eslint.config.mjs"
+      "eslint --fix --config eslint.config.mjs --max-warnings 0"
     ]
   },
   "volta": {

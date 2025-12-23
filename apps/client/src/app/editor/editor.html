@@ -1,0 +1,72 @@
+<div class="min-h-screen bg-gray-50 py-8">
+  <div class="container mx-auto max-w-3xl px-4">
+    <h1 class="mb-8 text-3xl font-bold text-gray-900">
+      {{ isEditMode() ? ('editor.editArticle' | translate) : ('editor.newArticle' | translate) }}
+    </h1>
+
+    <app-list-errors [errors]="errors()" />
+
+    <form [formGroup]="articleForm" class="space-y-6">
+      <fieldset [disabled]="isSubmitting()">
+        <div class="space-y-4">
+          <div>
+            <input
+              class="w-full rounded-lg border border-gray-300 px-4 py-3 text-lg focus:border-emerald-500 focus:outline-none"
+              formControlName="title"
+              type="text"
+              [placeholder]="'editor.titlePlaceholder' | translate"
+            />
+          </div>
+
+          <div>
+            <input
+              class="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-emerald-500 focus:outline-none"
+              formControlName="description"
+              type="text"
+              [placeholder]="'editor.descriptionPlaceholder' | translate"
+            />
+          </div>
+
+          <div>
+            <textarea
+              class="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-emerald-500 focus:outline-none"
+              formControlName="body"
+              rows="8"
+              [placeholder]="'editor.bodyPlaceholder' | translate"
+            ></textarea>
+          </div>
+
+          <div>
+            <input
+              class="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-emerald-500 focus:outline-none"
+              type="text"
+              [placeholder]="'editor.tagsPlaceholder' | translate"
+              [formControl]="tagField"
+              (keyup.enter)="addTag()"
+            />
+            <div class="mt-2 flex flex-wrap gap-2">
+              @for (tag of tagList(); track tag) {
+                <span class="flex items-center gap-1 rounded-full bg-gray-600 px-3 py-1 text-sm text-white">
+                  <button type="button" class="hover:text-red-300" (click)="removeTag(tag)">×</button>
+                  {{ tag }}
+                </span>
+              }
+            </div>
+          </div>
+
+          <div class="flex justify-end">
+            <button
+              class="rounded-lg bg-emerald-500 px-6 py-3 font-medium text-white hover:bg-emerald-600 disabled:opacity-50"
+              type="button"
+              [disabled]="isSubmitting() || articleForm.invalid"
+              (click)="submitForm()"
+            >
+              {{ 'editor.publish' | translate }}
+            </button>
+          </div>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+</div>
+

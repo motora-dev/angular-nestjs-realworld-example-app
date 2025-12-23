@@ -6,31 +6,35 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Server,
   },
   {
-    path: 'article/:articleId/:pageId/edit',
-    renderMode: RenderMode.Client,
-  },
-  {
-    path: 'article/:articleId/edit',
-    renderMode: RenderMode.Client,
-  },
-  {
-    path: 'article/:articleId/:pageId',
+    path: 'article/:slug',
     renderMode: RenderMode.Server,
   },
   {
-    path: 'article/:articleId',
+    path: 'editor',
+    renderMode: RenderMode.Client,
+  },
+  {
+    path: 'editor/:slug',
+    renderMode: RenderMode.Client,
+  },
+  {
+    path: 'profile/:username',
     renderMode: RenderMode.Server,
   },
   {
-    path: 'privacy-policy',
-    renderMode: RenderMode.Prerender,
+    path: 'settings',
+    renderMode: RenderMode.Client,
   },
   {
     path: 'login',
     renderMode: RenderMode.Client,
   },
   {
-    path: 'auth',
+    path: 'auth/callback',
+    renderMode: RenderMode.Client,
+  },
+  {
+    path: 'auth/register',
     renderMode: RenderMode.Client,
   },
   {

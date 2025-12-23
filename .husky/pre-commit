@@ -12,6 +12,12 @@ if git diff --cached --name-only | grep -q "^apps/server/"; then
   (cd apps/server && npx lint-staged) || exit 1
 fi
 
+# packagesのlint-stagedを実行
+if git diff --cached --name-only | grep -q "^packages/error-code/"; then
+  echo "Running packages lint-staged..."
+  (cd packages/error-code && npx lint-staged) || exit 1
+fi
+
 # ルートで型チェックを実行
 echo "Running type check..."
 pnpm tsc

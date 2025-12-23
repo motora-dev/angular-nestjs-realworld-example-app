@@ -1,0 +1,27 @@
+<form class="rounded-lg border border-gray-200 bg-white" (ngSubmit)="onSubmit()">
+  <div class="p-4">
+    <textarea
+      class="w-full resize-none rounded border border-gray-300 p-3 focus:border-emerald-500 focus:outline-none"
+      rows="3"
+      [placeholder]="'article.writeComment' | translate"
+      [(ngModel)]="commentBody"
+      name="commentBody"
+      [disabled]="isSubmitting()"
+    ></textarea>
+  </div>
+  <div class="flex items-center justify-between border-t border-gray-100 bg-gray-50 px-4 py-2">
+    <img
+      [src]="userImage() || 'https://api.realworld.io/images/smiley-cyrus.jpeg'"
+      alt="User"
+      class="h-8 w-8 rounded-full"
+    />
+    <button
+      type="submit"
+      class="rounded bg-emerald-500 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-600 disabled:opacity-50"
+      [disabled]="isSubmitting() || !commentBody()"
+    >
+      {{ 'article.postComment' | translate }}
+    </button>
+  </div>
+</form>
+

@@ -39,6 +39,12 @@
     "typescript": "catalog:",
     "vitest": "catalog:"
   },
+  "lint-staged": {
+    "src/**/*.ts": [
+      "prettier --write",
+      "eslint --fix --config eslint.config.mjs --max-warnings 0"
+    ]
+  },
   "volta": {
     "extends": "../../package.json"
   }
