@@ -1,14 +1,12 @@
-import { Controller, Get, HttpCode, HttpStatus, Query } from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus, Query, UseGuards } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
 
 import type { CurrentUserType } from '$decorators';
 import { CurrentUser } from '$decorators';
+import { GoogleAuthGuard } from '$guards';
 import { GetArticlesQuery, GetFeedQuery, GetTagsQuery } from './queries';
 
 import type { GetArticlesQueryDto, GetFeedQueryDto, MultipleArticlesDto, TagsDto } from './contracts';
-
-// TODO: Create and import proper auth guard
-// import { OptionalAuthGuard, AuthGuard } from '$guards';
 
 @Controller('api')
 export class ArticleListController {
@@ -33,14 +31,10 @@ export class ArticleListController {
    * Get recent articles from users you follow
    * Auth is required
    */
+  @UseGuards(GoogleAuthGuard)
   @Get('articles/feed')
   @HttpCode(HttpStatus.OK)
-  // @UseGuards(AuthGuard) // TODO: Enable auth guard
   async getFeed(@Query() query: GetFeedQueryDto, @CurrentUser() user: CurrentUserType): Promise<MultipleArticlesDto> {
-    // TODO: Return 401 if user is not authenticated
-    if (!user) {
-      return { articles: [], articlesCount: 0 };
-    }
     return this.queryBus.execute(new GetFeedQuery(query, user.id));
   }
 

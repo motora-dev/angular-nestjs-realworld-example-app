@@ -16,7 +16,7 @@ import { AuthModule } from '$modules/auth/auth.module';
     LoggingInterceptor,
     {
       provide: APP_GUARD,
-      useClass: ThrottlerGuard, // 全てのルートにレート制限を適用
+      useClass: ThrottlerGuard, // Apply rate limiting to all routes
     },
   ],
   imports: [

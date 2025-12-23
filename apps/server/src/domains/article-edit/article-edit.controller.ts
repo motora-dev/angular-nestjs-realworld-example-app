@@ -1,8 +1,21 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  ParseIntPipe,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 
 import type { CurrentUserType } from '$decorators';
 import { CurrentUser } from '$decorators';
+import { GoogleAuthGuard } from '$guards';
 import {
   CreateArticleCommand,
   CreateCommentCommand,
@@ -23,6 +36,7 @@ import type {
 } from './contracts';
 
 @Controller('api/articles')
+@UseGuards(GoogleAuthGuard)
 export class ArticleEditController {
   constructor(
     private readonly commandBus: CommandBus,

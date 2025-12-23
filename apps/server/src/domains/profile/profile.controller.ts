@@ -1,8 +1,9 @@
-import { Controller, Delete, Get, HttpCode, HttpStatus, Param, Post } from '@nestjs/common';
+import { Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, UseGuards } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 
 import type { CurrentUserType } from '$decorators';
 import { CurrentUser } from '$decorators';
+import { GoogleAuthGuard } from '$guards';
 import { FollowUserCommand, UnfollowUserCommand } from './commands';
 import { GetProfileQuery } from './queries';
 
@@ -34,6 +35,7 @@ export class ProfileController {
    * Follow a user
    * Auth is required
    */
+  @UseGuards(GoogleAuthGuard)
   @Post(':username/follow')
   @HttpCode(HttpStatus.OK)
   async followUser(
@@ -48,6 +50,7 @@ export class ProfileController {
    * Unfollow a user
    * Auth is required
    */
+  @UseGuards(GoogleAuthGuard)
   @Delete(':username/follow')
   @HttpCode(HttpStatus.OK)
   async unfollowUser(

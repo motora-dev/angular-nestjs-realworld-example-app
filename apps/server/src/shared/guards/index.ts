@@ -1,1 +1,1 @@
-// Guards will be added here as needed
+export * from './google-auth.guard';

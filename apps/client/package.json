@@ -42,6 +42,7 @@
     "class-variance-authority": "catalog:",
     "clsx": "catalog:",
     "compression": "catalog:",
+    "marked": "catalog:",
     "dotenv": "catalog:",
     "express": "^4.21.0",
     "express-basic-auth": "^1.2.1",

@@ -29,6 +29,7 @@ versions:
   jsdom: &jsdom 27.3.0
   katex: &katex 0.16.27
   lint-staged: &lint-staged 16.2.7
+  marked: &marked 13.0.3
   nestjs: &nestjs 11.1.9
   nestjs-cli: &nestjs-cli 11.0.14
   nestjs-config: &nestjs-config 4.0.2
@@ -140,6 +141,7 @@ catalog:
   husky: *husky
   jsdom: *jsdom
   lint-staged: *lint-staged
+  marked: *marked
   pg: *pg
   playwright: *playwright
   postcss: *postcss
