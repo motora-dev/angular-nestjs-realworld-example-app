@@ -65,28 +65,19 @@ module "secrets" {
 # Standard secrets definition
 locals {
   standard_secrets = {
+    # ========================================
+    # Database
+    # ========================================
     DATABASE_URL = {
       secret_name = "database-url"
       version     = "latest"
     }
-    SUPABASE_URL = {
-      secret_name = "supabase-url"
-      version     = "latest"
-    }
-    SUPABASE_SERVICE_ROLE_KEY = {
-      secret_name = "supabase-service-role-key"
-      version     = "latest"
-    }
-    CORS_ORIGINS = {
-      secret_name = "cors-origins"
-      version     = "latest"
-    }
-    DOMAIN = {
-      secret_name = "domain"
-      version     = "latest"
-    }
-    COOKIE_DOMAIN = {
-      secret_name = "cookie-domain"
+
+    # ========================================
+    # Authentication & Security
+    # ========================================
+    SESSION_SECRET_TOKEN = {
+      secret_name = "session-secret-token"
       version     = "latest"
     }
     BASIC_AUTH_USER = {
@@ -97,10 +88,26 @@ locals {
       secret_name = "basic-auth-password"
       version     = "latest"
     }
-    ALLOWED_EMAILS = {
-      secret_name = "allowed-emails"
+
+    # ========================================
+    # Domain & CORS
+    # ========================================
+    DOMAIN = {
+      secret_name = "domain"
       version     = "latest"
     }
+    COOKIE_DOMAIN = {
+      secret_name = "cookie-domain"
+      version     = "latest"
+    }
+    CORS_ORIGINS = {
+      secret_name = "cors-origins"
+      version     = "latest"
+    }
+
+    # ========================================
+    # Application
+    # ========================================
     ISR_SECRET = {
       secret_name = "isr-secret"
       version     = "latest"

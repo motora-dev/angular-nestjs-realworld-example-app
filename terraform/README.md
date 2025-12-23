@@ -19,6 +19,7 @@ terraform/
 │   └── cloud-run/        # Cloud Runサービス（現在は手動デプロイ）
 ├── environments/         # 環境別設定
 │   ├── develop/         # 開発環境（developブランチ）
+│   ├── preview/         # プレビュー環境
 │   └── main/            # 本番環境（mainブランチ）
 ├── main.tf              # メイン設定
 ├── variables.tf         # 変数定義

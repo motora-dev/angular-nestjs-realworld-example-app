@@ -17,7 +17,7 @@ variable "environment" {
 variable "service_name" {
   description = "Cloud Run service name"
   type        = string
-  default     = "turbo-nestjs-api"
+  default     = "angular-nestjs-realworld-api"
 }
 
 variable "github_org" {

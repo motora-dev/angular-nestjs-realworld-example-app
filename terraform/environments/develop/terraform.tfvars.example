@@ -1,6 +1,6 @@
 project_id   = "your-dev-project-name"  # 開発環境用プロジェクト
 region       = "asia-northeast1"
 environment  = "develop"
-service_name = "your-service"
-github_org   = "your-github-org"
-github_repo  = "your-repo-name"
+service_name = "angular-nestjs-realworld-api"
+github_org   = "motora-dev"
+github_repo  = "angular-nestjs-realworld-example-app"
