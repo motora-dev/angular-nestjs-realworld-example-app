@@ -1,12 +1,15 @@
-<form class="rounded-lg border border-gray-200 bg-white" (ngSubmit)="onSubmit()">
+<form
+  [formGroup]="commentForm"
+  [ngxsForm]="'comments.commentForm'"
+  class="rounded-lg border border-gray-200 bg-white"
+  (ngSubmit)="onSubmit()"
+>
   <div class="p-4">
     <textarea
       class="w-full resize-none rounded border border-gray-300 p-3 focus:border-emerald-500 focus:outline-none"
       rows="3"
       [placeholder]="'article.writeComment' | translate"
-      [(ngModel)]="commentBody"
-      name="commentBody"
-      [disabled]="isSubmitting()"
+      formControlName="body"
     ></textarea>
   </div>
   <div class="flex items-center justify-between border-t border-gray-100 bg-gray-50 px-4 py-2">
@@ -18,10 +21,9 @@
     <button
       type="submit"
       class="rounded bg-emerald-500 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-600 disabled:opacity-50"
-      [disabled]="isSubmitting() || !commentBody()"
+      [disabled]="isFormInvalid$ | push"
     >
       {{ 'article.postComment' | translate }}
     </button>
   </div>
 </form>
-

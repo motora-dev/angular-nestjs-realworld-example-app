@@ -12,13 +12,3 @@ export interface LogoutResponse {
 export interface UserResponse {
   user: User;
 }
-
-export interface PendingRegistrationResponse {
-  email: string;
-}
-
-export interface RegisterResponse {
-  id: string;
-  username: string;
-  email: string;
-}

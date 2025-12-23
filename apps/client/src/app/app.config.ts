@@ -12,17 +12,13 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { withNgxsFormPlugin } from '@ngxs/form-plugin';
 import { provideStore } from '@ngxs/store';
 
-import { ArticleState } from '$domains/article/store';
-import { CommentsState } from '$domains/comments/store';
-import { ClientErrorHandler } from '$domains/error-handlers';
-import { HomeState } from '$domains/home/store';
 import {
+  ClientErrorHandler,
   credentialsInterceptor,
   csrfTokenInterceptor,
   httpErrorInterceptor,
   ssrCookieInterceptor,
-} from '$domains/interceptors';
-import { ProfileState } from '$domains/profile/store';
+} from '$domains/infrastructure';
 import { environment } from '$environments';
 import { AuthState } from '$modules/auth/store';
 import { ErrorState } from '$modules/error/store';
@@ -58,10 +54,7 @@ export const appConfig: ApplicationConfig = {
       routes,
       withPreloading(PreloadAllModules), // 全ルートを自動プリロード。チャンク合計が2MB超の場合はカスタムプリロード戦略を検討
     ),
-    provideStore(
-      [ArticleState, AuthState, CommentsState, ErrorState, HomeState, ProfileState, SnackbarState, SpinnerState],
-      withNgxsFormPlugin(),
-    ),
+    provideStore([AuthState, ErrorState, SnackbarState, SpinnerState], withNgxsFormPlugin()),
     provideZonelessChangeDetection(),
   ],
 };

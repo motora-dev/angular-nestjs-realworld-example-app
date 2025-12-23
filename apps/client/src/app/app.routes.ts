@@ -26,12 +26,16 @@ export const routes: Routes = [
     loadChildren: () => import('./settings/settings.routes').then((m) => m.SETTINGS_ROUTES),
   },
   {
-    path: 'login',
-    loadChildren: () => import('./auth/login/login.routes').then((m) => m.LOGIN_ROUTES),
+    path: 'auth-login',
+    loadChildren: () => import('./auth-login/auth-login.routes').then((m) => m.AUTH_LOGIN_ROUTES),
   },
   {
-    path: 'auth',
-    loadChildren: () => import('./auth/callback/callback.routes').then((m) => m.CALLBACK_ROUTES),
+    path: 'auth-callback',
+    loadChildren: () => import('./auth-callback/auth-callback.routes').then((m) => m.AUTH_CALLBACK_ROUTES),
+  },
+  {
+    path: 'auth-register',
+    loadChildren: () => import('./auth-register/auth-register.routes').then((m) => m.AUTH_REGISTER_ROUTES),
   },
   {
     path: 'error',

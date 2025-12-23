@@ -1,13 +1,10 @@
 import { isPlatformBrowser } from '@angular/common';
 import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { Store } from '@ngxs/store';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
 
 import { environment } from '$environments';
-import { AuthApi, RegisterResponse } from './api';
-import { User } from './model';
-import { AuthState, ClearPendingRegistration, SetAuthenticated, SetCurrentUser, SetPendingRegistration } from './store';
+import { AuthApi } from './api';
+import { AuthState, SetAuthenticated, SetCurrentUser } from './store';
 
 @Injectable({ providedIn: 'root' })
 export class AuthFacade {
@@ -17,7 +14,6 @@ export class AuthFacade {
 
   readonly isAuthenticated$ = this.store.select(AuthState.isAuthenticated);
   readonly currentUser$ = this.store.select(AuthState.currentUser);
-  readonly pendingRegistrationEmail$ = this.store.select(AuthState.pendingRegistrationEmail);
 
   checkSession(): void {
     if (!isPlatformBrowser(this.platformId)) {
@@ -42,14 +38,6 @@ export class AuthFacade {
     });
   }
 
-  updateUser(userData: Partial<User>): Observable<User> {
-    return this.api.updateUser(userData).pipe(
-      tap((user) => {
-        this.store.dispatch(new SetCurrentUser(user));
-      }),
-    );
-  }
-
   login(): void {
     if (!isPlatformBrowser(this.platformId)) {
       return;
@@ -67,23 +55,5 @@ export class AuthFacade {
       this.store.dispatch(new SetAuthenticated(false));
       this.store.dispatch(new SetCurrentUser(null));
     });
-  }
-
-  setPendingRegistration(email: string): void {
-    this.store.dispatch(new SetPendingRegistration(email));
-  }
-
-  clearPendingRegistration(): void {
-    this.store.dispatch(new ClearPendingRegistration());
-  }
-
-  register(username: string): Observable<RegisterResponse> {
-    return this.api.register(username).pipe(
-      tap(() => {
-        this.store.dispatch(new ClearPendingRegistration());
-        this.store.dispatch(new SetAuthenticated(true));
-        // Note: We'll load the full user data after redirect
-      }),
-    );
   }
 }

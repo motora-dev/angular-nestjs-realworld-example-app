@@ -23,10 +23,3 @@ export interface ArticleListConfig {
     offset?: number;
   };
 }
-
-export interface Comment {
-  id: string;
-  body: string;
-  createdAt: Date;
-  author: Profile;
-}

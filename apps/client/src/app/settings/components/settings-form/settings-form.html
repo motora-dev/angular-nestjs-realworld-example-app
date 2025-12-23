@@ -1,0 +1,70 @@
+<form
+  [formGroup]="settingsForm"
+  [ngxsForm]="'settings.settingsForm'"
+  class="space-y-6 rounded-lg bg-white p-6 shadow-sm"
+  (ngSubmit)="onSubmit()"
+>
+  <fieldset [disabled]="isLoading$ | push">
+    <div class="space-y-4">
+      <div>
+        <label for="image" class="mb-1 block text-sm font-medium text-gray-700"
+          >{{ 'settings.image' | translate }}</label
+        >
+        <input
+          id="image"
+          class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-emerald-500 focus:outline-none"
+          formControlName="image"
+          type="text"
+          [placeholder]="'settings.imagePlaceholder' | translate"
+        />
+      </div>
+
+      <div>
+        <label for="username" class="mb-1 block text-sm font-medium text-gray-700"
+          >{{ 'settings.username' | translate }}</label
+        >
+        <input
+          id="username"
+          class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-emerald-500 focus:outline-none"
+          formControlName="username"
+          type="text"
+          [placeholder]="'settings.usernamePlaceholder' | translate"
+        />
+      </div>
+
+      <div>
+        <label for="bio" class="mb-1 block text-sm font-medium text-gray-700">{{ 'settings.bio' | translate }}</label>
+        <textarea
+          id="bio"
+          class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-emerald-500 focus:outline-none"
+          formControlName="bio"
+          rows="4"
+          [placeholder]="'settings.bioPlaceholder' | translate"
+        ></textarea>
+      </div>
+
+      <div>
+        <label for="email" class="mb-1 block text-sm font-medium text-gray-700"
+          >{{ 'settings.email' | translate }}</label
+        >
+        <input
+          id="email"
+          class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-emerald-500 focus:outline-none"
+          formControlName="email"
+          type="email"
+          [placeholder]="'settings.emailPlaceholder' | translate"
+        />
+      </div>
+
+      <div class="flex justify-end">
+        <button
+          class="rounded-lg bg-emerald-500 px-6 py-2 font-medium text-white hover:bg-emerald-600 disabled:opacity-50"
+          type="submit"
+          [disabled]="(isLoading$ | push) || (isFormInvalid$ | push)"
+        >
+          {{ 'settings.update' | translate }}
+        </button>
+      </div>
+    </div>
+  </fieldset>
+</form>

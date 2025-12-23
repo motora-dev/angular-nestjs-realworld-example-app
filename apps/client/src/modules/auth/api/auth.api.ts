@@ -5,13 +5,7 @@ import { map } from 'rxjs/operators';
 
 import { API_URL } from '$shared/lib';
 import { User } from '../model';
-import {
-  CheckSessionResponse,
-  LogoutResponse,
-  PendingRegistrationResponse,
-  RegisterResponse,
-  UserResponse,
-} from './auth.response';
+import { CheckSessionResponse, LogoutResponse, UserResponse } from './auth.response';
 
 @Injectable({ providedIn: 'root' })
 export class AuthApi {
@@ -32,13 +26,5 @@ export class AuthApi {
 
   logout(): Observable<LogoutResponse> {
     return this.http.post<LogoutResponse>(`${this.baseUrl}/auth/logout`, {});
-  }
-
-  getPendingRegistration(): Observable<PendingRegistrationResponse | null> {
-    return this.http.get<PendingRegistrationResponse | null>(`${this.baseUrl}/auth/pending-registration`);
-  }
-
-  register(username: string): Observable<RegisterResponse> {
-    return this.http.post<RegisterResponse>(`${this.baseUrl}/auth/register`, { username });
   }
 }

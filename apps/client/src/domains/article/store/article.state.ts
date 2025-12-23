@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
+import { patch } from '@ngxs/store/operators';
 
 import { Article } from '../model';
 import { ClearArticle, SetArticle } from './article.actions';
@@ -23,11 +24,11 @@ export class ArticleState {
 
   @Action(SetArticle)
   setArticle(ctx: StateContext<ArticleStateModel>, action: SetArticle) {
-    ctx.patchState({ article: action.article });
+    ctx.setState(patch({ article: action.article }));
   }
 
   @Action(ClearArticle)
   clearArticle(ctx: StateContext<ArticleStateModel>) {
-    ctx.patchState({ article: null });
+    ctx.setState(patch({ article: null }));
   }
 }

@@ -1,29 +1,36 @@
-import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
+import { NgxsFormDirective } from '@ngxs/form-plugin';
+import { RxPush } from '@rx-angular/template/push';
+
+import { ArticleFacade } from '$domains/article';
+
+interface CommentForm {
+  body: FormControl<string>;
+}
 
 @Component({
   selector: 'app-comment-form',
   standalone: true,
-  imports: [FormsModule, TranslatePipe],
+  imports: [ReactiveFormsModule, NgxsFormDirective, RxPush, TranslatePipe],
   templateUrl: './comment-form.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CommentFormComponent {
+  private readonly articleFacade = inject(ArticleFacade);
+
   readonly userImage = input<string>('');
 
   readonly submitComment = output<string>();
 
-  readonly commentBody = signal('');
-  readonly isSubmitting = signal(false);
+  readonly isFormInvalid$ = this.articleFacade.isCommentFormInvalid$;
+
+  readonly commentForm = new FormGroup<CommentForm>({
+    body: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.pattern(/\S/)] }),
+  });
 
   onSubmit(): void {
-    const body = this.commentBody().trim();
-    if (!body) return;
-
-    this.isSubmitting.set(true);
-    this.submitComment.emit(body);
-    this.commentBody.set('');
-    this.isSubmitting.set(false);
+    this.submitComment.emit(this.commentForm.getRawValue().body.trim());
   }
 }

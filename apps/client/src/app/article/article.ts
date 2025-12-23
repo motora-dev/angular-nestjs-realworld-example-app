@@ -4,8 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { RxLet } from '@rx-angular/template/let';
 import { RxPush } from '@rx-angular/template/push';
 
-import { Article, ArticleFacade } from '$domains/article';
-import { Comment, CommentsFacade } from '$domains/comments';
+import { Article, ArticleFacade, Comment } from '$domains/article';
 import { Profile } from '$domains/profile';
 import { AuthFacade, User } from '$modules/auth';
 import { MarkdownPipe } from '$shared/lib';
@@ -26,7 +25,7 @@ import { CommentFormComponent } from './components/comment-form/comment-form';
     ArticleCommentComponent,
     CommentFormComponent,
   ],
-  providers: [ArticleFacade, CommentsFacade],
+  providers: [ArticleFacade],
   templateUrl: './article.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -34,11 +33,10 @@ export class ArticleComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly articleFacade = inject(ArticleFacade);
-  private readonly commentsFacade = inject(CommentsFacade);
   private readonly authFacade = inject(AuthFacade);
 
   readonly article$ = this.articleFacade.article$;
-  readonly comments$ = this.commentsFacade.comments$;
+  readonly comments$ = this.articleFacade.comments$;
   readonly isAuthenticated$ = this.authFacade.isAuthenticated$;
   readonly currentUser$ = this.authFacade.currentUser$;
 
@@ -47,7 +45,7 @@ export class ArticleComponent {
   constructor() {
     const slug = this.route.snapshot.params['slug'];
     this.articleFacade.loadArticle(slug);
-    this.commentsFacade.loadComments(slug);
+    this.articleFacade.loadComments(slug);
   }
 
   canModify(article: Article, currentUser: User | null): boolean {
@@ -72,10 +70,10 @@ export class ArticleComponent {
   }
 
   addComment(slug: string, body: string): void {
-    this.commentsFacade.addComment(slug, body).subscribe();
+    this.articleFacade.addComment(slug, body).subscribe();
   }
 
   deleteComment(comment: Comment, slug: string): void {
-    this.commentsFacade.deleteComment(comment.id, slug).subscribe();
+    this.articleFacade.deleteComment(comment.id, slug).subscribe();
   }
 }

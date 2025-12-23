@@ -1,0 +1,86 @@
+<div class="flex min-h-[70vh] flex-col items-center justify-center px-4">
+  <div class="w-full max-w-md rounded-xl border border-border bg-background p-8 shadow-lg">
+    <!-- Header -->
+    <div class="mb-8 text-center">
+      <h1 class="text-2xl font-bold text-foreground">{{ 'register.title' | translate }}</h1>
+      <p class="mt-2 text-muted-foreground">{{ 'register.description' | translate }}</p>
+    </div>
+
+    <!-- Email Display (read-only) -->
+    <ng-container *rxLet="pendingEmail$; let email">
+      @if (email) {
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <div class="mb-6">
+          <span class="mb-2 block text-sm font-medium text-foreground"> {{ 'register.email' | translate }} </span>
+          <div class="rounded-lg border border-border bg-muted px-4 py-3 text-muted-foreground">{{ email }}</div>
+        </div>
+
+        <!-- Username Input -->
+        <div class="mb-6">
+          <label for="username" class="mb-2 block text-sm font-medium text-foreground">
+            {{ 'register.username' | translate }}
+          </label>
+          <input
+            id="username"
+            type="text"
+            formControlName="username"
+            placeholder="{{ 'register.usernamePlaceholder' | translate }}"
+            class="w-full rounded-lg border border-border bg-background px-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring"
+            [class.border-destructive]="registerForm.controls.username.touched && registerForm.controls.username.invalid"
+          />
+          <p class="mt-1 text-sm text-muted-foreground">{{ 'register.usernameHint' | translate }}</p>
+          @if (registerForm.controls.username.touched && registerForm.controls.username.errors) {
+          <p class="mt-1 text-sm text-destructive">
+            @if (registerForm.controls.username.errors['required']) { {{ 'register.errors.usernameRequired' | translate
+            }} } @else if (registerForm.controls.username.errors['minlength']) { {{ 'register.errors.usernameMinLength'
+            | translate }} } @else if (registerForm.controls.username.errors['pattern']) { {{
+            'register.errors.usernamePattern' | translate }} }
+          </p>
+          }
+        </div>
+
+        <!-- Terms Agreement -->
+        <div class="mb-6">
+          <label class="flex cursor-pointer items-center gap-3">
+            <input
+              type="checkbox"
+              formControlName="agreeToTerms"
+              class="h-4 w-4 rounded border-border text-primary focus:ring-ring"
+            />
+            <span class="text-sm text-foreground">{{ 'register.agreeToTerms' | translate }}</span>
+          </label>
+          @if (registerForm.controls.agreeToTerms.touched && registerForm.controls.agreeToTerms.errors) {
+          <p class="mt-1 text-sm text-destructive">{{ 'register.errors.termsRequired' | translate }}</p>
+          }
+        </div>
+
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          [disabled]="isLoading$ | push"
+          class="w-full rounded-lg bg-primary px-4 py-3 font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          @if (isLoading$ | push) { {{ 'register.submitting' | translate }} } @else { {{ 'register.submit' | translate
+          }} }
+        </button>
+      </form>
+
+      <!-- Link to Login -->
+      <p class="mt-6 text-center text-sm text-muted-foreground">
+        {{ 'register.alreadyHaveAccount' | translate }}
+        <a routerLink="/auth-login" class="font-medium text-primary hover:underline">
+          {{ 'register.login' | translate }}
+        </a>
+      </p>
+      } @else {
+      <!-- No pending registration -->
+      <div class="text-center">
+        <p class="mb-4 text-muted-foreground">{{ 'register.noPendingRegistration' | translate }}</p>
+        <a routerLink="/auth-login" class="font-medium text-primary hover:underline">
+          {{ 'register.goToLogin' | translate }}
+        </a>
+      </div>
+      }
+    </ng-container>
+  </div>
+</div>
