@@ -1,16 +1,12 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Put } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 
+import type { CurrentUserType } from '$decorators';
 import { CurrentUser } from '$decorators';
 import { UpdateUserCommand } from './commands';
 import { GetCurrentUserQuery } from './queries';
 
 import type { UpdateUserRequestDto, UserResponseDto } from './contracts';
-
-interface CurrentUserType {
-  id: number;
-  username: string;
-}
 
 @Controller('api/user')
 export class UserController {

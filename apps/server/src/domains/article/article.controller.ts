@@ -1,15 +1,11 @@
 import { Controller, Get, HttpCode, HttpStatus, Param } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
 
+import type { CurrentUserType } from '$decorators';
 import { CurrentUser } from '$decorators';
 import { GetArticleQuery, GetCommentsQuery } from './queries';
 
 import type { MultipleCommentsDto, SingleArticleDto } from './contracts';
-
-interface CurrentUserType {
-  id: number;
-  username: string;
-}
 
 @Controller('api/articles')
 export class ArticleController {

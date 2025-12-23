@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 
+import type { CurrentUserType } from '$decorators';
 import { CurrentUser } from '$decorators';
 import {
   CreateArticleCommand,
@@ -20,11 +21,6 @@ import type {
   SingleCommentDto,
   UpdateArticleRequestDto,
 } from './contracts';
-
-interface CurrentUserType {
-  id: number;
-  username: string;
-}
 
 @Controller('api/articles')
 export class ArticleEditController {

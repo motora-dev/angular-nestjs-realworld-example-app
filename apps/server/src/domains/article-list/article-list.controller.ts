@@ -1,6 +1,7 @@
 import { Controller, Get, HttpCode, HttpStatus, Query } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
 
+import type { CurrentUserType } from '$decorators';
 import { CurrentUser } from '$decorators';
 import { GetArticlesQuery, GetFeedQuery, GetTagsQuery } from './queries';
 
@@ -8,11 +9,6 @@ import type { GetArticlesQueryDto, GetFeedQueryDto, MultipleArticlesDto, TagsDto
 
 // TODO: Create and import proper auth guard
 // import { OptionalAuthGuard, AuthGuard } from '$guards';
-
-interface CurrentUserType {
-  id: number;
-  username: string;
-}
 
 @Controller('api')
 export class ArticleListController {
