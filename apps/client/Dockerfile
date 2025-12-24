@@ -1,4 +1,4 @@
-FROM node:24.11.0-slim AS builder
+FROM node:24.11.1-slim AS builder
 
 WORKDIR /app
 
@@ -26,7 +26,7 @@ RUN echo "BUILD_CONFIGURATION=$BUILD_CONFIGURATION"  # デバッグ用
 RUN pnpm run build --filter=@monorepo/client
 
 # Production stage
-FROM node:24.11.0-slim AS runner
+FROM node:24.11.1-slim AS runner
 
 WORKDIR /app
 

@@ -1,4 +1,4 @@
-FROM node:24.11.0-slim AS builder
+FROM node:24.11.1-slim AS builder
 
 WORKDIR /app
 
@@ -32,7 +32,7 @@ COPY . .
 RUN pnpm run build --filter=@monorepo/server
 
 # Production stage
-FROM node:24.11.0-slim AS runner
+FROM node:24.11.1-slim AS runner
 
 WORKDIR /app
 
