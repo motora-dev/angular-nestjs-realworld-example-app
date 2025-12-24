@@ -585,10 +585,6 @@ importers:
         version: 4.0.15(@types/node@24.10.1)(jiti@2.6.1)(jsdom@27.3.0)(less@4.4.2)(lightningcss@1.30.2)(sass@1.93.2)(terser@5.44.1)(tsx@4.20.6)(yaml@2.8.2)
 
   packages/database:
-    dependencies:
-      '@paralleldrive/cuid2':
-        specifier: ^2.2.2
-        version: 2.3.1
     devDependencies:
       '@monorepo/typescript-config':
         specifier: workspace:*
@@ -2788,10 +2784,6 @@ packages:
       '@angular/core': '>=21.0.0 <22.0.0'
       rxjs: '>=7.0.0'
 
-  '@noble/hashes@1.8.0':
-    resolution: {integrity: sha512-jCs9ldd7NwzpgXDIf6P3+NrHh9/sD6CQdxHyjQI+h/6rDNo88ypBxxz45UDuZHz9r3tNz7N/VInSVoVdtXEI4A==}
-    engines: {node: ^14.21.3 || >=16}
-
   '@noble/hashes@2.0.1':
     resolution: {integrity: sha512-XlOlEbQcE9fmuXxrVTXCTlG2nlRXa9Rj3rr5Ue/+tX+nmkgbX720YHh0VR3hBF9xDvwnb8D2shVGOwNx+ulArw==}
     engines: {node: '>= 20.19.0'}
@@ -2856,9 +2848,6 @@ packages:
 
   '@oxc-project/types@0.96.0':
     resolution: {integrity: sha512-r/xkmoXA0xEpU6UGtn18CNVjXH6erU3KCpCDbpLmbVxBFor1U9MqN5Z2uMmCHJuXjJzlnDR+hWY+yPoLo8oHDw==}
-
-  '@paralleldrive/cuid2@2.3.1':
-    resolution: {integrity: sha512-XO7cAxhnTZl0Yggq6jOgjiOHhbgcO4NqFqwSmQpjK3b6TEE6Uj/jfSk6wzYyemh3+I0sHirKSetjQwn5cZktFw==}
 
   '@paralleldrive/cuid2@3.0.4':
     resolution: {integrity: sha512-sM6M2PWrByOEpN2QYAdulhEbSZmChwj0e52u4hpwB7u4PznFiNAavtE6m7O8tWUlzX+jT2eKKtc5/ZgX+IHrtg==}
@@ -10515,8 +10504,6 @@ snapshots:
       rxjs: 7.8.2
       tslib: 2.8.1
 
-  '@noble/hashes@1.8.0': {}
-
   '@noble/hashes@2.0.1': {}
 
   '@nodelib/fs.scandir@2.1.5':
@@ -10599,10 +10586,6 @@ snapshots:
       consola: 3.4.2
 
   '@oxc-project/types@0.96.0': {}
-
-  '@paralleldrive/cuid2@2.3.1':
-    dependencies:
-      '@noble/hashes': 1.8.0
 
   '@paralleldrive/cuid2@3.0.4':
     dependencies:
