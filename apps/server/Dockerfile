@@ -16,7 +16,6 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
 COPY apps/server/package.json ./apps/server/
 COPY packages/error-code/package.json ./packages/error-code/
 COPY packages/eslint-config/package.json ./packages/eslint-config/
-COPY packages/markdown/package.json ./packages/markdown/
 COPY packages/typescript-config/package.json ./packages/typescript-config/
 COPY packages/database/package.json ./packages/database/package.json
 COPY packages/database/prisma ./packages/database/prisma

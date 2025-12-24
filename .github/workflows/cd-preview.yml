@@ -65,18 +65,10 @@ jobs:
 
       - name: Deploy to Cloud Run
         if: steps.changed-files.outputs.any_changed == 'true'
-        uses: google-github-actions/deploy-cloudrun@v2
-        with:
-          service: ${{ secrets.CLIENT_SERVICE_NAME }}
-          region: ${{ vars.REGION }}
-          image: gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.CLIENT_SERVICE_NAME }}:${{ github.sha }}
-          flags: '--allow-unauthenticated --service-account ${{ secrets.RUN_SERVICE_ACCOUNT }}'
-          env_vars: |
-            BASIC_AUTH_ENABLED=true
-          secrets: |
-            BASIC_AUTH_USER=basic-auth-user:latest
-            BASIC_AUTH_PASSWORD=basic-auth-password:latest
-            ISR_SECRET=isr-secret:latest
+        run: |
+          gcloud run deploy ${{ secrets.CLIENT_SERVICE_NAME }} \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.CLIENT_SERVICE_NAME }}:${{ github.sha }} \
+            --region ${{ vars.REGION }}
 
   deploy-server:
     name: Deploy Server
@@ -127,15 +119,7 @@ jobs:
 
       - name: Deploy to Cloud Run
         if: steps.changed-files.outputs.any_changed == 'true'
-        uses: google-github-actions/deploy-cloudrun@v2
-        with:
-          service: ${{ secrets.SERVER_SERVICE_NAME }}
-          region: ${{ vars.REGION }}
-          image: gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.SERVER_SERVICE_NAME }}:${{ github.sha }}
-          flags: '--allow-unauthenticated --service-account ${{ secrets.RUN_SERVICE_ACCOUNT }}'
-          secrets: |
-            DATABASE_URL=${{ secrets.SERVER_SERVICE_NAME }}-database-url:latest
-            CORS_ORIGINS=preview-${{ secrets.SERVER_SERVICE_NAME }}-cors-origins:latest
-            COOKIE_DOMAIN=preview-${{ secrets.SERVER_SERVICE_NAME }}-cookie-domain:latest
-            BASIC_AUTH_USER=basic-auth-user:latest
-            BASIC_AUTH_PASSWORD=basic-auth-password:latest
+        run: |
+          gcloud run deploy ${{ secrets.SERVER_SERVICE_NAME }} \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.SERVER_SERVICE_NAME }}:${{ github.sha }} \
+            --region ${{ vars.REGION }}
