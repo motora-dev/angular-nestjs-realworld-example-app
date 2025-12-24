@@ -122,20 +122,20 @@ jobs:
         run: |
           gcloud builds submit . \
             --config=apps/server/cloudbuild.yaml \
-            --substitutions=_IMAGE_TAG=${{ github.sha }},_SERVICE_NAME=${{ secrets.SERVICE_NAME }} \
+            --substitutions=_IMAGE_TAG=${{ github.sha }},_SERVICE_NAME=${{ secrets.SERVER_SERVICE_NAME }} \
             --suppress-logs
 
       - name: Deploy to Cloud Run
         if: steps.changed-files.outputs.any_changed == 'true'
         uses: google-github-actions/deploy-cloudrun@v2
         with:
-          service: ${{ secrets.SERVICE_NAME }}
+          service: ${{ secrets.SERVER_SERVICE_NAME }}
           region: ${{ vars.REGION }}
-          image: gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.SERVICE_NAME }}:${{ github.sha }}
+          image: gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.SERVER_SERVICE_NAME }}:${{ github.sha }}
           flags: '--allow-unauthenticated --service-account ${{ secrets.RUN_SERVICE_ACCOUNT }}'
           secrets: |
-            DATABASE_URL=${{ secrets.SERVICE_NAME }}-database-url:latest
-            CORS_ORIGINS=${{ secrets.SERVICE_NAME }}-cors-origins:latest
-            COOKIE_DOMAIN=${{ secrets.SERVICE_NAME }}-cookie-domain:latest
-            BASIC_AUTH_USER=${{ secrets.SERVICE_NAME }}-basic-auth-user:latest
-            BASIC_AUTH_PASSWORD=${{ secrets.SERVICE_NAME }}-basic-auth-password:latest
+            DATABASE_URL=${{ secrets.SERVER_SERVICE_NAME }}-database-url:latest
+            CORS_ORIGINS=${{ secrets.SERVER_SERVICE_NAME }}-cors-origins:latest
+            COOKIE_DOMAIN=${{ secrets.SERVER_SERVICE_NAME }}-cookie-domain:latest
+            BASIC_AUTH_USER=${{ secrets.SERVER_SERVICE_NAME }}-basic-auth-user:latest
+            BASIC_AUTH_PASSWORD=${{ secrets.SERVER_SERVICE_NAME }}-basic-auth-password:latest

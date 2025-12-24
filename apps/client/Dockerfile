@@ -10,7 +10,6 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
 COPY apps/client/package.json ./apps/client/
 COPY packages/error-code/package.json ./packages/error-code/
 COPY packages/eslint-config/package.json ./packages/eslint-config/
-COPY packages/markdown/package.json ./packages/markdown/
 COPY packages/typescript-config/package.json ./packages/typescript-config/
 
 # Install dependencies
