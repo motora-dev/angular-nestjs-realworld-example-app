@@ -18,7 +18,7 @@ Angular 21 + Tailwind CSS 4 + SSR を採用したフロントエンドアプリ�
 [![Express](https://img.shields.io/badge/Express-4.21-000000.svg?logo=express)](https://expressjs.com/)
 
 **状態管理 & リアクティブ:**</br>
-[![NGXS](https://img.shields.io/badge/NGXS-20-3F51B5.svg)](https://www.ngxs.io/)
+[![NGXS](https://img.shields.io/badge/NGXS-21-3F51B5.svg)](https://www.ngxs.io/)
 [![RxJS](https://img.shields.io/badge/RxJS-7.8-B7178C.svg?logo=reactivex)](https://rxjs.dev/)
 [![RxAngular](https://img.shields.io/badge/RxAngular-20.1-E91E63.svg)](https://www.rx-angular.io/)
 
@@ -31,18 +31,27 @@ Angular 21 + Tailwind CSS 4 + SSR を採用したフロントエンドアプリ�
 
 **テスト & UIカタログ:**</br>
 [![Vite](https://img.shields.io/badge/Vite-7.2-646CFF.svg?logo=vite)](https://vite.dev/)
-[![Vitest](https://img.shields.io/badge/Vitest-4.0.14-6E9F18.svg?logo=vitest)](https://vitest.dev/)
+[![Vitest](https://img.shields.io/badge/Vitest-4.0.15-6E9F18.svg?logo=vitest)](https://vitest.dev/)
 [![Testing Library](https://img.shields.io/badge/Testing_Library-18.1-E33332.svg?logo=testinglibrary)](https://testing-library.com/)
 [![jsdom](https://img.shields.io/badge/jsdom-27.2-F7DF1E.svg)](https://github.com/jsdom/jsdom)
 [![Storybook](https://img.shields.io/badge/Storybook-10.1-FF4785.svg?logo=storybook)](https://storybook.js.org/)
 
 ## 目次
 
-### 実装パターン（よく使う情報）
+**Getting Started**
 
 - [開発コマンド](#開発コマンド)
+- [環境変数](#環境変数)
+
+**Architecture**
+
+- [設計思想](#設計思想)
+- [アーキテクチャ](#アーキテクチャ)
 - [ディレクトリ構成](#ディレクトリ構成)
 - [配置基準](#配置基準)
+
+**Patterns**
+
 - [状態管理（NGXS）](#状態管理ngxs)
 - [リアクティブパターンの使い分け](#リアクティブパターンの使い分け)
 - [フォーム管理](#フォーム管理)
@@ -52,37 +61,14 @@ Angular 21 + Tailwind CSS 4 + SSR を採用したフロントエンドアプリ�
 - [スピナー（Spinner）](#スピナーspinner)
 - [スナックバー（Snackbar）](#スナックバーsnackbar)
 
-### 背景知識・設定
-
-- [アーキテクチャ](#アーキテクチャ)
-- [設計思想](#設計思想)
-- [パフォーマンス最適化](#パフォーマンス最適化)
-- [パッケージ管理（pnpm catalog）](#パッケージ管理pnpm-catalog)
-
-### 補助情報
+**Development**
 
 - [テスト戦略](#テスト戦略)
 - [Storybook](#storybook)
+- [パフォーマンス最適化](#パフォーマンス最適化)
+- [パッケージ管理（pnpm catalog）](#パッケージ管理pnpm-catalog)
 
-## 設計思想
-
-**キーワード**: `設計原則`, `Vertical Slice`, `DDD`, `Facadeパターン`, `shadcn/ui`
-
-このセクションでは、プロジェクトの設計思想と、なぜこの構成を採用したかの理由を説明します。詳細は[アーキテクチャ](#アーキテクチャ)セクションも参照してください。
-
-### なぜこの構成か
-
-1. **アルファベット順の一貫性**: `app → components → domains → modules → shared` の順で視覚的に整理
-2. **Vertical Slice**: 各ページが独立したスライスとして完結し、凝集度が高い
-3. **DDD境界の意識**: ページ固有のものはページ内に、共有するものだけが上位レイヤーに昇格
-4. **shadcn/uiアプローチ**: `shared/ui/` にUIプリミティブを配置し、コピー＆カスタマイズ可能な構成
-5. **Facade パターン**: Store へのアクセスを抽象化し、コンポーネントとの結合度を下げる
-
-### Angular公式スタイルガイドとの差異
-
-本構成はAngular公式スタイルガイドの推奨（機能ごとのディレクトリ構成）とは一部異なります。これは設計原則（Vertical Slice / Clean Architecture）を優先した意図的な選択です。
-
-チームメンバーはこのREADMEを参照し、配置基準を理解した上で開発を行ってください。
+---
 
 ## 開発コマンド
 
@@ -119,45 +105,109 @@ pnpm storybook
 pnpm build-storybook
 ```
 
-## パッケージ管理（pnpm catalog）
+## 環境変数
 
-**キーワード**: `pnpm`, `catalog`, `バージョン管理`, `pnpm-workspace.yaml`
+**キーワード**: `環境変数`, `environment.ts`, `.env`, `環境設定`
 
-このセクションでは、pnpm catalogを使用したパッケージバージョンの一元管理方法について説明します。
+このセクションでは、プロジェクトで必要な環境変数とその設定方法について説明します。
 
-バージョンを `pnpm-workspace.yaml` で一元管理し、モノレポ全体で統一します。
+### environment.ts（Angularアプリケーション設定）
 
-### 設定例
+ビルド時に埋め込まれる設定です。
 
-```yaml
-# ファイル: pnpm-workspace.yaml（ルートディレクトリ）
-versions:
-  angular: &angular 21.0.0
-  ngxs: &ngxs 20.1.0
+| 変数名       | 説明                      | 例                      | 必須   |
+| ------------ | ------------------------- | ----------------------- | ------ |
+| `production` | 本番モードフラグ          | `false`                 | はい   |
+| `apiUrl`     | バックエンドAPIのURL      | `http://localhost:4000` | はい   |
+| `baseUrl`    | フロントエンドのベースURL | `http://localhost:4200` | はい   |
+| `gaId`       | Google Analytics ID       | `G-XXXXXXX`             | いいえ |
 
-catalog:
-  '@angular/core': *angular
-  '@ngxs/store': *ngxs
+#### 環境ファイルの種類
+
+| ファイル                 | 用途                   |
+| ------------------------ | ---------------------- |
+| `environment.ts`         | 開発環境（デフォルト） |
+| `environment.develop.ts` | 開発環境               |
+| `environment.preview.ts` | プレビュー環境         |
+| `environment.prod.ts`    | 本番環境               |
+
+#### 設定例
+
+```typescript
+// ファイル: apps/client/environments/environment.ts
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:4000',
+  baseUrl: 'http://localhost:4200',
+  gaId: '',
+};
 ```
 
-```json
-// ファイル: apps/client/package.json
-{
-  "dependencies": {
-    "@angular/core": "catalog:",
-    "@ngxs/store": "catalog:"
-  }
-}
+### .env（SSRサーバー設定）
+
+SSRサーバー（Express）で使用する実行時環境変数です。
+
+| 変数名                | 説明                           | 例                | 必須   |
+| --------------------- | ------------------------------ | ----------------- | ------ |
+| `NODE_ENV`            | 環境（production/development） | `production`      | いいえ |
+| `BASIC_AUTH_ENABLED`  | Basic認証の有効化              | `true`            | いいえ |
+| `BASIC_AUTH_USER`     | Basic認証ユーザー名            | `admin`           | いいえ |
+| `BASIC_AUTH_PASSWORD` | Basic認証パスワード            | `password`        | いいえ |
+| `ISR_SECRET`          | ISR invalidate用シークレット   | `MY_SECRET_TOKEN` | いいえ |
+
+---
+
+## 設計思想
+
+**キーワード**: `設計原則`, `Vertical Slice Architecture`, `DDD`, `Facadeパターン`, `shadcn/ui`
+
+このセクションでは、プロジェクトの設計思想と、なぜこの構成を採用したかの理由を説明します。詳細は[アーキテクチャ](#アーキテクチャ)セクションも参照してください。
+
+### なぜこの構成か
+
+1. **アルファベット順の一貫性**: `app → components → domains → modules → shared` の順で視覚的に整理
+2. **Vertical Slice**: 各ページが独立したスライスとして完結し、凝集度が高い
+3. **DDD境界の意識**: ページ固有のものはページ内に、共有するものだけが上位レイヤーに昇格
+4. **shadcn/uiアプローチ**: `shared/ui/` にUIプリミティブを配置し、コピー＆カスタマイズ可能な構成
+5. **Facade パターン**: Store へのアクセスを抽象化し、コンポーネントとの結合度を下げる
+
+### Angular公式スタイルガイドとの差異
+
+本構成はAngular公式スタイルガイドの推奨（機能ごとのディレクトリ構成）とは一部異なります。これは設計原則（Vertical Slice / Layered Architecture）を優先した意図的な選択です。
+
+チームメンバーはこのREADMEを参照し、配置基準を理解した上で開発を行ってください。
+
+## アーキテクチャ
+
+**キーワード**: `Vertical Slice Architecture`, `Layered Architecture`, `レイヤー構成`, `依存関係`
+
+このセクションでは、プロジェクト全体のアーキテクチャ設計について説明します。Vertical Slice ArchitectureとLayered Architectureを組み合わせた構成を採用しています。
+
+詳細は[設計思想](#設計思想)セクションも参照してください。
+
+### レイヤー構成
+
+| ディレクトリ  | レイヤー              | 責務                                             | 状態   |
+| ------------- | --------------------- | ------------------------------------------------ | ------ |
+| `app/`        | Presentation          | ページ・ルーティング・UI表示                     | 使用中 |
+| `components/` | Presentation (Shared) | 複数ページで共有するUIコンポーネント             | 使用中 |
+| `domains/`    | Domain + Application  | エンティティ・状態管理（NGXS）・ビジネスロジック | 使用中 |
+| `modules/`    | Application           | app/components/domains間で共有するロジック       | 使用中 |
+| `shared/`     | Infrastructure        | ユーティリティ・UIプリミティブ・アダプター       | 使用中 |
+
+### 依存関係のルール
+
+```
+app/ ──→ components/ ──→ domains/ ──→ modules/ ──→ shared/
 ```
 
-### バージョンアップ手順
-
-1. `pnpm-workspace.yaml` のバージョンを変更
-2. `pnpm install` で全パッケージ一括更新
+- 上位レイヤーは下位レイヤーに依存できる（右方向への依存のみ許可）
+- 下位レイヤーは上位レイヤーに依存してはならない（左方向への依存は禁止）
+- `shared/` は全レイヤーから参照可能
 
 ## ディレクトリ構成
 
-**キーワード**: `ディレクトリ構造`, `app/`, `components/`, `domains/`, `modules/`, `shared/`
+**キーワード**: `Vertical Slice`, `ディレクトリ構造`, `app/`, `components/`, `domains/`, `modules/`, `shared/`
 
 このセクションでは、プロジェクトのディレクトリ構成と各ディレクトリの役割を説明します。
 
@@ -179,7 +229,9 @@ src/
 ├── shared/           # (s) 共有リソース
 │   ├── lib/              # ユーティリティ関数
 │   └── ui/               # UIプリミティブ（shadcn/ui相当）
-├── main.ts
+├── main.ts               # クライアントエントリーポイント
+├── main.server.ts        # SSRエントリーポイント
+├── server.ts             # Expressサーバー（SSR + ISR）
 └── index.html
 ```
 
@@ -269,34 +321,6 @@ export class ArticleListComponent implements OnInit {
 - `ActivatedRoute.snapshot` も constructor で取得可能
 - コードがシンプルになる
 
-## アーキテクチャ
-
-**キーワード**: `Vertical Slice Architecture`, `Clean Architecture`, `レイヤー構成`, `依存関係`
-
-このセクションでは、プロジェクト全体のアーキテクチャ設計について説明します。Vertical Slice ArchitectureとClean Architectureを組み合わせた構成を採用しています。
-
-詳細は[設計思想](#設計思想)セクションも参照してください。
-
-### レイヤー構成
-
-| ディレクトリ  | レイヤー              | 責務                                             | 状態   |
-| ------------- | --------------------- | ------------------------------------------------ | ------ |
-| `app/`        | Presentation          | ページ・ルーティング・UI表示                     | 使用中 |
-| `components/` | Presentation (Shared) | 複数ページで共有するUIコンポーネント             | 使用中 |
-| `domains/`    | Domain + Application  | エンティティ・状態管理（NGXS）・ビジネスロジック | 使用中 |
-| `modules/`    | Application           | app/components/domains間で共有するロジック       | 使用中 |
-| `shared/`     | Infrastructure        | ユーティリティ・UIプリミティブ・アダプター       | 使用中 |
-
-### 依存関係のルール
-
-```
-app/ ──→ components/ ──→ domains/ ──→ modules/ ──→ shared/
-```
-
-- 上位レイヤーは下位レイヤーに依存できる（右方向への依存のみ許可）
-- 下位レイヤーは上位レイヤーに依存してはならない（左方向への依存は禁止）
-- `shared/` は全レイヤーから参照可能
-
 ## 配置基準
 
 **キーワード**: `ファイル配置`, `配置ルール`, `パスエイリアス`, `命名規則`
@@ -305,18 +329,18 @@ app/ ──→ components/ ──→ domains/ ──→ modules/ ──→ share
 
 ### どこに何を置くか
 
-| 対象                         | 配置先                    | 例                                   |
-| ---------------------------- | ------------------------- | ------------------------------------ |
-| ルーティング対象のページ     | `app/{page}/`             | `app/home/home.ts`                   |
-| ページ固有のUI部品           | `app/{page}/templates/`   | `app/home/templates/hero-section.ts` |
-| 複数ページで共有するUI       | `components/`             | `components/fields/input-field/`     |
-| Composed UI（ロジック連携）  | `components/`             | `components/fields/input-field/`     |
-| 状態管理（NGXS State）       | `domains/{domain}/store/` | `domains/home/store/home.state.ts`   |
-| Facade                       | `domains/{domain}/`       | `domains/home/home.facade.ts`        |
-| ビジネスロジック             | `domains/{domain}/`       | `domains/user/user.service.ts`       |
-| app/components/domains間共有 | `modules/`                | `modules/ui/ui.facade.ts`            |
-| UIプリミティブ（最小単位）   | `shared/ui/`              | `shared/ui/button/button.ts`         |
-| ユーティリティ関数           | `shared/lib/`             | `shared/lib/utils.ts`                |
+| 対象                         | 配置先                    | 例                                         |
+| ---------------------------- | ------------------------- | ------------------------------------------ |
+| ルーティング対象のページ     | `app/{page}/`             | `app/home/home.ts`                         |
+| ページ固有のUI部品           | `app/{page}/components/`  | `app/home/components/tag-list/tag-list.ts` |
+| 複数ページで共有するUI       | `components/`             | `components/fields/input-field/`           |
+| Composed UI（ロジック連携）  | `components/`             | `components/fields/input-field/`           |
+| 状態管理（NGXS State）       | `domains/{domain}/store/` | `domains/home/store/home.state.ts`         |
+| Facade                       | `domains/{domain}/`       | `domains/home/home.facade.ts`              |
+| ビジネスロジック             | `domains/{domain}/`       | `domains/user/user.service.ts`             |
+| app/components/domains間共有 | `modules/`                | `modules/ui/ui.facade.ts`                  |
+| UIプリミティブ（最小単位）   | `shared/ui/`              | `shared/ui/button/button.ts`               |
+| ユーティリティ関数           | `shared/lib/`             | `shared/lib/utils.ts`                      |
 
 ### パスエイリアス
 
@@ -341,6 +365,8 @@ import { InputFieldComponent } from '$components/fields';
 - テンプレート: `{name}.html`（必要な場合のみ分離）
 - スタイル: `{name}.css`（必要な場合のみ分離）
 - テスト: `{name}.spec.ts` または `{name}.test.ts`
+
+---
 
 ## 状態管理（NGXS）
 
@@ -606,42 +632,6 @@ setArticle(ctx: StateContext<ArticleEditStateModel>, action: SetArticle) {
 - バリデーションエラーの自動表示
 - エラー状態のスタイル適用
 
-## 国際化（i18n）
-
-**キーワード**: `i18n`, `国際化`, `ja.json`, `翻訳`, `エラーコード`
-
-このセクションでは、HTML上で表示される文言の管理方法と、ja.jsonの構造ルールについて説明します。
-
-**関連ファイル**:
-
-- `apps/client/public/i18n/ja.json` - 日本語翻訳ファイル
-
-### ルール
-
-HTML上で表示される文言は`apps/client/public/i18n/ja.json`で定義します。
-
-### ja.jsonの構造ルール
-
-- **エラーコード（`errorCodes`）**: 最下部に配置
-- **それ以外のキー**: アルファベット順で配置
-
-例:
-
-```json
-{
-  "articleEdit": {
-    "title": "記事設定",
-    "form": {
-      "titleLabel": "タイトル",
-      "saveButton": "保存"
-    }
-  },
-  "errorCodes": {
-    "E-999": "予期しないエラーが発生しました"
-  }
-}
-```
-
 ### フォーム管理パターン（親子コンポーネント連携）
 
 article-editで使用しているフォーム管理パターン：
@@ -717,6 +707,42 @@ interface ArticleResponse {
 }
 ```
 
+## 国際化（i18n）
+
+**キーワード**: `i18n`, `国際化`, `ja.json`, `翻訳`, `エラーコード`
+
+このセクションでは、HTML上で表示される文言の管理方法と、ja.jsonの構造ルールについて説明します。
+
+**関連ファイル**:
+
+- `apps/client/public/i18n/ja.json` - 日本語翻訳ファイル
+
+### ルール
+
+HTML上で表示される文言は`apps/client/public/i18n/ja.json`で定義します。
+
+### ja.jsonの構造ルール
+
+- **エラーコード（`errorCodes`）**: 最下部に配置
+- **それ以外のキー**: アルファベット順で配置
+
+例:
+
+```json
+{
+  "articleEdit": {
+    "title": "記事設定",
+    "form": {
+      "titleLabel": "タイトル",
+      "saveButton": "保存"
+    }
+  },
+  "errorCodes": {
+    "E-999": "予期しないエラーが発生しました"
+  }
+}
+```
+
 ## UI アーキテクチャ
 
 **キーワード**: `UIプリミティブ`, `Composed UI`, `shared/ui/`, `components/`, `shadcn/ui`
@@ -749,8 +775,8 @@ interface ArticleResponse {
 
 **関連ファイル**:
 
-- `apps/client/src/domains/interceptors/http-error.interceptor.ts` - HTTPエラーインターセプター
-- `apps/client/src/domains/error-handlers/client-error.handler.ts` - クライアントエラーハンドラー
+- `apps/client/src/domains/infrastructure/interceptors/http-error.interceptor.ts` - HTTPエラーインターセプター
+- `apps/client/src/domains/infrastructure/error-handlers/client-error.handler.ts` - クライアントエラーハンドラー
 - `apps/client/src/modules/error/error.facade.ts` - ErrorFacade実装
 
 ### 主な利用例
@@ -762,14 +788,14 @@ interface ArticleResponse {
 
 #### API呼び出し時のエラー
 
-`HttpInterceptor`（`apps/client/src/domains/interceptors/http-error.interceptor.ts`）でエラーを集約し、`ErrorFacade.showError()`経由でエラーダイアログを表示します。
+`HttpInterceptor`（`apps/client/src/domains/infrastructure/interceptors/http-error.interceptor.ts`）でエラーを集約し、`ErrorFacade.showError()`経由でエラーダイアログを表示します。
 
 - 401/403/404はダイアログ表示せず、`ErrorHandler`でページ遷移
 - その他のエラー（400, 500など）はエラーダイアログで表示
 
 #### ErrorHandlerでのページ遷移
 
-`ClientErrorHandler`（`apps/client/src/domains/error-handlers/client-error.handler.ts`）で401/403/404エラーをキャッチし、エラーページに遷移します。
+`ClientErrorHandler`（`apps/client/src/domains/infrastructure/error-handlers/client-error.handler.ts`）で401/403/404エラーをキャッチし、エラーページに遷移します。
 
 - エラーページ: `/error/401`、`/error/403`、`/error/404`
 - `skipLocationChange: true`でURLは元のまま
@@ -777,7 +803,7 @@ interface ArticleResponse {
 実装例:
 
 ```typescript
-// ファイル: apps/client/src/domains/interceptors/http-error.interceptor.ts
+// ファイル: apps/client/src/domains/infrastructure/interceptors/http-error.interceptor.ts
 // HttpInterceptorでエラーをキャッチする実装例
 export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(
@@ -795,7 +821,7 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
 ```
 
 ```typescript
-// ファイル: apps/client/src/domains/error-handlers/client-error.handler.ts
+// ファイル: apps/client/src/domains/infrastructure/error-handlers/client-error.handler.ts
 // ErrorHandlerでページ遷移する実装例
 handleError(error: unknown): void {
   if (error instanceof HttpErrorResponse) {
@@ -865,6 +891,75 @@ this.api
 this.facade.updateArticle(articleId, request).subscribe(() => {
   this.snackbarFacade.showSnackbar('保存しました', 'success');
 });
+```
+
+---
+
+## テスト戦略
+
+**キーワード**: `テスト`, `Vitest`, `@testing-library/angular`, `カバレッジ`
+
+このセクションでは、コンポーネントテストの実行方法と、Storybookとの役割分担について説明します。
+
+コンポーネントテストは **Vitest + @testing-library/angular** で実行します。
+
+```bash
+pnpm test           # CI・開発共通
+pnpm test:coverage  # カバレッジ付き
+pnpm test:watch     # ウォッチモード
+```
+
+### 役割分担
+
+| ツール    | 役割                           |
+| --------- | ------------------------------ |
+| Storybook | UIカタログ・ドキュメント       |
+| Vitest    | コンポーネント・ユニットテスト |
+
+> **Note**: `@storybook/addon-vitest` は Angular では未対応のため、テストは Vitest で行います。
+
+## Storybook
+
+**キーワード**: `Storybook`, `UIカタログ`, `ドキュメント`, `Stories`
+
+このセクションでは、Storybookを使用したUIコンポーネントのカタログ・ドキュメント作成方法について説明します。
+
+UIコンポーネントのカタログ・ドキュメントを提供します。
+
+### 起動
+
+```bash
+pnpm storybook        # http://localhost:6006
+```
+
+### 対象コンポーネント
+
+| カテゴリ   | パス                             | 内容                |
+| ---------- | -------------------------------- | ------------------- |
+| UI         | `shared/ui/button/`              | ButtonDirective     |
+| UI         | `shared/ui/input/`               | InputDirective      |
+| Components | `components/fields/input-field/` | InputFieldComponent |
+
+### Stories の書き方
+
+`*.stories.ts` ファイルに各バリアントを定義：
+
+```typescript
+// ファイル: apps/client/src/shared/ui/button/button.stories.ts
+// Storybook Storiesの実装例
+import { ButtonDirective } from './button';
+import type { Meta, StoryObj } from '@storybook/angular';
+
+const meta: Meta<ButtonDirective> = {
+  title: 'UI/Button',
+  component: ButtonDirective,
+  tags: ['autodocs'],
+  // ...
+};
+
+export const Default: Story = {
+  args: { variant: 'default' },
+};
 ```
 
 ## パフォーマンス最適化
@@ -1002,69 +1097,38 @@ export class ArticlePageComponent {
 { path: 'home', data: { revalidate: 60 } }  // 60秒ごとに再生成
 ```
 
-## テスト戦略
+## パッケージ管理（pnpm catalog）
 
-**キーワード**: `テスト`, `Vitest`, `@testing-library/angular`, `カバレッジ`
+**キーワード**: `pnpm`, `catalog`, `バージョン管理`, `pnpm-workspace.yaml`
 
-このセクションでは、コンポーネントテストの実行方法と、Storybookとの役割分担について説明します。
+このセクションでは、pnpm catalogを使用したパッケージバージョンの一元管理方法について説明します。
 
-コンポーネントテストは **Vitest + @testing-library/angular** で実行します。
+バージョンを `pnpm-workspace.yaml` で一元管理し、モノレポ全体で統一します。
 
-```bash
-pnpm test           # CI・開発共通
-pnpm test:coverage  # カバレッジ付き
-pnpm test:watch     # ウォッチモード
+### 設定例
+
+```yaml
+# ファイル: pnpm-workspace.yaml（ルートディレクトリ）
+versions:
+  angular: &angular 21.0.0
+  ngxs: &ngxs 20.1.0
+
+catalog:
+  '@angular/core': *angular
+  '@ngxs/store': *ngxs
 ```
 
-### 役割分担
-
-| ツール    | 役割                           |
-| --------- | ------------------------------ |
-| Storybook | UIカタログ・ドキュメント       |
-| Vitest    | コンポーネント・ユニットテスト |
-
-> **Note**: `@storybook/addon-vitest` は Angular では未対応のため、テストは Vitest で行います。
-
-## Storybook
-
-**キーワード**: `Storybook`, `UIカタログ`, `ドキュメント`, `Stories`
-
-このセクションでは、Storybookを使用したUIコンポーネントのカタログ・ドキュメント作成方法について説明します。
-
-UIコンポーネントのカタログ・ドキュメントを提供します。
-
-### 起動
-
-```bash
-pnpm storybook        # http://localhost:6006
+```json
+// ファイル: apps/client/package.json
+{
+  "dependencies": {
+    "@angular/core": "catalog:",
+    "@ngxs/store": "catalog:"
+  }
+}
 ```
 
-### 対象コンポーネント
+### バージョンアップ手順
 
-| カテゴリ   | パス                             | 内容                |
-| ---------- | -------------------------------- | ------------------- |
-| UI         | `shared/ui/button/`              | ButtonDirective     |
-| UI         | `shared/ui/input/`               | InputDirective      |
-| Components | `components/fields/input-field/` | InputFieldComponent |
-
-### Stories の書き方
-
-`*.stories.ts` ファイルに各バリアントを定義：
-
-```typescript
-// ファイル: apps/client/src/shared/ui/button/button.stories.ts
-// Storybook Storiesの実装例
-import { ButtonDirective } from './button';
-import type { Meta, StoryObj } from '@storybook/angular';
-
-const meta: Meta<ButtonDirective> = {
-  title: 'UI/Button',
-  component: ButtonDirective,
-  tags: ['autodocs'],
-  // ...
-};
-
-export const Default: Story = {
-  args: { variant: 'default' },
-};
-```
+1. `pnpm-workspace.yaml` のバージョンを変更
+2. `pnpm install` で全パッケージ一括更新

@@ -57,6 +57,7 @@ module "secrets" {
 
   project_id                    = var.project_id
   environment                   = var.environment
+  service_name                  = var.service_name
   cloud_run_service_account_email = module.iam.cloud_run_service_account_email
 
   depends_on = [module.iam]
@@ -69,7 +70,7 @@ locals {
     # Database
     # ========================================
     DATABASE_URL = {
-      secret_name = "database-url"
+      secret_name = "${var.service_name}-database-url"
       version     = "latest"
     }
 
@@ -77,31 +78,27 @@ locals {
     # Authentication & Security
     # ========================================
     SESSION_SECRET_TOKEN = {
-      secret_name = "session-secret-token"
+      secret_name = "${var.service_name}-session-secret-token"
       version     = "latest"
     }
     BASIC_AUTH_USER = {
-      secret_name = "basic-auth-user"
+      secret_name = "${var.service_name}-basic-auth-user"
       version     = "latest"
     }
     BASIC_AUTH_PASSWORD = {
-      secret_name = "basic-auth-password"
+      secret_name = "${var.service_name}-basic-auth-password"
       version     = "latest"
     }
 
     # ========================================
     # Domain & CORS
     # ========================================
-    DOMAIN = {
-      secret_name = "domain"
-      version     = "latest"
-    }
     COOKIE_DOMAIN = {
-      secret_name = "cookie-domain"
+      secret_name = "${var.service_name}-cookie-domain"
       version     = "latest"
     }
     CORS_ORIGINS = {
-      secret_name = "cors-origins"
+      secret_name = "${var.service_name}-cors-origins"
       version     = "latest"
     }
 
@@ -109,7 +106,7 @@ locals {
     # Application
     # ========================================
     ISR_SECRET = {
-      secret_name = "isr-secret"
+      secret_name = "${var.service_name}-isr-secret"
       version     = "latest"
     }
   }

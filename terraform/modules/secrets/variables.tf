@@ -12,3 +12,8 @@ variable "cloud_run_service_account_email" {
   description = "Cloud Run service account email"
   type        = string
 }
+
+variable "service_name" {
+  description = "Service name for secret prefix"
+  type        = string
+}

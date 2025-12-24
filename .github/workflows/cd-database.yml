@@ -1,0 +1,96 @@
+name: Deploy Database
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'packages/database/prisma/migrations/**'
+      - 'packages/database/prisma/schema.prisma'
+      - 'apps/content/articles/**'
+      - '.github/workflows/cd-database.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  detect-changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    outputs:
+      database: ${{ steps.filter.outputs.database }}
+      content: ${{ steps.filter.outputs.content }}
+      workflow: ${{ steps.filter.outputs.workflow }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check file changes
+        id: filter
+        uses: tj-actions/changed-files@v45
+        with:
+          files_yaml: |
+            database:
+              - 'packages/database/prisma/migrations/**'
+              - 'packages/database/prisma/schema.prisma'
+            content:
+              - 'apps/content/articles/**'
+            workflow:
+              - '.github/workflows/cd-database.yml'
+
+  migrate:
+    name: Apply Migrations
+    runs-on: ubuntu-latest
+    needs: [detect-changes]
+    if: needs.detect-changes.outputs.database == 'true' || needs.detect-changes.outputs.workflow == 'true' || github.event_name == 'workflow_dispatch'
+
+    environment: ${{ github.ref_name }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 10.24.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.11.0
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Debug Network Connectivity
+        env:
+          DB_URL: ${{ secrets.DATABASE_URL_UNPOOLED }}
+        run: |
+          # Extract hostname from URL (postgres://user:pass@hostname:5432/db)
+          # Using sed to parse safely without exposing credentials
+          HOST=$(echo $DB_URL | sed -E 's/.*@([^:/]+).*/\1/')
+          PORT=5432
+
+          echo "Checking connectivity to $HOST:$PORT ..."
+          # nc -zv returns 0 on success, 1 on failure
+          if nc -zv $HOST $PORT; then
+            echo "✅ Connection successful!"
+          else
+            echo "❌ Connection failed!"
+            exit 1
+          fi
+
+      - name: Apply Migrations
+        working-directory: packages/database
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_URL_UNPOOLED: ${{ secrets.DATABASE_URL_UNPOOLED }}
+        run: pnpm prisma migrate deploy

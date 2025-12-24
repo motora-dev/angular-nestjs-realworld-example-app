@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://api.dev.motora-dev.com',
-  baseUrl: 'https://dev.motora-dev.com',
+  apiUrl: 'https://api.dev.realworld.motora-dev.com',
+  baseUrl: 'https://dev.realworld.motora-dev.com',
   gaId: '',
 };

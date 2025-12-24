@@ -109,12 +109,15 @@ pnpm check-all
 
 このセクションでは、プロジェクトで必要な環境変数とその設定方法について説明します。
 
-| 変数名         | 説明                                      | 例                                   | 必須   |
-| -------------- | ----------------------------------------- | ------------------------------------ | ------ |
-| `DATABASE_URL` | PostgreSQLデータベースURL（接続プール用） | `postgresql://postgres:pass@host/db` | はい   |
-| `DIRECT_URL`   | PostgreSQLデータベースURL（直接接続用）   | `postgresql://postgres:pass@host/db` | はい   |
-| `CORS_ORIGINS` | CORS許可オリジン（カンマ区切り）          | `http://localhost:4200`              | はい   |
-| `PORT`         | サーバーポート番号                        | `3000`                               | いいえ |
+| 変数名                 | 説明                                      | 例                                    | 必須   |
+| ---------------------- | ----------------------------------------- | ------------------------------------- | ------ |
+| `DATABASE_URL`         | PostgreSQLデータベースURL（接続プール用） | `postgresql://postgres:pass@host/db`  | はい   |
+| `CORS_ORIGINS`         | CORS許可オリジン（カンマ区切り）          | `http://localhost:4200`               | はい   |
+| `PORT`                 | サーバーポート番号                        | `4000`                                | いいえ |
+| `GOOGLE_CLIENT_ID`     | Google OAuth Client ID                    | `xxx.apps.googleusercontent.com`      | はい   |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth Secret                       | `GOCSPX-xxx`                          | はい   |
+| `GOOGLE_CALLBACK_URL`  | Google OAuth Callback URL                 | `http://localhost:4000/auth/callback` | はい   |
+| `SESSION_SECRET_TOKEN` | セッション暗号化キー                      | `your-secret-key`                     | はい   |
 
 ### 環境変数の設定
 
@@ -135,10 +138,11 @@ cp .env.example .env
 
 ### なぜこの構成か
 
-1. **Vertical Slice Architecture**: 各ドメインが独立したスライスとして完結し、凝集度が高い
-2. **CQRS**: 読み取り（Query）と書き込み（Command）を分離し、責務を明確化
-3. **DDD境界の意識**: ドメイン固有のものはドメイン内に、共有するものだけが上位レイヤーに昇格
-4. **Repository パターン**: データアクセスを抽象化し、ビジネスロジックとの結合度を下げる
+1. **アルファベット順の一貫性**: `domains → modules → shared` の順で視覚的に整理
+2. **Vertical Slice Architecture**: 各ドメインが独立したスライスとして完結し、凝集度が高い
+3. **CQRS**: 読み取り（Query）と書き込み（Command）を分離し、責務を明確化
+4. **DDD境界の意識**: ドメイン固有のものはドメイン内に、共有するものだけが上位レイヤーに昇格
+5. **Repository パターン**: データアクセスを抽象化し、ビジネスロジックとの結合度を下げる
 
 ### なぜ Clean Architecture ではなく Layered Architecture か
 
@@ -208,7 +212,7 @@ domains/ ──→ modules/ ──→ shared/
 
 ## ディレクトリ構成
 
-**キーワード**: `ディレクトリ構造`, `domains/`, `modules/`, `shared/`, `Vertical Slice`
+**キーワード**: `Vertical Slice`, `ディレクトリ構造`, `domains/`, `modules/`, `shared/`
 
 このセクションでは、プロジェクトのディレクトリ構成と各ディレクトリの役割を説明します。
 
@@ -946,13 +950,3 @@ catalog:
 | `nest-cli.json`      | NestJS CLI設定    |
 | `esbuild.config.mjs` | esbuildビルド設定 |
 | `turbo.json`         | Turborepo設定     |
-
----
-
-## TODO
-
-以下のセクションは実装完了後に追記予定です：
-
-- [ ] **認証セクション** - Google OAuth認証、`@Public()` / `@CurrentUser()` デコレーター、セッション管理
-- [ ] **バリデーションセクション** - class-validator / class-transformer によるDTOバリデーション
-- [ ] **セキュリティセクション** - CSRF保護（csrf-csrf）、Rate Limiting（@nestjs/throttler）、セッション管理

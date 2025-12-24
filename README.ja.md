@@ -1,30 +1,129 @@
-# もとら's dev - Turborepo Monorepo with Angular and NestJS
+# ![RealWorld Example App](logo.png)
 
-このプロジェクトは、TurborepoでAngularとNestJSを統合したモダンなモノレポジトリです。技術ブログ「もとら's dev」のソースコードです。
+> Angular + NestJS のモノレポ構成で実装された [RealWorld](https://github.com/gothinkster/realworld) (Conduit) アプリケーション。
+> CRUD操作、認証、ルーティング、ページネーションなど実践的な機能を含みます。
 
+### [デモ](https://realworld.motora-dev.com) | [RealWorld](https://github.com/gothinkster/realworld)
+
+[![RealWorld Frontend](https://img.shields.io/badge/realworld-frontend-%23783578.svg)](https://realworld.show)
+[![RealWorld Backend](https://img.shields.io/badge/realworld-backend-%23783578.svg)](https://realworld.show)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Node.js](https://img.shields.io/badge/Node.js-24.11.0-green.svg)](https://nodejs.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-24.11.1-green.svg)](https://nodejs.org/)
 [![pnpm](https://img.shields.io/badge/pnpm-10.24.0-F69220.svg)](https://pnpm.io/)
-[![Build](https://github.com/motora-dev/motora-dev/actions/workflows/ci-check.yml/badge.svg)](https://github.com/motora-dev/motora-dev/actions/workflows/ci-check.yml)
-[![Test](https://github.com/motora-dev/motora-dev/actions/workflows/ci-test.yml/badge.svg)](https://github.com/motora-dev/motora-dev/actions/workflows/ci-test.yml)
-[![Deploy](https://github.com/motora-dev/motora-dev/actions/workflows/cd-gcp.yml/badge.svg)](https://github.com/motora-dev/motora-dev/actions/workflows/cd-gcp.yml)
-[![codecov](https://codecov.io/github/motora-dev/motora-dev/badge.svg?branch=main)](https://codecov.io/github/motora-dev/motora-dev)
+[![Build](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/ci-check.yml/badge.svg)](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/ci-check.yml)
+[![Test](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/ci-test.yml/badge.svg)](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/ci-test.yml)
+[![Deploy](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/cd-gcp.yml/badge.svg)](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/cd-gcp.yml)
+[![codecov](https://codecov.io/github/motora-dev/angular-nestjs-realworld-example-app/badge.svg?branch=main)](https://codecov.io/github/motora-dev/angular-nestjs-realworld-example-app)
+
+このコードベースは、**Angular** と **NestJS** を使用した本格的なフルスタックアプリケーションのデモンストレーションとして作成されました。
+CRUD操作、認証、ルーティング、ページネーションなどの機能を含みます。
+
+他のフロントエンド/バックエンドとの連携については、[RealWorld](https://github.com/gothinkster/realworld) リポジトリをご覧ください。
+
+## 対象読者
+
+このリポジトリは **TypeScriptのみで構成されたエンタープライズ向け** の実装です。
+
+- Angular / NestJS の基礎知識がある**中〜上級者**向け
+- 本番運用レベルのアーキテクチャ（CQRS、SSR/ISR、モノレポ）を学びたい方
+- TypeScriptフルスタック構成のリファレンスを探している方
+
+シンプルな実装から始めたい方は、以下をお勧めします：
+
+- フロントエンド: [angular-realworld-example-app](https://github.com/gothinkster/angular-realworld-example-app)
+- バックエンド: [nestjs-realworld-example-app](https://github.com/gothinkster/nestjs-realworld-example-app)
+
+## How it works
+
+本実装は [RealWorld API 仕様](https://github.com/gothinkster/realworld/tree/main/api) に準拠した「Conduit」ブログプラットフォームです。
+
+**主な機能:**
+
+- ユーザー認証（登録・ログイン・JWT）
+- 記事の CRUD 操作
+- コメント機能
+- お気に入り（Favorite）機能
+- ユーザーフォロー機能
+- タグによる記事フィルタリング
+- ページネーション
+
+**ページ構成:**
+
+- ホームページ (URL: `/`)
+  - タグ一覧
+  - フィード / グローバル / タグ別の記事一覧
+  - ページネーション
+- ログイン / 新規登録ページ (URL: `/auth-login`, `/auth-register`)
+  - OAuth認証（Google）
+- 設定ページ (URL: `/settings`)
+- エディターページ (URL: `/editor`, `/editor/:slug`)
+  - 記事の作成・編集
+- 記事詳細ページ (URL: `/article/:slug`)
+  - 記事削除ボタン（著者のみ表示）
+  - Markdownレンダリング
+  - コメントセクション
+  - コメント削除ボタン（著者のみ表示）
+- プロフィールページ (URL: `/profile/:username`, `/profile/:username/favorites`)
+  - ユーザー情報
+  - 投稿記事一覧 / お気に入り記事一覧
+
+**技術的特徴:**
+
+- **Turborepo** によるモノレポ構成で、フロントエンド・バックエンドを一元管理
+- **Angular SSR + ISR** による高速な初期表示と SEO 最適化
+- **NestJS + CQRS** によるスケーラブルなバックエンド設計
+- **Prisma ORM** による型安全なデータベースアクセス
+
+**RealWorld仕様との差異:**
+
+- **認証方式**: RealWorld標準のユーザー名/パスワード認証ではなく、OAuth認証のみを実装
+- **一部APIエンドポイント**: ディレクトリ構造（Vertical Slice Architecture）に準拠するため、一部エンドポイントのパスが標準と異なる
+
+---
+
+## 目次
+
+### 概要
+
+- [対象読者](#対象読者)
+- [プロジェクト構成](#-プロジェクト構成)
+- [アーキテクチャ](#-アーキテクチャ)
+- [技術スタック](#-技術スタック)
+
+### 開発
+
+- [開発環境のセットアップ](#-開発環境のセットアップ)
+- [利用可能なコマンド](#-利用可能なコマンド)
+- [テスト](#-テスト)
+- [開発フロー](#-開発フロー)
+
+### 運用
+
+- [CI/CD パイプライン](#-cicd-パイプライン)
+- [環境構成](#-環境構成)
+- [インフラストラクチャ（Terraform）](#-インフラストラクチャterraform)
+- [ログ・モニタリング](#-ログモニタリング)
+
+### リファレンス
+
+- [主要な依存関係](#-主要な依存関係)
+- [API仕様](#-api仕様)
+
+---
 
 ## 🏗 プロジェクト構成
 
 ### パッケージ構成
 
 ```
-motora-dev/
+angular-nestjs-realworld-example-app/
 ├── apps/                   # アプリケーション
 │   ├── client/             # Angular フロントエンドアプリケーション
-│   ├── content/            # 記事コンテンツ管理・シード
 │   └── server/             # NestJS バックエンドAPI
 ├── packages/               # 共有パッケージ
 │   ├── database/           # Prismaスキーマ・クライアント
 │   ├── error-code/         # エラーコード定義
 │   ├── eslint-config/      # ESLint設定
-│   ├── markdown/           # Markdown処理パッケージ
 │   └── typescript-config/  # TypeScript設定
 ├── terraform/              # GCPインフラ構成（IaC）
 ├── pnpm-workspace.yaml
@@ -36,32 +135,26 @@ motora-dev/
 
 #### 📱 Client (`apps/client`)
 
-- **Framework**: [Angular](https://angular.dev/) 21.0.1 + SSR + ISR
+- **Framework**: [Angular](https://angular.dev/) 21.0.3 + SSR + ISR
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/) 4.1.17 + CVA + tailwind-merge
-- **State Management**: [NGXS](https://www.ngxs.io/) 20.1.0 + @ngxs/form-plugin
+- **State Management**: [NGXS](https://www.ngxs.io/) 21.0.0 + @ngxs/form-plugin
 - **Reactive**: [RxAngular](https://www.rx-angular.io/) 20.1.0 + RxJS 7.8.2
-- **Testing**: Vitest 4.0.14 + @testing-library/angular + Storybook 10.1.2
+- **Testing**: Vitest 4.0.15 + @testing-library/angular + Storybook 10.1.4
 - **Linting**: ESLint 9.39.1 (Flat Config)
 
 #### 🚀 Server (`apps/server`)
 
 - **Framework**: [NestJS](https://nestjs.com/) 11.1.9
 - **Platform**: Express
-- **Testing**: Vitest 4.0.14 + Supertest
+- **ORM**: [Prisma](https://www.prisma.io/) 7.1.0
+- **Testing**: Vitest 4.0.15 + Supertest
 - **Linting**: ESLint 9.39.1 (Flat Config)
-
-#### 📝 Content (`apps/content`)
-
-- **用途**: 記事コンテンツ（Markdown）の管理・データベースシード
-- **機能**: Markdownファイルからメタデータを読み取り、Prisma経由でデータベースへ投入
-- **依存**: @monorepo/database
 
 #### 📦 Shared Packages
 
-- **@monorepo/database**: Prismaスキーマ定義・クライアント生成（User, Article, Page, Mediaモデル）
+- **@monorepo/database**: Prismaスキーマ定義・クライアント生成（User, Article, Comment, Tagモデル）
 - **@monorepo/error-code**: エラーコード定義（ドメイン・エンティティ・ステータスコード・メッセージの一元管理）
 - **@monorepo/eslint-config**: 共通ESLint設定（TypeScript対応）
-- **@monorepo/markdown**: Markdown処理パッケージ（Markdown ↔ ProseMirror変換、Markdown → HTML変換）
 - **@monorepo/typescript-config**: 基本TypeScript設定
 
 ## 🏛 アーキテクチャ
@@ -69,7 +162,6 @@ motora-dev/
 ### システム全体図
 
 ![システム全体アーキテクチャ図](docs/images/architecture-diagram.png)
-
 
 ```mermaid
 flowchart TB
@@ -87,8 +179,7 @@ flowchart TB
         end
     end
 
-    subgraph Supabase["Supabase"]
-        Auth[(Auth)]
+    subgraph Neon["Neon"]
         PostgreSQL[(PostgreSQL)]
     end
 
@@ -96,30 +187,32 @@ flowchart TB
     Facade -->|HTTP| Controller
     Controller --> CQRS --> Repository
     Repository --> PostgreSQL
-    Controller -->|JWT検証| Auth
+    Controller -->|OAuth検証| Auth
 ```
 
 ### 設計方針
 
-本プロジェクトは **Vertical Slice Architecture** と **Clean Architecture** を組み合わせた構成を採用しています。
+本プロジェクトは **Vertical Slice Architecture** と **Layered Architecture** を組み合わせた構成を採用しています。
 
 #### Vertical Slice Architecture
 
 各機能（ユースケース）を垂直方向にスライスし、独立したモジュールとして実装します。これにより、機能ごとの凝集度が高まり、変更の影響範囲を限定できます。
 
-#### Clean Architecture
+#### Layered Architecture
 
-依存関係を内側（ドメイン層）から外側（インフラ層）へ向けることで、ビジネスロジックを外部依存から保護します。
+プレゼンテーション層、アプリケーション層、ドメイン層、インフラストラクチャ層に分離し、各層の責務を明確化しています。上位層から下位層への依存のみを許可することで、保守性と変更容易性を確保しています。
 
 ### Client / Server 間のドメイン統一
 
 **client と server で同じドメイン名を使用** することで、以下のメリットを得ています：
 
-| ドメイン       | 用途                   | 認証 |
-| -------------- | ---------------------- | ---- |
-| `article-list` | 記事一覧の取得・表示   | 不要 |
-| `article-page` | 記事ページの取得・表示 | 不要 |
-| `article-edit` | 記事・ページの編集     | 必要 |
+| ドメイン       | 用途                     | 認証 |
+| -------------- | ------------------------ | ---- |
+| `article-list` | 記事一覧・フィードの取得 | 不要 |
+| `article`      | 記事詳細の取得・表示     | 不要 |
+| `article-edit` | 記事の作成・編集・削除   | 必要 |
+| `profile`      | ユーザープロフィール     | 不要 |
+| `user`         | ユーザー認証・設定       | 必要 |
 
 **メリット:**
 
@@ -128,30 +221,30 @@ flowchart TB
 
 **デメリット:**
 
-- **コードの重複**: DDD を重視しドメイン境界を明確化するため、似たようなコード（DTO、モデル、リポジトリ等）が複数ドメインに存在することがある。例えば `article-page`（閲覧用）と `article-edit`（編集用）で類似のページ取得ロジックが必要な場合でも、認証要件の違いから別々に実装する
+- **コードの重複**: DDD を重視しドメイン境界を明確化するため、似たようなコード（DTO、モデル、リポジトリ等）が複数ドメインに存在することがある。例えば `article`（閲覧用）と `article-edit`（編集用）で類似の記事取得ロジックが必要な場合でも、認証要件の違いから別々に実装する
 
 ### 詳細ドキュメント
 
 各アプリケーションの詳細な設計・アーキテクチャについては、それぞれの README を参照してください：
 
-- [Client README](apps/client/README.md) - Facade パターン、NGXS 状態管理、UI アーキテクチャ
-- [Server README](apps/server/README.md) - CQRS パターン、Repository パターン、認証・認可
+- [Client README](apps/client/README.ja.md) - Facade パターン、NGXS 状態管理、UI アーキテクチャ
+- [Server README](apps/server/README.ja.md) - CQRS パターン、Repository パターン、認証・認可
 - [Terraform README](terraform/README.md) - GCP インフラ構成（IAM、Workload Identity Federation）
 
 ## 🛠 技術スタック
 
 - **Package Manager**: [pnpm](https://pnpm.io/) 10.24.0 (ワークスペース機能使用)
-- **Build System**: [Turborepo](https://turbo.build/repo) 2.6.0
+- **Build System**: [Turborepo](https://turbo.build/repo) 2.6.3
 - **Language**: [TypeScript](https://www.typescriptlang.org/) 5.9.3
-- **Code Quality**: ESLint 9.39.1 + Prettier 3.7.3
-- **Testing**: Vitest 4.0.14 + Testing Library
+- **Code Quality**: ESLint 9.39.1 + Prettier 3.7.4
+- **Testing**: Vitest 4.0.15 + Testing Library
 - **Module System**: ES Modules (`"type": "module"`)
 
 ## 🚀 開発環境のセットアップ
 
 ### 必要な環境
 
-- Node.js 24.11.0（推奨）
+- Node.js 24.11.1（推奨）
 - pnpm 10.24.0
 
 ### Voltaのセットアップ（推奨）
@@ -195,7 +288,7 @@ source ~/.bash_profile
 
 ```bash
 # プロジェクトディレクトリに移動すると、Voltaが自動的に
-# package.jsonの設定に基づいてNode.js 24.11.0とpnpm 10.24.0を切り替えます
+# package.jsonの設定に基づいてNode.js 24.11.1とpnpm 10.24.0を切り替えます
 ```
 
 > **注意**: Voltaのpnpmサポートは実験的な機能です。詳細は[公式ドキュメント](https://docs.volta.sh/advanced/pnpm)を参照してください。
@@ -322,30 +415,40 @@ pnpm test --filter=@monorepo/server
 
 ### 共通
 
-![Turborepo](https://img.shields.io/badge/Turborepo-2.6.0-ef4444?logo=turborepo&logoColor=white)
+![Turborepo](https://img.shields.io/badge/Turborepo-2.6.3-ef4444?logo=turborepo&logoColor=white)
 ![pnpm](https://img.shields.io/badge/pnpm-10.24.0-f69220?logo=pnpm&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178c6?logo=typescript&logoColor=white)
 ![ESLint](https://img.shields.io/badge/ESLint-9.39.1-4b32c3?logo=eslint&logoColor=white)
-![Vitest](https://img.shields.io/badge/Vitest-4.0.14-729B1B?logo=vitest&logoColor=white)
-![Prettier](https://img.shields.io/badge/Prettier-3.7.3-F7B93E?logo=prettier&logoColor=white)
+![Vitest](https://img.shields.io/badge/Vitest-4.0.15-729B1B?logo=vitest&logoColor=white)
+![Prettier](https://img.shields.io/badge/Prettier-3.7.4-F7B93E?logo=prettier&logoColor=white)
 
 ### Client
 
-![Angular](https://img.shields.io/badge/Angular-21.0.1-DD0031?logo=angular&logoColor=white)
-![Angular CDK](https://img.shields.io/badge/Angular%20CDK-21.0.1-DD0031?logo=angular&logoColor=white)
+![Angular](https://img.shields.io/badge/Angular-21.0.3-DD0031?logo=angular&logoColor=white)
+![Angular CDK](https://img.shields.io/badge/Angular%20CDK-21.0.2-DD0031?logo=angular&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/Tailwind%20CSS-4.1.17-38bdf8?logo=tailwindcss&logoColor=white)
-![NGXS](https://img.shields.io/badge/NGXS-20.1.0-3F51B5?logoColor=white)
+![NGXS](https://img.shields.io/badge/NGXS-21.0.0-3F51B5?logoColor=white)
 ![RxAngular](https://img.shields.io/badge/RxAngular-20.1.0-E91E63?logoColor=white)
 ![RxJS](https://img.shields.io/badge/RxJS-7.8.2-b7178c?logo=reactivex&logoColor=white)
-![Storybook](https://img.shields.io/badge/Storybook-10.1.2-FF4785?logo=storybook&logoColor=white)
+![Storybook](https://img.shields.io/badge/Storybook-10.1.4-FF4785?logo=storybook&logoColor=white)
 
 ### Server
 
 ![NestJS](https://img.shields.io/badge/NestJS-11.1.9-e0234e?logo=nestjs&logoColor=white)
 ![Express](https://img.shields.io/badge/Express-via%20NestJS-000000?logo=express&logoColor=white)
 ![RxJS](https://img.shields.io/badge/RxJS-7.8.2-b7178c?logo=reactivex&logoColor=white)
-![Prisma](https://img.shields.io/badge/Prisma-7.0.1-2d3748?logo=prisma&logoColor=white)
-![Supabase](https://img.shields.io/badge/Supabase-2.86.0-3ecf8e?logo=supabase&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-7.1.0-2d3748?logo=prisma&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-via%20Prisma-4169e1?logo=postgresql&logoColor=white)
+
+## 📖 API仕様
+
+本アプリケーションは [RealWorld](https://github.com/gothinkster/realworld) プロジェクトが定めるAPI仕様に準拠しています。これにより、他のRealWorld実装（フロントエンド/バックエンド）と組み合わせて使用できます。
+
+> [API仕様の詳細](https://github.com/gothinkster/realworld/tree/main/api)
+
+プロジェクトの詳細: https://github.com/gothinkster/realworld
+
+**注意:** OAuth認証のみの実装とVertical Slice Architectureの採用により、一部のAPIエンドポイントが標準仕様と異なります。
 
 ## 🔄 CI/CD パイプライン
 
@@ -374,11 +477,11 @@ GitHub Actions による自動化されたパイプラインを構築してい�
 
 ## 🌍 環境構成
 
-| 環境        | ブランチ       | 用途                 | URL                |
-| ----------- | -------------- | -------------------- | ------------------ |
-| **develop** | `develop`      | 開発環境（機能検証） | develop.motora.dev |
-| **preview** | PR → `develop` | PRプレビュー環境     | preview.motora.dev |
-| **main**    | `main`         | 本番環境             | motora.dev         |
+| 環境        | ブランチ       | 用途                 |
+| ----------- | -------------- | -------------------- |
+| **develop** | `develop`      | 開発環境（機能検証） |
+| **preview** | PR → `develop` | PRプレビュー環境     |
+| **main**    | `main`         | 本番環境             |
 
 ### 環境変数
 
@@ -481,3 +584,7 @@ gcloud logging read "resource.type=cloud_run_revision" --limit=50
 | `fix/`         | バグ修正         | `fix/header-layout`  |
 | `refactor/`    | リファクタリング | `refactor/auth-flow` |
 | `docs/`        | ドキュメント     | `docs/update-readme` |
+
+<br />
+
+[![Brought to you by Thinkster](https://raw.githubusercontent.com/gothinkster/realworld/master/media/end.png)](https://thinkster.io)

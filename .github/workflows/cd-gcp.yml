@@ -1,0 +1,124 @@
+name: Deploy to GCP
+
+on:
+  push:
+    branches: [develop, main]
+    paths:
+      - 'apps/server/**'
+      - 'apps/client/**'
+      - 'packages/**'
+      - '.github/workflows/cd-gcp.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy-client:
+    name: Deploy Client
+    runs-on: ubuntu-latest
+
+    environment: ${{ github.ref_name }}
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check file changes
+        id: changed-files
+        uses: tj-actions/changed-files@v45
+        with:
+          files: |
+            apps/client/**
+            packages/**
+
+      - name: Google Auth
+        if: steps.changed-files.outputs.any_changed == 'true'
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.WIF_SERVICE_ACCOUNT }}
+          token_format: 'access_token'
+          create_credentials_file: true
+          export_environment_variables: true
+
+      - name: Set up Cloud SDK
+        if: steps.changed-files.outputs.any_changed == 'true'
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Build and Push Docker Image
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: |
+          gcloud builds submit . \
+            --config=apps/client/cloudbuild.yaml \
+            --substitutions=_IMAGE_TAG=${{ github.sha }},_SERVICE_NAME=${{ secrets.CLIENT_SERVICE_NAME }},_BUILD_CONFIGURATION=${{ github.ref_name == 'main' && 'production' || 'develop' }} \
+            --suppress-logs
+
+      - name: Deploy to Cloud Run
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: |
+          gcloud run deploy ${{ secrets.CLIENT_SERVICE_NAME }} \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.CLIENT_SERVICE_NAME }}:${{ github.sha }} \
+            --region ${{ vars.REGION }}
+
+  deploy-server:
+    name: Deploy Server
+    runs-on: ubuntu-latest
+
+    environment: ${{ github.ref_name }}
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check file changes
+        id: changed-files
+        uses: tj-actions/changed-files@v45
+        with:
+          files: |
+            apps/server/**
+            packages/**
+
+      - name: Google Auth
+        if: steps.changed-files.outputs.any_changed == 'true'
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.WIF_SERVICE_ACCOUNT }}
+          token_format: 'access_token'
+          create_credentials_file: true
+          export_environment_variables: true
+
+      - name: Set up Cloud SDK
+        if: steps.changed-files.outputs.any_changed == 'true'
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Build and Push Docker Image
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: |
+          gcloud builds submit . \
+            --config=apps/server/cloudbuild.yaml \
+            --substitutions=_IMAGE_TAG=${{ github.sha }},_SERVICE_NAME=${{ secrets.SERVICE_NAME }} \
+            --suppress-logs
+
+      - name: Deploy to Cloud Run
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: |
+          gcloud run deploy ${{ secrets.SERVICE_NAME }} \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.SERVICE_NAME }}:${{ github.sha }} \
+            --region ${{ vars.REGION }}
