@@ -74,9 +74,9 @@ jobs:
           env_vars: |
             BASIC_AUTH_ENABLED=true
           secrets: |
-            BASIC_AUTH_USER=${{ secrets.CLIENT_SERVICE_NAME }}-basic-auth-user:latest
-            BASIC_AUTH_PASSWORD=${{ secrets.CLIENT_SERVICE_NAME }}-basic-auth-password:latest
-            ISR_SECRET=${{ secrets.CLIENT_SERVICE_NAME }}-isr-secret:latest
+            BASIC_AUTH_USER=basic-auth-user:latest
+            BASIC_AUTH_PASSWORD=basic-auth-password:latest
+            ISR_SECRET=isr-secret:latest
 
   deploy-server:
     name: Deploy Server
@@ -135,7 +135,7 @@ jobs:
           flags: '--allow-unauthenticated --service-account ${{ secrets.RUN_SERVICE_ACCOUNT }}'
           secrets: |
             DATABASE_URL=${{ secrets.SERVER_SERVICE_NAME }}-database-url:latest
-            CORS_ORIGINS=${{ secrets.SERVER_SERVICE_NAME }}-cors-origins:latest
-            COOKIE_DOMAIN=${{ secrets.SERVER_SERVICE_NAME }}-cookie-domain:latest
-            BASIC_AUTH_USER=${{ secrets.SERVER_SERVICE_NAME }}-basic-auth-user:latest
-            BASIC_AUTH_PASSWORD=${{ secrets.SERVER_SERVICE_NAME }}-basic-auth-password:latest
+            CORS_ORIGINS=preview-${{ secrets.SERVER_SERVICE_NAME }}-cors-origins:latest
+            COOKIE_DOMAIN=preview-${{ secrets.SERVER_SERVICE_NAME }}-cookie-domain:latest
+            BASIC_AUTH_USER=basic-auth-user:latest
+            BASIC_AUTH_PASSWORD=basic-auth-password:latest
