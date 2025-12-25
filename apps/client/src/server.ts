@@ -137,13 +137,10 @@ app.get('/sitemap.xml', async (req, res) => {
   const response = await fetch(`${apiUrl}/sitemap`);
   if (response.ok) {
     const data = await response.json();
-    articleUrls = data.articles.flatMap(
-      (article: { publicId: string; pages: Array<{ publicId: string; updatedAt: string }> }) =>
-        article.pages.map((page) => ({
-          url: `${baseUrl}/article/${article.publicId}/${page.publicId}`,
-          lastmod: new Date(page.updatedAt).toISOString(),
-        })),
-    );
+    articleUrls = data.articles.map((article: { slug: string; updatedAt: string }) => ({
+      url: `${baseUrl}/article/${article.slug}`,
+      lastmod: article.updatedAt,
+    }));
   }
 
   const allUrls = [...staticPages, ...articleUrls];

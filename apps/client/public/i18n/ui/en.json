@@ -151,6 +151,15 @@
     "noPendingRegistration": "No pending registration found. Please restart from login.",
     "goToLogin": "Go to Login"
   },
+  "seo": {
+    "siteName": "conduit",
+    "defaultTitle": "conduit - Angular + NestJS RealWorld Example App",
+    "defaultDescription": "full-stack RealWorld example application built with Angular, NestJS, and Turbo. Adheres to the RealWorld spec and API.",
+    "home": {
+      "title": "Home",
+      "description": "A place to share your Angular knowledge."
+    }
+  },
   "settings": {
     "title": "Settings",
     "image": "Profile Picture URL",

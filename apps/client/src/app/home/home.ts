@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { RxLet } from '@rx-angular/template/let';
 import { filter, take } from 'rxjs';
 
 import { ArticleListConfig } from '$domains/article';
 import { HomeFacade } from '$domains/home';
 import { AuthFacade } from '$modules/auth';
+import { SeoService } from '$modules/seo';
 import { ArticleListComponent } from './components/article-list/article-list';
 import { TagListComponent } from './components/tag-list/tag-list';
 
@@ -22,6 +23,8 @@ export class HomeComponent {
   private readonly router = inject(Router);
   private readonly facade = inject(HomeFacade);
   private readonly authFacade = inject(AuthFacade);
+  private readonly seoService = inject(SeoService);
+  private readonly translateService = inject(TranslateService);
 
   readonly tags$ = this.facade.tags$;
   readonly articles$ = this.facade.articles$;
@@ -32,6 +35,14 @@ export class HomeComponent {
 
   constructor() {
     this.facade.loadTags();
+
+    // Set SEO metadata
+    this.seoService.setPageMeta({
+      title: this.translateService.instant('seo.home.title') || 'conduit',
+      description: this.translateService.instant('seo.home.description') || 'A place to share your Angular knowledge.',
+      type: 'website',
+      url: '/',
+    });
 
     // Load initial articles based on auth status
     this.authFacade.isAuthenticated$.pipe(take(1)).subscribe((isAuth) => {

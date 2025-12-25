@@ -7,6 +7,7 @@ import { ArticleModule } from '$domains/article/article.module';
 import { ArticleEditModule } from '$domains/article-edit/article-edit.module';
 import { ArticleListModule } from '$domains/article-list/article-list.module';
 import { ProfileModule } from '$domains/profile/profile.module';
+import { SitemapModule } from '$domains/sitemap';
 import { UserModule } from '$domains/user/user.module';
 import { UnprocessableEntityError } from '$errors';
 import { LoggingInterceptor } from '$interceptors';
@@ -49,6 +50,7 @@ import type { ValidationErrorCode } from '@monorepo/error-code';
       envFilePath: ['.env.local', '.env'], // 複数ファイル対応（優先順位順）
     }),
     ProfileModule,
+    SitemapModule,
     UserModule,
     // レート制限の設定
     ThrottlerModule.forRoot([

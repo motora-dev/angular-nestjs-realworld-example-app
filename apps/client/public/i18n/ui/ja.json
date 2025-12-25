@@ -151,6 +151,15 @@
     "noPendingRegistration": "登録情報がありません。ログインからやり直してください。",
     "goToLogin": "ログインへ"
   },
+  "seo": {
+    "siteName": "conduit",
+    "defaultTitle": "conduit - Angular + NestJS RealWorld Example App",
+    "defaultDescription": "full-stack RealWorld example application built with Angular, NestJS, and Turbo. Adheres to the RealWorld spec and API.",
+    "home": {
+      "title": "ホーム",
+      "description": "Angularの知識を共有する場所"
+    }
+  },
   "settings": {
     "title": "設定",
     "image": "プロフィール画像URL",

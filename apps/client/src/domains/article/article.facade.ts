@@ -4,6 +4,7 @@ import { Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
+import { SeoService } from '$modules/seo';
 import { SpinnerFacade } from '$modules/spinner';
 import { ArticleApi, ArticleResponse, CommentResponse, CommentsApi } from './api';
 import { Article, Comment } from './model';
@@ -25,6 +26,7 @@ export class ArticleFacade {
   private readonly articleApi = inject(ArticleApi);
   private readonly commentsApi = inject(CommentsApi);
   private readonly router = inject(Router);
+  private readonly seoService = inject(SeoService);
   private readonly spinnerFacade = inject(SpinnerFacade);
 
   // Article selectors
@@ -57,6 +59,15 @@ export class ArticleFacade {
       .subscribe((response) => {
         const article = this.mapResponseToArticle(response);
         this.store.dispatch(new SetArticle(article));
+
+        // Set SEO metadata when article is loaded
+        this.seoService.setPageMeta({
+          title: article.title,
+          description: article.description,
+          type: 'article',
+          url: `/article/${article.slug}`,
+          tags: article.tagList,
+        });
       });
   }
 
