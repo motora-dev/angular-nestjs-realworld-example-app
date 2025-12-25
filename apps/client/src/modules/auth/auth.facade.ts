@@ -20,21 +20,15 @@ export class AuthFacade {
       return;
     }
 
-    this.api.checkSession().subscribe((response) => {
-      this.store.dispatch(new SetAuthenticated(response.authenticated));
-      if (response.authenticated && response.user) {
-        this.store.dispatch(new SetCurrentUser(response.user));
-      }
-    });
-  }
-
-  loadCurrentUser(): void {
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-
-    this.api.getCurrentUser().subscribe((user) => {
-      this.store.dispatch(new SetCurrentUser(user));
+    this.api.getCurrentUser().subscribe({
+      next: (user) => {
+        this.store.dispatch(new SetAuthenticated(true));
+        this.store.dispatch(new SetCurrentUser(user));
+      },
+      error: () => {
+        this.store.dispatch(new SetAuthenticated(false));
+        this.store.dispatch(new SetCurrentUser(null));
+      },
     });
   }
 

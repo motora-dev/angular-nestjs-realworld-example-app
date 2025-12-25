@@ -21,8 +21,13 @@ export const ERROR_CODE = {
   // Comment
   COMMENT_NOT_FOUND: 'COMMENT_NOT_FOUND',
 
-  // Validation
+  // Validation (generic)
   VALIDATION_ERROR: 'VALIDATION_ERROR',
+
+  // Validation (field-specific)
+  USERNAME_REQUIRED: 'USERNAME_REQUIRED',
+  USERNAME_TOO_SHORT: 'USERNAME_TOO_SHORT',
+  USERNAME_INVALID_FORMAT: 'USERNAME_INVALID_FORMAT',
 } as const;
 
 // --- Type definitions ---
@@ -50,3 +55,9 @@ export type NotFoundCode =
 
 /** Error codes for 409 Conflict */
 export type ConflictCode = typeof ERROR_CODE.EMAIL_ALREADY_EXISTS | typeof ERROR_CODE.USERNAME_ALREADY_EXISTS;
+
+/** Error codes for 422 Validation errors (field-specific) */
+export type ValidationErrorCode =
+  | typeof ERROR_CODE.USERNAME_REQUIRED
+  | typeof ERROR_CODE.USERNAME_TOO_SHORT
+  | typeof ERROR_CODE.USERNAME_INVALID_FORMAT;

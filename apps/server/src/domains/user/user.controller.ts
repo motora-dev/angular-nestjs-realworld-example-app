@@ -3,13 +3,13 @@ import { CommandBus, QueryBus } from '@nestjs/cqrs';
 
 import type { CurrentUserType } from '$decorators';
 import { CurrentUser } from '$decorators';
-import { GoogleAuthGuard } from '$guards';
+import { GoogleAuthGuard } from '$modules/auth/guards';
 import { UpdateUserCommand } from './commands';
 import { GetCurrentUserQuery } from './queries';
 
 import type { UpdateUserRequestDto, UserResponseDto } from './contracts';
 
-@Controller('api/user')
+@Controller('user')
 @UseGuards(GoogleAuthGuard)
 export class UserController {
   constructor(

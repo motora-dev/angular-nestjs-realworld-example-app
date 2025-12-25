@@ -1,12 +1,11 @@
 import { ConfigModule } from '@nestjs/config';
 import { CqrsModule } from '@nestjs/cqrs';
-import { PassportModule } from '@nestjs/passport';
 import { Test } from '@nestjs/testing';
 
 import { PrismaAdapter } from '$adapters';
 import { AuthController } from './auth.controller';
 import { AuthModule } from './auth.module';
-import { CreateUserFromGoogleHandler } from './commands/create-user/create-user.handler';
+import { RegisterUserHandler } from './commands/register-user/register-user.handler';
 import { AuthRepository } from './repositories/auth.repository';
 import { AuthService } from './services/auth.service';
 
@@ -33,7 +32,7 @@ describe('AuthModule', () => {
       const providers = Reflect.getMetadata('providers', AuthModule) || [];
       const exports = Reflect.getMetadata('exports', AuthModule) || [];
 
-      // imports の確認 (PassportModuleは特別な設定を持つため、CqrsModuleとConfigModuleのみチェック)
+      // imports の確認
       expect(moduleMetadata).toContain(ConfigModule);
       expect(moduleMetadata).toContain(CqrsModule);
 
@@ -46,17 +45,6 @@ describe('AuthModule', () => {
       // providers の確認（具体的なクラスは実際のファイルが存在しないとテストできないため、長さのみ確認）
       expect(providers).toBeDefined();
       expect(Array.isArray(providers)).toBe(true);
-    });
-
-    it('should have PassportModule with session configuration', () => {
-      const moduleMetadata = Reflect.getMetadata('imports', AuthModule) || [];
-
-      // PassportModuleが含まれているかチェック（設定付きのため特別処理）
-      const hasPassportModule = moduleMetadata.some((importModule: any) => {
-        return importModule && typeof importModule === 'object' && importModule.module === PassportModule;
-      });
-
-      expect(hasPassportModule).toBe(true);
     });
   });
 
@@ -71,7 +59,7 @@ describe('AuthModule', () => {
         .useValue({})
         .overrideProvider(PrismaAdapter)
         .useValue({})
-        .overrideProvider(CreateUserFromGoogleHandler)
+        .overrideProvider(RegisterUserHandler)
         .useValue({})
         .compile();
 
@@ -89,7 +77,7 @@ describe('AuthModule', () => {
         .useValue({})
         .overrideProvider(PrismaAdapter)
         .useValue({})
-        .overrideProvider(CreateUserFromGoogleHandler)
+        .overrideProvider(RegisterUserHandler)
         .useValue({})
         .compile();
 
@@ -109,7 +97,7 @@ describe('AuthModule', () => {
         .useValue({})
         .overrideProvider(PrismaAdapter)
         .useValue({})
-        .overrideProvider(CreateUserFromGoogleHandler)
+        .overrideProvider(RegisterUserHandler)
         .useValue({})
         .compile();
 
@@ -129,7 +117,7 @@ describe('AuthModule', () => {
         .useValue(mockRepository)
         .overrideProvider(PrismaAdapter)
         .useValue({})
-        .overrideProvider(CreateUserFromGoogleHandler)
+        .overrideProvider(RegisterUserHandler)
         .useValue({})
         .compile();
 
@@ -149,7 +137,7 @@ describe('AuthModule', () => {
         .useValue({})
         .overrideProvider(PrismaAdapter)
         .useValue(mockAdapter)
-        .overrideProvider(CreateUserFromGoogleHandler)
+        .overrideProvider(RegisterUserHandler)
         .useValue({})
         .compile();
 
@@ -159,7 +147,7 @@ describe('AuthModule', () => {
     });
 
     it('should provide command handlers', async () => {
-      const mockGoogleHandler = { test: 'google' };
+      const mockRegisterHandler = { test: 'register' };
 
       const testModule = await Test.createTestingModule({
         imports: [AuthModule],
@@ -170,13 +158,13 @@ describe('AuthModule', () => {
         .useValue({})
         .overrideProvider(PrismaAdapter)
         .useValue({})
-        .overrideProvider(CreateUserFromGoogleHandler)
-        .useValue(mockGoogleHandler)
+        .overrideProvider(RegisterUserHandler)
+        .useValue(mockRegisterHandler)
         .compile();
 
-      const googleHandler = testModule.get<CreateUserFromGoogleHandler>(CreateUserFromGoogleHandler);
+      const registerHandler = testModule.get<RegisterUserHandler>(RegisterUserHandler);
 
-      expect(googleHandler).toBe(mockGoogleHandler);
+      expect(registerHandler).toBe(mockRegisterHandler);
       await testModule.close();
     });
 
@@ -191,7 +179,7 @@ describe('AuthModule', () => {
         .useValue({})
         .overrideProvider(PrismaAdapter)
         .useValue({})
-        .overrideProvider(CreateUserFromGoogleHandler)
+        .overrideProvider(RegisterUserHandler)
         .useValue({})
         .compile();
 
@@ -203,23 +191,12 @@ describe('AuthModule', () => {
   });
 
   describe('module imports validation', () => {
-    it('should have PassportModule with correct session configuration', () => {
-      const moduleMetadata = Reflect.getMetadata('imports', AuthModule) || [];
-
-      // PassportModuleの設定を確認
-      const passportModuleConfig = moduleMetadata.find((importModule: any) => {
-        return importModule && typeof importModule === 'object' && importModule.module === PassportModule;
-      });
-
-      expect(passportModuleConfig).toBeDefined();
-    });
-
     it('should include all required modules', () => {
       const moduleMetadata = Reflect.getMetadata('imports', AuthModule) || [];
 
       expect(moduleMetadata).toContain(ConfigModule);
       expect(moduleMetadata).toContain(CqrsModule);
-      expect(moduleMetadata).toHaveLength(3); // PassportModule, ConfigModule, CqrsModule
+      expect(moduleMetadata).toHaveLength(2); // ConfigModule, CqrsModule
     });
   });
 

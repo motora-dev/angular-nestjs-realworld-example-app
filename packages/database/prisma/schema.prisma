@@ -22,12 +22,13 @@ model User {
   bio      String?
   image    String?
 
-  accounts  Account[]
-  articles  Article[]
-  comments  Comment[]
-  favorites Favorite[]
-  followers Follow[]   @relation("following")
-  following Follow[]   @relation("followers")
+  accounts      Account[]
+  articles      Article[]
+  comments      Comment[]
+  favorites     Favorite[]
+  followers     Follow[]       @relation("following")
+  following     Follow[]       @relation("followers")
+  refreshTokens RefreshToken[]
 }
 
 model Account {
@@ -109,4 +110,17 @@ model Favorite {
   @@id([userId, articleId])
   @@index([userId])
   @@index([articleId])
+}
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    Int
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
 }

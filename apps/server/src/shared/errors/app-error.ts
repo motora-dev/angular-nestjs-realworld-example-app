@@ -1,3 +1,5 @@
+import { ERROR_CODE } from '@monorepo/error-code';
+
 import type {
   ErrorCode,
   BadRequestCode,
@@ -6,6 +8,7 @@ import type {
   InternalServerErrorCode,
   NotFoundCode,
   UnauthorizedCode,
+  ValidationErrorCode,
 } from '@monorepo/error-code';
 
 /**
@@ -76,5 +79,23 @@ export class InternalServerError extends AppError {
   constructor(code: InternalServerErrorCode, params?: ErrorParams) {
     super(code, params);
     this.name = 'InternalServerError';
+  }
+}
+
+// 3. Validation error types (for 422 Unprocessable Entity)
+
+/**
+ * Validation field error for GitHub-style error response
+ */
+export interface ValidationFieldError {
+  field: string;
+  code: ValidationErrorCode;
+}
+
+// Use for 422 Unprocessable Entity errors (validation errors)
+export class UnprocessableEntityError extends AppError {
+  constructor(public readonly errors: ValidationFieldError[]) {
+    super(ERROR_CODE.VALIDATION_ERROR);
+    this.name = 'UnprocessableEntityError';
   }
 }

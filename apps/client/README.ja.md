@@ -107,29 +107,32 @@ pnpm build-storybook
 
 ## 環境変数
 
-**キーワード**: `環境変数`, `environment.ts`, `.env`, `環境設定`
+**キーワード**: `環境変数`, `environment.ts`, `.env`, `環境設定`, `BUILD_CONFIGURATION`
 
 このセクションでは、プロジェクトで必要な環境変数とその設定方法について説明します。
 
-### environment.ts（Angularアプリケーション設定）
+### environment.ts（ビルド時設定）
 
-ビルド時に埋め込まれる設定です。
+Angularアプリケーションのビルド時に埋め込まれる設定です。
 
-| 変数名       | 説明                      | 例                      | 必須   |
-| ------------ | ------------------------- | ----------------------- | ------ |
-| `production` | 本番モードフラグ          | `false`                 | はい   |
-| `apiUrl`     | バックエンドAPIのURL      | `http://localhost:4000` | はい   |
-| `baseUrl`    | フロントエンドのベースURL | `http://localhost:4200` | はい   |
-| `gaId`       | Google Analytics ID       | `G-XXXXXXX`             | いいえ |
+| 変数名          | 説明                      | 例                      | 必須   |
+| --------------- | ------------------------- | ----------------------- | ------ |
+| **Application** |                           |                         |        |
+| `production`    | 本番モードフラグ          | `false`                 | はい   |
+| **API / URL**   |                           |                         |        |
+| `apiUrl`        | バックエンドAPIのURL      | `http://localhost:4000` | はい   |
+| `baseUrl`       | フロントエンドのベースURL | `http://localhost:4200` | はい   |
+| **Analytics**   |                           |                         |        |
+| `gaId`          | Google Analytics ID       | `G-XXXXXXX`             | いいえ |
 
 #### 環境ファイルの種類
 
-| ファイル                 | 用途                   |
-| ------------------------ | ---------------------- |
-| `environment.ts`         | 開発環境（デフォルト） |
-| `environment.develop.ts` | 開発環境               |
-| `environment.preview.ts` | プレビュー環境         |
-| `environment.prod.ts`    | 本番環境               |
+| ファイル                 | 用途                   | BUILD_CONFIGURATION |
+| ------------------------ | ---------------------- | ------------------- |
+| `environment.ts`         | 開発環境（デフォルト） | -                   |
+| `environment.develop.ts` | 開発環境               | `develop`           |
+| `environment.preview.ts` | プレビュー環境         | `preview`           |
+| `environment.prod.ts`    | 本番環境               | `production`        |
 
 #### 設定例
 
@@ -143,17 +146,60 @@ export const environment = {
 };
 ```
 
-### .env（SSRサーバー設定）
+### .env（SSRサーバー実行時設定）
 
 SSRサーバー（Express）で使用する実行時環境変数です。
 
 | 変数名                | 説明                           | 例                | 必須   |
 | --------------------- | ------------------------------ | ----------------- | ------ |
+| **Server**            |                                |                   |        |
 | `NODE_ENV`            | 環境（production/development） | `production`      | いいえ |
+| `PORT`                | サーバーポート番号             | `8080`            | いいえ |
+| **Basic Auth**        |                                |                   |        |
 | `BASIC_AUTH_ENABLED`  | Basic認証の有効化              | `true`            | いいえ |
 | `BASIC_AUTH_USER`     | Basic認証ユーザー名            | `admin`           | いいえ |
 | `BASIC_AUTH_PASSWORD` | Basic認証パスワード            | `password`        | いいえ |
+| **ISR**               |                                |                   |        |
 | `ISR_SECRET`          | ISR invalidate用シークレット   | `MY_SECRET_TOKEN` | いいえ |
+
+#### 環境変数の設定
+
+```bash
+# .env.exampleをコピー
+cp .env.example .env
+
+# エディタで.envを編集し、実際の値を設定
+```
+
+### BUILD_CONFIGURATION（Dockerビルド設定）
+
+Dockerビルド時に使用する環境変数です。どのenvironmentファイルを使用するかを指定します。
+
+| 変数名                | 説明                   | 例           | 必須   |
+| --------------------- | ---------------------- | ------------ | ------ |
+| `BUILD_CONFIGURATION` | ビルド設定（環境指定） | `production` | いいえ |
+
+#### 使用方法
+
+```bash
+# ローカルでのビルド（デフォルト: develop）
+pnpm build
+
+# 本番環境向けビルド
+BUILD_CONFIGURATION=production pnpm build
+
+# Dockerビルド時
+docker build --build-arg BUILD_CONFIGURATION=production -t client .
+```
+
+#### Cloud Build での設定
+
+`cloudbuild.yaml` で `_BUILD_CONFIGURATION` 変数として指定します：
+
+```yaml
+substitutions:
+  _BUILD_CONFIGURATION: production
+```
 
 ---
 

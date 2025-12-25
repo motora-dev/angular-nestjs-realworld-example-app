@@ -70,13 +70,6 @@
       "articleIdOrPageIdRequired": "記事IDもしくはページIDが指定されていません"
     }
   },
-  "callback": {
-    "title": "ログイン完了",
-    "message": "ログインに成功しました",
-    "redirecting": "ホームページへ移動中...",
-    "newUserTitle": "ようこそ！",
-    "newUserMessage": "アカウント登録に進みます"
-  },
   "common": {
     "backToHome": "トップページへ戻る",
     "close": "閉じる"
@@ -115,7 +108,10 @@
   "header": {
     "siteName": "conduit",
     "articles": "記事一覧",
-    "openMenu": "メニューを開く"
+    "openMenu": "メニューを開く",
+    "loginOrRegister": "ログイン / 新規登録",
+    "settings": "設定",
+    "logout": "ログアウト"
   },
   "home": {
     "tagline": "Angularの知識を共有する場所",

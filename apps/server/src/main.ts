@@ -2,8 +2,8 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import cookieParser from 'cookie-parser';
+import { randomUUID } from 'crypto';
 import { doubleCsrf } from 'csrf-csrf';
-import session from 'express-session';
 
 import { HttpExceptionFilter } from '$filters';
 import { LoggingInterceptor } from '$interceptors';
@@ -13,6 +13,9 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const config = app.get(ConfigService);
   const isProd = config.get('NODE_ENV') === 'production';
+
+  // Set global API prefix for all routes
+  app.setGlobalPrefix('api');
 
   // Cloud Run環境でクライアントの実際のIPアドレスを取得するための設定
   // X-Forwarded-ForヘッダーからIPアドレスを信頼する
@@ -30,29 +33,16 @@ async function bootstrap() {
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-Xsrf-Token'],
   });
-  app.use(
-    session({
-      secret: config.get('SESSION_SECRET_TOKEN') || 'fallback-secret-key-for-dev-only',
-      resave: false,
-      saveUninitialized: true,
-      cookie: {
-        maxAge: 1000 * 60 * 60 * 24 * 14, // 14 days
-        secure: isProd, // 開発環境では false, 本番では true を推奨
-        path: '/',
-        httpOnly: true,
-        sameSite: 'lax', // strictからlaxに変更して異なるサイト間での認証を許可
-      },
-    }),
-  );
 
   // csrf-csrfの設定
-  const sessionSecret = config.get('SESSION_SECRET_TOKEN') || 'fallback-secret-key-for-dev-only';
+  const csrfSecretRaw = config.get('CSRF_SECRET') || 'fallback-csrf-secret-for-dev-only';
   // 32文字の秘密鍵を生成（元のシークレットをパディング）
-  const csrfSecret = sessionSecret.padEnd(32, '0').substring(0, 32);
+  const csrfSecret = csrfSecretRaw.padEnd(32, '0').substring(0, 32);
 
   const { doubleCsrfProtection, generateCsrfToken } = doubleCsrf({
     getSecret: () => csrfSecret,
-    getSessionIdentifier: (req) => req.sessionID || req.session?.id,
+    // Use csrf-session-id cookie as session identifier (set below if not present)
+    getSessionIdentifier: (req) => req.cookies?.['csrf-session-id'] || '',
     cookieName: 'XSRF-TOKEN',
     cookieOptions: {
       httpOnly: false,
@@ -66,6 +56,23 @@ async function bootstrap() {
       // 配列の場合は最初の要素を返す
       return Array.isArray(token) ? token[0] : token;
     },
+  });
+
+  // Set csrf-session-id cookie if not present (for CSRF protection without express-session)
+  app.use((req: any, res: any, next: any) => {
+    if (!req.cookies?.['csrf-session-id']) {
+      const csrfSessionId = randomUUID();
+      res.cookie('csrf-session-id', csrfSessionId, {
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: isProd,
+        path: '/',
+        maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year
+      });
+      req.cookies = req.cookies || {};
+      req.cookies['csrf-session-id'] = csrfSessionId;
+    }
+    next();
   });
 
   // req.csrfToken()メソッドを追加

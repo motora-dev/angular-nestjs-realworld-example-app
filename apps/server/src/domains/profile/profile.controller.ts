@@ -3,13 +3,13 @@ import { CommandBus, QueryBus } from '@nestjs/cqrs';
 
 import type { CurrentUserType } from '$decorators';
 import { CurrentUser } from '$decorators';
-import { GoogleAuthGuard } from '$guards';
+import { GoogleAuthGuard } from '$modules/auth/guards';
 import { FollowUserCommand, UnfollowUserCommand } from './commands';
 import { GetProfileQuery } from './queries';
 
 import type { ProfileResponseDto } from './contracts';
 
-@Controller('api/profiles')
+@Controller('profiles')
 export class ProfileController {
   constructor(
     private readonly commandBus: CommandBus,

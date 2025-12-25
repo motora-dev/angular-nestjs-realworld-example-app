@@ -7,4 +7,5 @@ export type {
   InternalServerErrorCode,
   NotFoundCode,
   UnauthorizedCode,
+  ValidationErrorCode,
 } from './src/error-code';

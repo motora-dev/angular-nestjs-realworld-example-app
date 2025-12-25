@@ -68,15 +68,13 @@
       <!-- Link to Login -->
       <p class="mt-6 text-center text-sm text-muted-foreground">
         {{ 'register.alreadyHaveAccount' | translate }}
-        <a routerLink="/auth-login" class="font-medium text-primary hover:underline">
-          {{ 'register.login' | translate }}
-        </a>
+        <a routerLink="/login" class="font-medium text-primary hover:underline"> {{ 'register.login' | translate }} </a>
       </p>
       } @else {
       <!-- No pending registration -->
       <div class="text-center">
         <p class="mb-4 text-muted-foreground">{{ 'register.noPendingRegistration' | translate }}</p>
-        <a routerLink="/auth-login" class="font-medium text-primary hover:underline">
+        <a routerLink="/login" class="font-medium text-primary hover:underline">
           {{ 'register.goToLogin' | translate }}
         </a>
       </div>

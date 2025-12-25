@@ -7,7 +7,7 @@ import { GetArticleQuery, GetCommentsQuery } from './queries';
 
 import type { MultipleCommentsDto, SingleArticleDto } from './contracts';
 
-@Controller('api/articles')
+@Controller('articles')
 export class ArticleController {
   constructor(private readonly queryBus: QueryBus) {}
 

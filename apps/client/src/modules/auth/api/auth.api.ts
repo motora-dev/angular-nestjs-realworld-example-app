@@ -5,16 +5,12 @@ import { map } from 'rxjs/operators';
 
 import { API_URL } from '$shared/lib';
 import { User } from '../model';
-import { CheckSessionResponse, LogoutResponse, UserResponse } from './auth.response';
+import { LogoutResponse, UserResponse } from './auth.response';
 
 @Injectable({ providedIn: 'root' })
 export class AuthApi {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = inject(API_URL);
-
-  checkSession(): Observable<CheckSessionResponse> {
-    return this.http.get<CheckSessionResponse>(`${this.baseUrl}/auth/check-session`);
-  }
 
   getCurrentUser(): Observable<User> {
     return this.http.get<UserResponse>(`${this.baseUrl}/user`).pipe(map((res) => res.user));

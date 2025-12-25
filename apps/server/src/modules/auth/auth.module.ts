@@ -1,20 +1,34 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { CqrsModule } from '@nestjs/cqrs';
-import { PassportModule } from '@nestjs/passport';
 
 import { PrismaAdapter } from '$adapters';
 import { AuthController } from './auth.controller';
-import { CreateUserFromGoogleHandler } from './commands';
-import { AuthRepository } from './repositories/auth.repository';
-import { AuthService } from './services/auth.service';
+import {
+  ProcessOAuthCallbackHandler,
+  RefreshAccessTokenHandler,
+  RegisterUserHandler,
+  RevokeRefreshTokenHandler,
+} from './commands';
+import { GoogleAuthGuard } from './guards';
+import { GetCurrentAuthUserHandler, GetPendingRegistrationHandler } from './queries';
+import { AuthRepository } from './repositories';
+import { AuthService } from './services';
 
-const CommandHandlers = [CreateUserFromGoogleHandler];
+const CommandHandlers = [
+  ProcessOAuthCallbackHandler,
+  RefreshAccessTokenHandler,
+  RegisterUserHandler,
+  RevokeRefreshTokenHandler,
+];
 
+const QueryHandlers = [GetCurrentAuthUserHandler, GetPendingRegistrationHandler];
+
+@Global()
 @Module({
-  imports: [PassportModule.register({ session: true }), ConfigModule, CqrsModule],
+  imports: [ConfigModule, CqrsModule],
   controllers: [AuthController],
-  providers: [AuthService, AuthRepository, PrismaAdapter, ...CommandHandlers],
-  exports: [AuthService],
+  providers: [AuthService, AuthRepository, PrismaAdapter, GoogleAuthGuard, ...CommandHandlers, ...QueryHandlers],
+  exports: [AuthService, GoogleAuthGuard],
 })
 export class AuthModule {}

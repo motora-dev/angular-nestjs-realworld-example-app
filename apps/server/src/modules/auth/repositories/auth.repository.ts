@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaAdapter } from '$adapters';
 import { generatePublicId } from '$shared/utils/id-generator';
 
-import type { User } from '@monorepo/database/client';
+import type { RefreshToken, User } from '@monorepo/database/client';
 
 @Injectable()
 export class AuthRepository {
@@ -69,6 +69,60 @@ export class AuthRepository {
         username,
         accounts: {
           create: { provider, sub, email },
+        },
+      },
+    });
+  }
+
+  /**
+   * Create a new refresh token
+   */
+  async createRefreshToken(userId: number, token: string, expiresAt: Date): Promise<RefreshToken> {
+    return this.prisma.refreshToken.create({
+      data: {
+        token,
+        userId,
+        expiresAt,
+      },
+    });
+  }
+
+  /**
+   * Find a refresh token by token string
+   */
+  async findRefreshToken(token: string): Promise<(RefreshToken & { user: User }) | null> {
+    return this.prisma.refreshToken.findUnique({
+      where: { token },
+      include: { user: true },
+    });
+  }
+
+  /**
+   * Delete a refresh token by token string
+   */
+  async deleteRefreshToken(token: string): Promise<void> {
+    await this.prisma.refreshToken.deleteMany({
+      where: { token },
+    });
+  }
+
+  /**
+   * Delete all refresh tokens for a user
+   */
+  async deleteAllRefreshTokens(userId: number): Promise<void> {
+    await this.prisma.refreshToken.deleteMany({
+      where: { userId },
+    });
+  }
+
+  /**
+   * Delete expired refresh tokens (cleanup)
+   */
+  async deleteExpiredRefreshTokens(): Promise<void> {
+    await this.prisma.refreshToken.deleteMany({
+      where: {
+        expiresAt: {
+          lt: new Date(),
         },
       },
     });

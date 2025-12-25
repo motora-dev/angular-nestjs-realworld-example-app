@@ -3,12 +3,12 @@ import { QueryBus } from '@nestjs/cqrs';
 
 import type { CurrentUserType } from '$decorators';
 import { CurrentUser } from '$decorators';
-import { GoogleAuthGuard } from '$guards';
+import { GoogleAuthGuard } from '$modules/auth/guards';
 import { GetArticlesQuery, GetFeedQuery, GetTagsQuery } from './queries';
 
 import type { GetArticlesQueryDto, GetFeedQueryDto, MultipleArticlesDto, TagsDto } from './contracts';
 
-@Controller('api')
+@Controller()
 export class ArticleListController {
   constructor(private readonly queryBus: QueryBus) {}
 

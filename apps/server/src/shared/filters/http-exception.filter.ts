@@ -10,9 +10,10 @@ import {
   InternalServerError,
   NotFoundError,
   UnauthorizedError,
+  UnprocessableEntityError,
 } from '$errors';
 
-import type { ErrorParams } from '$errors';
+import type { ErrorParams, ValidationFieldError } from '$errors';
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -27,8 +28,15 @@ export class HttpExceptionFilter implements ExceptionFilter {
     let errorCode: string = '';
     let message: string;
     let params: ErrorParams | undefined;
+    let errors: ValidationFieldError[] | undefined;
 
-    if (exception instanceof AppError) {
+    if (exception instanceof UnprocessableEntityError) {
+      // UnprocessableEntityError case - GitHub style response
+      status = HttpStatus.UNPROCESSABLE_ENTITY;
+      errorCode = ERROR_CODE.VALIDATION_ERROR;
+      message = 'Validation Failed';
+      errors = exception.errors;
+    } else if (exception instanceof AppError) {
       // AppError case
       status = getStatusCode(exception);
       errorCode = exception.code;
@@ -56,6 +64,24 @@ export class HttpExceptionFilter implements ExceptionFilter {
     }
 
     // Error logging
+    this.logError(request, status, errorCode, message, exception);
+
+    // UnprocessableEntityError returns GitHub-style response
+    if (errors) {
+      response.status(status).json({
+        message,
+        errors,
+      });
+    } else {
+      response.status(status).json({
+        errorCode,
+        message,
+        params,
+      });
+    }
+  }
+
+  private logError(request: any, status: number, errorCode: string, message: string, exception: unknown) {
     this.logger.error(
       JSON.stringify({
         timestamp: new Date().toISOString(),
@@ -70,12 +96,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
         stack: exception instanceof Error ? exception.stack : undefined,
       }),
     );
-
-    response.status(status).json({
-      errorCode,
-      message,
-      params,
-    });
   }
 }
 

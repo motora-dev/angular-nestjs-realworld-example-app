@@ -15,7 +15,7 @@ import { CommandBus, QueryBus } from '@nestjs/cqrs';
 
 import type { CurrentUserType } from '$decorators';
 import { CurrentUser } from '$decorators';
-import { GoogleAuthGuard } from '$guards';
+import { GoogleAuthGuard } from '$modules/auth/guards';
 import {
   CreateArticleCommand,
   CreateCommentCommand,
@@ -35,7 +35,7 @@ import type {
   UpdateArticleRequestDto,
 } from './contracts';
 
-@Controller('api/articles')
+@Controller('articles')
 @UseGuards(GoogleAuthGuard)
 export class ArticleEditController {
   constructor(

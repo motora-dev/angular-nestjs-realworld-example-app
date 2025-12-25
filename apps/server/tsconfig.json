@@ -14,7 +14,6 @@
       "$domains/*": ["src/domains/*"],
       "$errors": ["src/shared/errors"],
       "$filters": ["src/shared/filters"],
-      "$guards": ["src/shared/guards"],
       "$interceptors": ["src/shared/interceptors"],
       "$modules/*": ["src/modules/*"],
       "$shared/*": ["src/shared/*"],
@@ -22,8 +21,5 @@
     },
     "target": "ES2023"
   },
-  "references": [
-    { "path": "./tsconfig.build.json" },
-    { "path": "./tsconfig.spec.json" }
-  ]
+  "references": [{ "path": "./tsconfig.build.json" }, { "path": "./tsconfig.spec.json" }]
 }

@@ -109,15 +109,24 @@ pnpm check-all
 
 このセクションでは、プロジェクトで必要な環境変数とその設定方法について説明します。
 
-| 変数名                 | 説明                                      | 例                                    | 必須   |
-| ---------------------- | ----------------------------------------- | ------------------------------------- | ------ |
-| `DATABASE_URL`         | PostgreSQLデータベースURL（接続プール用） | `postgresql://postgres:pass@host/db`  | はい   |
-| `CORS_ORIGINS`         | CORS許可オリジン（カンマ区切り）          | `http://localhost:4200`               | はい   |
-| `PORT`                 | サーバーポート番号                        | `4000`                                | いいえ |
-| `GOOGLE_CLIENT_ID`     | Google OAuth Client ID                    | `xxx.apps.googleusercontent.com`      | はい   |
-| `GOOGLE_CLIENT_SECRET` | Google OAuth Secret                       | `GOCSPX-xxx`                          | はい   |
-| `GOOGLE_CALLBACK_URL`  | Google OAuth Callback URL                 | `http://localhost:4000/auth/callback` | はい   |
-| `SESSION_SECRET_TOKEN` | セッション暗号化キー                      | `your-secret-key`                     | はい   |
+| 変数名                   | 説明                                      | 例                                        | 必須   |
+| ------------------------ | ----------------------------------------- | ----------------------------------------- | ------ |
+| **Database**             |                                           |                                           |        |
+| `DATABASE_URL`           | PostgreSQLデータベースURL（接続プール用） | `postgresql://postgres:pass@host/db`      | はい   |
+| **Server**               |                                           |                                           |        |
+| `NODE_ENV`               | 実行環境                                  | `development` / `production`              | いいえ |
+| `PORT`                   | サーバーポート番号                        | `4000`                                    | いいえ |
+| **Client / CORS / CSRF** |                                           |                                           |        |
+| `CLIENT_URL`             | クライアントアプリのURL                   | `http://localhost:4200`                   | はい   |
+| `CORS_ORIGINS`           | CORS許可オリジン（カンマ区切り）          | `http://localhost:4200`                   | はい   |
+| `CSRF_SECRET`            | CSRF保護用シークレットキー                | `your-csrf-secret-key`                    | はい   |
+| **Google OAuth**         |                                           |                                           |        |
+| `GOOGLE_CLIENT_ID`       | Google OAuth Client ID                    | `xxx.apps.googleusercontent.com`          | はい   |
+| `GOOGLE_CLIENT_SECRET`   | Google OAuth Secret                       | `GOCSPX-xxx`                              | はい   |
+| `GOOGLE_CALLBACK_URL`    | Google OAuth Callback URL                 | `http://localhost:4000/api/auth/callback` | はい   |
+| **JWT**                  |                                           |                                           |        |
+| `JWT_PRIVATE_KEY`        | JWT署名用RSA秘密鍵（PEM形式）             | `-----BEGIN RSA PRIVATE KEY-----\n...`    | はい   |
+| `JWT_PUBLIC_KEY`         | JWT検証用RSA公開鍵（PEM形式）             | `-----BEGIN PUBLIC KEY-----\n...`         | はい   |
 
 ### 環境変数の設定
 
@@ -127,6 +136,32 @@ cp .env.example .env
 
 # エディタで.envを編集し、実際の値を設定
 ```
+
+### RSA鍵ペアの生成
+
+JWT署名に使用するRSA鍵ペアを生成します：
+
+```bash
+# 秘密鍵を生成（2048ビット）
+openssl genrsa -out private.pem 2048
+
+# 公開鍵を抽出
+openssl rsa -in private.pem -pubout -out public.pem
+```
+
+生成した鍵を環境変数に設定する際は、改行を `\n` に置換します：
+
+```bash
+# 秘密鍵を1行に変換（.env用）
+node -e "console.log('JWT_PRIVATE_KEY=' + JSON.stringify(require('fs').readFileSync('private.pem', 'utf8').trim()))"
+
+# 公開鍵を1行に変換（.env用）
+node -e "console.log('JWT_PUBLIC_KEY=' + JSON.stringify(require('fs').readFileSync('public.pem', 'utf8').trim()))"
+```
+
+**GCP Secret Manager を使用する場合**は、改行をそのまま保持できるためエスケープ不要です。
+
+**注意**: 秘密鍵は絶対にGitにコミットしないでください。本番環境ではGCP Secret Manager等のシークレット管理サービスの使用を推奨します。
 
 ---
 

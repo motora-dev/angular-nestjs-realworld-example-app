@@ -1,5 +1,3 @@
-import 'express-session';
-
 // Augment Express.Request with a user property used by auth guard
 declare global {
   namespace Express {
@@ -21,10 +19,4 @@ declare global {
   }
 }
 
-// Augment express-session with user property
-declare module 'express-session' {
-  interface SessionData {
-    user?: Express.UserPayload;
-    pendingRegistration?: Express.PendingRegistration;
-  }
-}
+export {};

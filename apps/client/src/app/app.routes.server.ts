@@ -26,15 +26,11 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Client,
   },
   {
-    path: 'auth-login',
+    path: 'login',
     renderMode: RenderMode.Client,
   },
   {
-    path: 'auth-callback',
-    renderMode: RenderMode.Client,
-  },
-  {
-    path: 'auth-register',
+    path: 'register',
     renderMode: RenderMode.Client,
   },
   {

@@ -1,6 +1,6 @@
 import { ICommand } from '@nestjs/cqrs';
 
-export class CreateUserCommand implements ICommand {
+export class ProcessOAuthCallbackCommand implements ICommand {
   constructor(
     public readonly provider: string,
     public readonly sub: string,
