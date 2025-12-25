@@ -24,6 +24,10 @@ export class AuthRegisterComponent {
   readonly pendingEmail$ = this.authRegisterFacade.pendingRegistrationEmail$;
   readonly isLoading$ = this.spinnerFacade.isLoading$;
 
+  constructor() {
+    this.authRegisterFacade.loadPendingRegistration();
+  }
+
   readonly registerForm = this.fb.nonNullable.group({
     username: ['', [Validators.required, Validators.minLength(3), Validators.pattern(/^[a-zA-Z0-9_]+$/)]],
     agreeToTerms: [false, [Validators.requiredTrue]],

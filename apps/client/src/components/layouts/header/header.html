@@ -37,7 +37,10 @@
             {{ 'header.loginOrRegister' | translate }}
           </a>
           } @else {
-          <!-- Authenticated: Settings, Profile, Logout -->
+          <!-- Authenticated: New Article, Settings, Profile, Logout -->
+          <a routerLink="/editor" class="text-gray-600 font-medium no-underline hover:text-gray-900">
+            {{ 'header.newArticle' | translate }}
+          </a>
           <a routerLink="/settings" class="text-gray-600 font-medium no-underline hover:text-gray-900">
             {{ 'header.settings' | translate }}
           </a>

@@ -1,6 +1,7 @@
 import { isPlatformBrowser } from '@angular/common';
 import { Component, DOCUMENT, inject, PLATFORM_ID } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 
 import {
   CookieConsentComponent,
@@ -35,6 +36,7 @@ export class App {
   private readonly authFacade = inject(AuthFacade);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly document = inject(DOCUMENT);
+  private readonly translateService = inject(TranslateService);
 
   readonly isAuthenticated$ = this.authFacade.isAuthenticated$;
 
@@ -42,6 +44,11 @@ export class App {
     if (!isPlatformBrowser(this.platformId)) {
       return;
     }
+
+    // Load translations based on browser language on app initialization
+    const browserLang = this.translateService.getBrowserLang();
+    const langToUse = browserLang === 'ja' ? 'ja' : 'en';
+    this.translateService.use(langToUse).subscribe();
 
     if (typeof requestIdleCallback !== 'undefined') {
       requestIdleCallback(() => this.preload());

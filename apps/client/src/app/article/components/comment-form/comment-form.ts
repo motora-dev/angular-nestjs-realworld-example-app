@@ -21,6 +21,7 @@ export class CommentFormComponent {
   private readonly articleFacade = inject(ArticleFacade);
 
   readonly userImage = input<string>('');
+  readonly userName = input<string>('');
 
   readonly submitComment = output<string>();
 

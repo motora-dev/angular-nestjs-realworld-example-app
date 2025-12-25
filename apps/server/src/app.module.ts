@@ -45,6 +45,7 @@ import type { ValidationErrorCode } from '@monorepo/error-code';
     ArticleModule,
     AuthModule,
     ConfigModule.forRoot({
+      isGlobal: true,
       envFilePath: ['.env.local', '.env'], // 複数ファイル対応（優先順位順）
     }),
     ProfileModule,

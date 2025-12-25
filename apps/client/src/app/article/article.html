@@ -42,6 +42,7 @@
             <ng-container *rxLet="currentUser$; let currentUser">
               <app-comment-form
                 [userImage]="currentUser?.image || ''"
+                [userName]="currentUser?.username || ''"
                 (submitComment)="addComment(article.slug, $event)"
               />
             </ng-container>

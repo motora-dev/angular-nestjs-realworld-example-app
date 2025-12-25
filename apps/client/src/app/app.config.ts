@@ -40,7 +40,7 @@ export const appConfig: ApplicationConfig = {
     { provide: ErrorHandler, useClass: ClientErrorHandler },
     importProvidersFrom(
       TranslateModule.forRoot({
-        defaultLanguage: 'ja',
+        fallbackLang: 'en',
         loader: {
           provide: TranslateLoader,
           useFactory: (http: HttpClient) => new MultiTranslateHttpLoader(http),
