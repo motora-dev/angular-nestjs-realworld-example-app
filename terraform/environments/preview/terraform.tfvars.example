@@ -1,6 +1,0 @@
-project_id   = "your-project-name"  # Preview環境用プロジェクト
-region       = "asia-northeast1"
-environment  = "preview"
-service_name = "angular-nestjs-realworld-api"
-github_org   = "motora-dev"
-github_repo  = "angular-nestjs-realworld-example-app"

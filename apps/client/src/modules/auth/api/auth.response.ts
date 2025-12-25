@@ -7,3 +7,8 @@ export interface LogoutResponse {
 export interface UserResponse {
   user: User;
 }
+
+export interface CheckSessionResponse {
+  authenticated: boolean;
+  user?: User;
+}

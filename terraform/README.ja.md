@@ -27,8 +27,7 @@ terraform/
 ├── packages/common/               # 共通モジュール
 │   ├── iam/                       # サービスアカウントとIAM設定
 │   ├── wif/                       # Workload Identity Federation
-│   ├── cloud-run/                 # Cloud Runサービス
-│   └── secrets/                   # Secret Manager
+│   └── cloud-run/                 # Cloud Runサービス
 ├── environments/                  # 環境別設定
 │   ├── develop.tfvars
 │   ├── preview.tfvars
@@ -64,15 +63,18 @@ terraform plan -var-file=environments/develop.tfvars
 terraform apply -var-file=environments/develop.tfvars
 ```
 
-## 📝 シークレットの3段階管理
+## 📝 シークレットの2段階管理
 
-新しい構成では、シークレットを3段階で管理しています：
+新しい構成では、シークレットを2段階で管理しています。環境分離がGCPプロジェクト単位で行われているため、環境固有のプレフィックス（L3）は廃止されました。
 
-| レベル               | 命名規則                 | 例                               | 用途                     |
-| -------------------- | ------------------------ | -------------------------------- | ------------------------ |
-| **L1: グローバル**   | `{name}`                 | `basic-auth-user`                | 全環境・全サービス共通   |
-| **L2: サービス共通** | `{service}-{name}`       | `realworld-database-url`         | 全環境共通・サービス個別 |
-| **L3: 環境個別**     | `{env}-{service}-{name}` | `develop-realworld-cors-origins` | 環境・サービス個別       |
+| レベル               | 命名規則           | 例                       | 用途                                                     |
+| -------------------- | ------------------ | ------------------------ | -------------------------------------------------------- |
+| **L1: グローバル**   | `{name}`           | `basic-auth-user`        | 全サービス共通。<br>環境固有の値であっても名前は共通化。 |
+| **L2: サービス共通** | `{service}-{name}` | `realworld-database-url` | サービス固有。<br>他サービスとの名前衝突を避けるため。   |
+
+## 🏗️ 環境分離の方針
+
+**1環境 = 1 GCPプロジェクト** という方針で運用されています。各環境（develop, preview, main）は独立したGCPプロジェクトとして管理され、`environments/` 以下の tfvars ファイルで `project_id` を切り替えることで環境を分離しています。
 
 ## 🔒 このディレクトリについて
 

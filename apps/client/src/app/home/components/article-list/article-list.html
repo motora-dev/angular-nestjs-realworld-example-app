@@ -1,5 +1,5 @@
 @if (articles().length === 0) {
-<div class="rounded-lg border border-gray-200 bg-white p-8 text-center text-gray-500">
+<div class="rounded-lg border border-gray-200 bg-white p-8 text-center text-gray-600">
   {{ 'home.noArticles' | translate }}
 </div>
 } @else {
@@ -16,10 +16,10 @@
         <a [routerLink]="['/profile', article.author.username]" class="font-medium text-emerald-500 hover:underline">
           {{ article.author.username }}
         </a>
-        <p class="text-sm text-gray-500">{{ article.createdAt | date: 'mediumDate' }}</p>
+        <p class="text-sm text-gray-600">{{ article.createdAt | date: 'mediumDate' }}</p>
       </div>
       <button
-        class="flex items-center gap-1 rounded border border-emerald-500 px-2 py-1 text-sm text-emerald-500 transition-colors hover:bg-emerald-500 hover:text-white"
+        class="flex items-center gap-1 rounded border border-emerald-700 px-2 py-1 text-sm text-emerald-700 transition-colors hover:bg-emerald-700 hover:text-white"
       >
         <span>❤</span>
         <span>{{ article.favoritesCount }}</span>
@@ -37,7 +37,7 @@
       </a>
       <div class="flex flex-wrap gap-1">
         @for (tag of article.tagList; track tag) {
-        <span class="rounded-full border border-gray-300 px-2 py-0.5 text-xs text-gray-500"> {{ tag }} </span>
+        <span class="rounded-full border border-gray-300 px-2 py-0.5 text-xs text-gray-600"> {{ tag }} </span>
         }
       </div>
     </div>

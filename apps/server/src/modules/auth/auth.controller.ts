@@ -102,6 +102,47 @@ export class AuthController {
   }
 
   /**
+   * Check if the user is authenticated.
+   * Returns 200 OK with authentication status (never 401).
+   * Used by client to check session without triggering console errors.
+   */
+  @Get('check-session')
+  @HttpCode(HttpStatus.OK)
+  async checkSession(
+    @Req() req: Request,
+  ): Promise<{ authenticated: boolean; user?: { username: string; email: string; bio: string; image: string } }> {
+    const accessToken = req.cookies?.['access-token'];
+    const refreshToken = req.cookies?.['refresh-token'];
+
+    // 1. If access token exists and is valid, user is authenticated
+    if (accessToken) {
+      const payload = this.authService.verifyAccessToken(accessToken);
+      if (payload) {
+        const user = await this.queryBus.execute(new GetCurrentAuthUserQuery(payload));
+        return { authenticated: true, user: user.user };
+      }
+    }
+
+    // 2. Access token invalid/expired - try to refresh using refresh token
+    if (refreshToken) {
+      const user = await this.authService.validateRefreshToken(refreshToken);
+      if (user) {
+        const userResponse = await this.queryBus.execute(
+          new GetCurrentAuthUserQuery({
+            id: user.id,
+            publicId: user.publicId,
+            username: user.username,
+          }),
+        );
+        return { authenticated: true, user: userResponse.user };
+      }
+    }
+
+    // 3. Not authenticated
+    return { authenticated: false };
+  }
+
+  /**
    * Initiates Google OAuth login flow.
    * Redirects the user to Google's OAuth consent page.
    */
