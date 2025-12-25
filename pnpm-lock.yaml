@@ -393,6 +393,9 @@ importers:
       '@angular/compiler-cli':
         specifier: 'catalog:'
         version: 21.0.3(@angular/compiler@21.0.3)(typescript@5.9.3)
+      '@monorepo/error-code':
+        specifier: workspace:*
+        version: link:../../packages/error-code
       '@monorepo/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config

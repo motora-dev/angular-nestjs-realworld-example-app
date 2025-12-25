@@ -1,5 +1,3 @@
-import { HttpExceptionFilter } from '$filters';
-import { LoggingInterceptor } from '$interceptors';
 import { Logger, Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -8,6 +6,9 @@ import { vi, type MockInstance } from 'vitest';
 import { LoggingControllerMock } from './logging.controller.mock';
 
 import type { INestApplication } from '@nestjs/common';
+
+import { HttpExceptionFilter } from '$filters';
+import { LoggingInterceptor } from '$interceptors';
 
 @Module({
   controllers: [LoggingControllerMock],
@@ -31,7 +32,7 @@ describe('LoggingInterceptor E2E', () => {
       imports: [TestModule],
     }).compile();
 
-    app = moduleFixture.createNestApplication();
+    app = moduleFixture.createNestApplication({ logger: false });
     app.useGlobalFilters(new HttpExceptionFilter());
     await app.init();
     await app.listen(0); // Start on random port
@@ -121,10 +122,11 @@ describe('LoggingInterceptor E2E', () => {
 
       expect(response.status).toBe(404);
 
-      // Interceptor should log once: request log only (no response log on error)
-      expect(loggerLogSpy).toHaveBeenCalledTimes(1);
+      // Interceptor logs request, HttpExceptionFilter logs error (both use logger.log for 404)
+      // Request log (from interceptor) + Error log (from filter at info level for 404)
+      expect(loggerLogSpy).toHaveBeenCalledTimes(2);
 
-      // Check request log structure
+      // Check request log structure (first call)
       const requestLog = JSON.parse(loggerLogSpy.mock.calls[0][0]);
       expect(requestLog.timestamp).toBeDefined();
       expect(requestLog.timestamp).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/); // ISO format
@@ -134,14 +136,16 @@ describe('LoggingInterceptor E2E', () => {
       expect(requestLog.ip).toBeDefined();
       expect(requestLog.userAgent).toBeDefined();
 
-      // Error log should be handled by HttpExceptionFilter
-      expect(loggerErrorSpy).toHaveBeenCalledTimes(1);
+      // 404 errors are logged at info level (logger.log), not error level
+      expect(loggerErrorSpy).not.toHaveBeenCalled();
     });
 
     it('should log comprehensive error information via HttpExceptionFilter', async () => {
       await fetch(`${baseUrl}/logging/error`);
 
-      const errorLog = JSON.parse(loggerErrorSpy.mock.calls[0][0]);
+      // 404 errors are logged at info level (logger.log), not error level
+      // Error log is the second call (after request log)
+      const errorLog = JSON.parse(loggerLogSpy.mock.calls[1][0]);
 
       // Check error log structure
       expect(errorLog.timestamp).toBeDefined();
@@ -172,8 +176,9 @@ describe('LoggingInterceptor E2E', () => {
     it('should have consistent endpoint and method between request and error logs', async () => {
       await fetch(`${baseUrl}/logging/error`);
 
+      // Request log is first, error log is second (both at info level for 404)
       const requestLog = JSON.parse(loggerLogSpy.mock.calls[0][0]);
-      const errorLog = JSON.parse(loggerErrorSpy.mock.calls[0][0]);
+      const errorLog = JSON.parse(loggerLogSpy.mock.calls[1][0]);
 
       // Endpoint and method should match between request and error logs
       expect(requestLog.endpoint).toBe(errorLog.endpoint);

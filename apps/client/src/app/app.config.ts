@@ -1,4 +1,10 @@
-import { provideHttpClient, withFetch, withInterceptors, withXsrfConfiguration } from '@angular/common/http';
+import {
+  HttpClient,
+  provideHttpClient,
+  withFetch,
+  withInterceptors,
+  withXsrfConfiguration,
+} from '@angular/common/http';
 import {
   ApplicationConfig,
   ErrorHandler,
@@ -24,7 +30,7 @@ import { AuthState } from '$modules/auth/store';
 import { ErrorState } from '$modules/error/store';
 import { SnackbarState } from '$modules/snackbar/store';
 import { SpinnerState } from '$modules/spinner/store';
-import { StaticTranslateLoader } from '$shared/i18n';
+import { MultiTranslateHttpLoader } from '$shared/i18n';
 import { API_URL } from '$shared/lib';
 import { routes } from './app.routes';
 
@@ -34,8 +40,12 @@ export const appConfig: ApplicationConfig = {
     { provide: ErrorHandler, useClass: ClientErrorHandler },
     importProvidersFrom(
       TranslateModule.forRoot({
-        fallbackLang: 'ja',
-        loader: { provide: TranslateLoader, useClass: StaticTranslateLoader },
+        defaultLanguage: 'ja',
+        loader: {
+          provide: TranslateLoader,
+          useFactory: (http: HttpClient) => new MultiTranslateHttpLoader(http),
+          deps: [HttpClient],
+        },
       }),
     ),
     provideBrowserGlobalErrorListeners(),

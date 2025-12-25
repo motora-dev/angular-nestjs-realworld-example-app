@@ -7,7 +7,6 @@ import { AuthService } from '../services/auth.service';
 
 import type { Request, Response } from 'express';
 
-
 interface AuthenticatedRequest extends Request {
   user?: Express.UserPayload;
 }

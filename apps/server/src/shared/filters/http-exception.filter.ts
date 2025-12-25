@@ -2,6 +2,7 @@ import { ERROR_CODE } from '@monorepo/error-code';
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { Response } from 'express';
 
+import type { ErrorParams, ValidationFieldError } from '$errors';
 import {
   AppError,
   BadRequestError,
@@ -12,8 +13,6 @@ import {
   UnauthorizedError,
   UnprocessableEntityError,
 } from '$errors';
-
-import type { ErrorParams, ValidationFieldError } from '$errors';
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -63,8 +62,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
       params = undefined; // Also hide params in production for 5xx errors
     }
 
-    // Error logging
-    this.logError(request, status, errorCode, message, exception);
+    // Logging
+    this.log(request, status, errorCode, message, exception);
 
     // UnprocessableEntityError returns GitHub-style response
     if (errors) {
@@ -81,21 +80,34 @@ export class HttpExceptionFilter implements ExceptionFilter {
     }
   }
 
-  private logError(request: any, status: number, errorCode: string, message: string, exception: unknown) {
-    this.logger.error(
-      JSON.stringify({
-        timestamp: new Date().toISOString(),
-        message: `Request failed with status ${status}`,
-        requestId: request.id,
-        userId: request.user?.id,
-        endpoint: request.originalUrl || request.url,
-        method: request.method,
-        statusCode: status,
-        errorCode,
-        error: message,
-        stack: exception instanceof Error ? exception.stack : undefined,
-      }),
-    );
+  private log(request: any, status: number, errorCode: string, message: string, exception: unknown) {
+    const logData = {
+      timestamp: new Date().toISOString(),
+      message: `Request failed with status ${status}`,
+      requestId: request.id,
+      userId: request.user?.id,
+      endpoint: request.originalUrl || request.url,
+      method: request.method,
+      statusCode: status,
+      errorCode,
+      error: message,
+      stack: exception instanceof Error ? exception.stack : undefined,
+    };
+
+    const logMessage = JSON.stringify(logData);
+
+    // Log level based on status code
+    // error: 400, 422, 5xx (invalid request or server error)
+    // warn: 403 (forbidden, possible attack but could be normal)
+    // info: 401, 404, 409 (normal operation)
+    if (status >= 500 || status === 400 || status === 422) {
+      this.logger.error(logMessage);
+    } else if (status === 403) {
+      this.logger.warn(logMessage);
+    } else {
+      // 401, 404, 409 and other 4xx
+      this.logger.log(logMessage);
+    }
   }
 }
 

@@ -1,3 +1,4 @@
+import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { AuthService } from './auth.service';
@@ -6,6 +7,7 @@ import { AuthRepository } from '../repositories/auth.repository';
 describe('AuthService', () => {
   let service: AuthService;
   let mockAuthRepository: any;
+  let mockConfigService: any;
 
   const mockUser = {
     id: 2,
@@ -24,12 +26,25 @@ describe('AuthService', () => {
       createUser: vi.fn(),
     };
 
+    mockConfigService = {
+      get: vi.fn((key: string) => {
+        if (key === 'JWT_PRIVATE_KEY') return 'mock-private-key';
+        if (key === 'JWT_PUBLIC_KEY') return 'mock-public-key';
+        if (key === 'NODE_ENV') return 'test';
+        return undefined;
+      }),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
         {
           provide: AuthRepository,
           useValue: mockAuthRepository,
+        },
+        {
+          provide: ConfigService,
+          useValue: mockConfigService,
         },
       ],
     }).compile();

@@ -11,6 +11,8 @@ describe('HttpExceptionFilter', () => {
   let mockRequest: any;
   let mockResponse: any;
   let loggerErrorSpy: MockInstance;
+  let loggerWarnSpy: MockInstance;
+  let loggerLogSpy: MockInstance;
 
   beforeEach(() => {
     filter = new HttpExceptionFilter();
@@ -37,14 +39,18 @@ describe('HttpExceptionFilter', () => {
       }),
     } as unknown as ArgumentsHost;
 
-    // Spy on Logger.prototype.error
+    // Spy on Logger.prototype methods to suppress log output during tests
     loggerErrorSpy = vi.spyOn(Logger.prototype, 'error').mockImplementation(() => {});
+    loggerWarnSpy = vi.spyOn(Logger.prototype, 'warn').mockImplementation(() => {});
+    loggerLogSpy = vi.spyOn(Logger.prototype, 'log').mockImplementation(() => {});
   });
 
   afterEach(() => {
     vi.clearAllMocks();
     vi.unstubAllEnvs();
     loggerErrorSpy.mockRestore();
+    loggerWarnSpy.mockRestore();
+    loggerLogSpy.mockRestore();
   });
 
   it('should be defined', () => {

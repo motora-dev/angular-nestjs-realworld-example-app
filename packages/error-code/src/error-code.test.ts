@@ -3,11 +3,13 @@ import { describe, expect, it } from 'vitest';
 import {
   ERROR_CODE,
   type BadRequestCode,
+  type ConflictCode,
   type ErrorCode,
   type ForbiddenCode,
   type InternalServerErrorCode,
   type NotFoundCode,
   type UnauthorizedCode,
+  type ValidationErrorCode,
 } from './error-code';
 
 describe('ERROR_CODE', () => {
@@ -61,6 +63,18 @@ describe('ERROR_CODE', () => {
     it('should have VALIDATION_ERROR', () => {
       expect(ERROR_CODE.VALIDATION_ERROR).toBe('VALIDATION_ERROR');
     });
+
+    it('should have USERNAME_REQUIRED', () => {
+      expect(ERROR_CODE.USERNAME_REQUIRED).toBe('USERNAME_REQUIRED');
+    });
+
+    it('should have USERNAME_TOO_SHORT', () => {
+      expect(ERROR_CODE.USERNAME_TOO_SHORT).toBe('USERNAME_TOO_SHORT');
+    });
+
+    it('should have USERNAME_INVALID_FORMAT', () => {
+      expect(ERROR_CODE.USERNAME_INVALID_FORMAT).toBe('USERNAME_INVALID_FORMAT');
+    });
   });
 
   it('should have all expected error codes', () => {
@@ -74,6 +88,9 @@ describe('ERROR_CODE', () => {
       'ARTICLE_NOT_FOUND',
       'COMMENT_NOT_FOUND',
       'VALIDATION_ERROR',
+      'USERNAME_REQUIRED',
+      'USERNAME_TOO_SHORT',
+      'USERNAME_INVALID_FORMAT',
     ];
 
     const actualCodes = Object.values(ERROR_CODE);
@@ -95,6 +112,9 @@ describe('Type definitions', () => {
         'ARTICLE_NOT_FOUND',
         'COMMENT_NOT_FOUND',
         'VALIDATION_ERROR',
+        'USERNAME_REQUIRED',
+        'USERNAME_TOO_SHORT',
+        'USERNAME_INVALID_FORMAT',
       ];
 
       expect(codes).toBeDefined();
@@ -131,11 +151,7 @@ describe('Type definitions', () => {
 
   describe('BadRequestCode', () => {
     it('should accept valid bad request error codes', () => {
-      const codes: BadRequestCode[] = [
-        ERROR_CODE.VALIDATION_ERROR,
-        ERROR_CODE.EMAIL_ALREADY_EXISTS,
-        ERROR_CODE.USERNAME_ALREADY_EXISTS,
-      ];
+      const codes: BadRequestCode[] = [ERROR_CODE.VALIDATION_ERROR];
 
       expect(codes).toBeDefined();
     });
@@ -144,6 +160,26 @@ describe('Type definitions', () => {
   describe('UnauthorizedCode', () => {
     it('should accept valid unauthorized error codes', () => {
       const codes: UnauthorizedCode[] = [ERROR_CODE.UNAUTHORIZED];
+
+      expect(codes).toBeDefined();
+    });
+  });
+
+  describe('ConflictCode', () => {
+    it('should accept valid conflict error codes', () => {
+      const codes: ConflictCode[] = [ERROR_CODE.EMAIL_ALREADY_EXISTS, ERROR_CODE.USERNAME_ALREADY_EXISTS];
+
+      expect(codes).toBeDefined();
+    });
+  });
+
+  describe('ValidationErrorCode', () => {
+    it('should accept valid validation error codes', () => {
+      const codes: ValidationErrorCode[] = [
+        ERROR_CODE.USERNAME_REQUIRED,
+        ERROR_CODE.USERNAME_TOO_SHORT,
+        ERROR_CODE.USERNAME_INVALID_FORMAT,
+      ];
 
       expect(codes).toBeDefined();
     });

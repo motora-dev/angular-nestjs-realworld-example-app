@@ -1,4 +1,3 @@
-import { HttpExceptionFilter } from '$filters';
 import { ERROR_CODE } from '@monorepo/error-code';
 import { Logger, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -7,6 +6,8 @@ import { vi, type MockInstance } from 'vitest';
 import { HttpExceptionControllerMock } from './http-exception.controller.mock';
 
 import type { INestApplication } from '@nestjs/common';
+
+import { HttpExceptionFilter } from '$filters';
 
 @Module({
   controllers: [HttpExceptionControllerMock],
@@ -23,7 +24,7 @@ describe('HttpExceptionFilter E2E', () => {
       imports: [TestModule],
     }).compile();
 
-    app = moduleFixture.createNestApplication();
+    app = moduleFixture.createNestApplication({ logger: false });
     app.useGlobalFilters(new HttpExceptionFilter());
     await app.init();
     await app.listen(0); // Start on random port
