@@ -9,6 +9,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  schemas  = ["realworld"]
 }
 
 model User {
@@ -29,6 +30,8 @@ model User {
   followers     Follow[]       @relation("following")
   following     Follow[]       @relation("followers")
   refreshTokens RefreshToken[]
+
+  @@schema("realworld")
 }
 
 model Account {
@@ -45,6 +48,7 @@ model Account {
 
   @@unique([provider, sub])
   @@index([email])
+  @@schema("realworld")
 }
 
 model Article {
@@ -66,6 +70,7 @@ model Article {
 
   @@index([tags])
   @@index([userId])
+  @@schema("realworld")
 }
 
 model Comment {
@@ -84,6 +89,7 @@ model Comment {
 
   @@index([articleId])
   @@index([userId])
+  @@schema("realworld")
 }
 
 model Follow {
@@ -97,6 +103,7 @@ model Follow {
   @@id([followerId, followingId])
   @@index([followerId])
   @@index([followingId])
+  @@schema("realworld")
 }
 
 model Favorite {
@@ -110,6 +117,7 @@ model Favorite {
   @@id([userId, articleId])
   @@index([userId])
   @@index([articleId])
+  @@schema("realworld")
 }
 
 model RefreshToken {
@@ -123,4 +131,5 @@ model RefreshToken {
 
   @@index([userId])
   @@index([expiresAt])
+  @@schema("realworld")
 }
