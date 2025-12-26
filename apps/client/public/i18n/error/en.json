@@ -12,6 +12,11 @@
     "VALIDATION_ERROR": "Input validation error",
     "USERNAME_REQUIRED": "Username is required",
     "USERNAME_TOO_SHORT": "Username is too short",
-    "USERNAME_INVALID_FORMAT": "Invalid username format"
+    "USERNAME_INVALID_FORMAT": "Invalid username format",
+    "EMAIL_INVALID": "Invalid email format",
+    "TITLE_REQUIRED": "Title is required",
+    "DESCRIPTION_REQUIRED": "Description is required",
+    "BODY_REQUIRED": "Body is required",
+    "COMMENT_BODY_REQUIRED": "Comment body is required"
   }
 }

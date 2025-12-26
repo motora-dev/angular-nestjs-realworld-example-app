@@ -12,6 +12,11 @@
     "VALIDATION_ERROR": "入力内容に誤りがあります",
     "USERNAME_REQUIRED": "ユーザー名は必須です",
     "USERNAME_TOO_SHORT": "ユーザー名が短すぎます",
-    "USERNAME_INVALID_FORMAT": "ユーザー名の形式が正しくありません"
+    "USERNAME_INVALID_FORMAT": "ユーザー名の形式が正しくありません",
+    "EMAIL_INVALID": "メールアドレスの形式が正しくありません",
+    "TITLE_REQUIRED": "タイトルは必須です",
+    "DESCRIPTION_REQUIRED": "説明は必須です",
+    "BODY_REQUIRED": "本文は必須です",
+    "COMMENT_BODY_REQUIRED": "コメント本文は必須です"
   }
 }
