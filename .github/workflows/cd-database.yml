@@ -8,7 +8,6 @@ on:
     paths:
       - 'packages/database/prisma/migrations/**'
       - 'packages/database/prisma/schema.prisma'
-      - 'apps/content/articles/**'
       - '.github/workflows/cd-database.yml'
   workflow_dispatch:
 
@@ -21,9 +20,8 @@ jobs:
     name: Detect Changes
     runs-on: ubuntu-latest
     outputs:
-      database: ${{ steps.filter.outputs.database }}
-      content: ${{ steps.filter.outputs.content }}
-      workflow: ${{ steps.filter.outputs.workflow }}
+      database: ${{ steps.filter.outputs.database_any_changed }}
+      workflow: ${{ steps.filter.outputs.workflow_any_changed }}
 
     steps:
       - name: Checkout repository
@@ -39,8 +37,6 @@ jobs:
             database:
               - 'packages/database/prisma/migrations/**'
               - 'packages/database/prisma/schema.prisma'
-            content:
-              - 'apps/content/articles/**'
             workflow:
               - '.github/workflows/cd-database.yml'
 
@@ -72,7 +68,7 @@ jobs:
 
       - name: Debug Network Connectivity
         env:
-          DB_URL: ${{ secrets.DATABASE_URL_UNPOOLED }}
+          DB_URL: ${{ secrets.DIRECT_URL }}
         run: |
           # Extract hostname from URL (postgres://user:pass@hostname:5432/db)
           # Using sed to parse safely without exposing credentials
@@ -91,6 +87,5 @@ jobs:
       - name: Apply Migrations
         working-directory: packages/database
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DATABASE_URL_UNPOOLED: ${{ secrets.DATABASE_URL_UNPOOLED }}
+          DIRECT_URL: ${{ secrets.DIRECT_URL }}
         run: pnpm prisma migrate deploy
