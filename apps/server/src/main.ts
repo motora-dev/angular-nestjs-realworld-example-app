@@ -5,6 +5,8 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 import { randomUUID } from 'crypto';
 import { doubleCsrf } from 'csrf-csrf';
+import * as fs from 'fs';
+import yaml from 'js-yaml';
 
 import { HttpExceptionFilter } from '$filters';
 import { LoggingInterceptor } from '$interceptors';
@@ -108,6 +110,9 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, swaggerConfig);
+  // YAML形式で出力
+  const yamlString = yaml.dump(document);
+  fs.writeFileSync('./openapi.yml', yamlString);
 
   // Serve OpenAPI JSON at /api/docs.json
   app.use('/api/docs.json', (_req: any, res: any) => {

@@ -1,0 +1,1104 @@
+openapi: 3.0.0
+paths:
+  /api/articles:
+    post:
+      description: Create a new article (requires authentication)
+      operationId: ArticleEditController_createArticle
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateArticleRequestDto'
+      responses:
+        '201':
+          description: Article created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleArticleDto2'
+        '400':
+          description: Invalid input data
+        '401':
+          description: Not authenticated
+      security: &ref_0
+        - bearer: []
+      summary: Create an article
+      tags: &ref_1
+        - Article Edit
+    get:
+      description: Get recent articles globally with optional filters (auth optional)
+      operationId: ArticleListController_getArticles
+      parameters:
+        - name: tag
+          required: false
+          in: query
+          description: Filter by tag
+          schema:
+            example: dragons
+            type: string
+        - name: author
+          required: false
+          in: query
+          description: Filter by author username
+          schema:
+            example: john_doe
+            type: string
+        - name: favorited
+          required: false
+          in: query
+          description: Filter by favorited username
+          schema:
+            example: jane_doe
+            type: string
+        - name: offset
+          required: false
+          in: query
+          description: Offset for pagination
+          schema:
+            minimum: 0
+            example: 0
+            type: number
+        - name: limit
+          required: false
+          in: query
+          description: Limit for pagination
+          schema:
+            minimum: 1
+            example: 20
+            type: number
+      responses:
+        '200':
+          description: Articles retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MultipleArticlesDto'
+        '400':
+          description: Invalid query parameters
+      summary: Get articles
+      tags: &ref_3
+        - Article List
+  /api/articles/{slug}/edit:
+    get:
+      description: Get an article for editing (must be the author)
+      operationId: ArticleEditController_getArticleForEdit
+      parameters:
+        - name: slug
+          required: true
+          in: path
+          description: Article slug
+          schema:
+            example: how-to-train-your-dragon
+            type: string
+      responses:
+        '200':
+          description: Article retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleArticleDto2'
+        '401':
+          description: Not authenticated
+        '403':
+          description: Not the article author
+        '404':
+          description: Article not found
+      security: *ref_0
+      summary: Get article for editing
+      tags: *ref_1
+  /api/articles/{slug}:
+    put:
+      description: Update an existing article (must be the author)
+      operationId: ArticleEditController_updateArticle
+      parameters:
+        - name: slug
+          required: true
+          in: path
+          description: Article slug
+          schema:
+            example: how-to-train-your-dragon
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateArticleRequestDto'
+      responses:
+        '200':
+          description: Article updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleArticleDto2'
+        '400':
+          description: Invalid input data
+        '401':
+          description: Not authenticated
+        '403':
+          description: Not the article author
+        '404':
+          description: Article not found
+      security: *ref_0
+      summary: Update an article
+      tags: *ref_1
+    delete:
+      description: Delete an article (must be the author)
+      operationId: ArticleEditController_deleteArticle
+      parameters:
+        - name: slug
+          required: true
+          in: path
+          description: Article slug
+          schema:
+            example: how-to-train-your-dragon
+            type: string
+      responses:
+        '204':
+          description: Article deleted successfully
+        '401':
+          description: Not authenticated
+        '403':
+          description: Not the article author
+        '404':
+          description: Article not found
+      security: *ref_0
+      summary: Delete an article
+      tags: *ref_1
+    get:
+      description: Get an article by slug (auth optional)
+      operationId: ArticleController_getArticle
+      parameters:
+        - name: slug
+          required: true
+          in: path
+          description: Article slug
+          schema:
+            example: how-to-train-your-dragon
+            type: string
+      responses:
+        '200':
+          description: Article retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleArticleDto'
+        '404':
+          description: Article not found
+      summary: Get an article
+      tags: &ref_2
+        - Article
+  /api/articles/{slug}/favorite:
+    post:
+      description: Mark an article as favorited
+      operationId: ArticleEditController_favoriteArticle
+      parameters:
+        - name: slug
+          required: true
+          in: path
+          description: Article slug
+          schema:
+            example: how-to-train-your-dragon
+            type: string
+      responses:
+        '200':
+          description: Article favorited successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleArticleDto2'
+        '401':
+          description: Not authenticated
+        '404':
+          description: Article not found
+      security: *ref_0
+      summary: Favorite an article
+      tags: *ref_1
+    delete:
+      description: Remove favorite mark from an article
+      operationId: ArticleEditController_unfavoriteArticle
+      parameters:
+        - name: slug
+          required: true
+          in: path
+          description: Article slug
+          schema:
+            example: how-to-train-your-dragon
+            type: string
+      responses:
+        '200':
+          description: Article unfavorited successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleArticleDto2'
+        '401':
+          description: Not authenticated
+        '404':
+          description: Article not found
+      security: *ref_0
+      summary: Unfavorite an article
+      tags: *ref_1
+  /api/articles/{slug}/comments:
+    post:
+      description: Add a comment to an article
+      operationId: ArticleEditController_createComment
+      parameters:
+        - name: slug
+          required: true
+          in: path
+          description: Article slug
+          schema:
+            example: how-to-train-your-dragon
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCommentRequestDto'
+      responses:
+        '200':
+          description: Comment created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleCommentDto'
+        '400':
+          description: Invalid input data
+        '401':
+          description: Not authenticated
+        '404':
+          description: Article not found
+      security: *ref_0
+      summary: Add a comment
+      tags: *ref_1
+    get:
+      description: Get comments for an article by slug (auth optional)
+      operationId: ArticleController_getComments
+      parameters:
+        - name: slug
+          required: true
+          in: path
+          description: Article slug
+          schema:
+            example: how-to-train-your-dragon
+            type: string
+      responses:
+        '200':
+          description: Comments retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MultipleCommentsDto'
+        '404':
+          description: Article not found
+      summary: Get article comments
+      tags: *ref_2
+  /api/articles/{slug}/comments/{id}:
+    delete:
+      description: Delete a comment (must be the comment author)
+      operationId: ArticleEditController_deleteComment
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: Comment ID
+          schema:
+            example: 1
+            type: number
+        - name: slug
+          required: true
+          in: path
+          description: Article slug
+          schema:
+            example: how-to-train-your-dragon
+      responses:
+        '204':
+          description: Comment deleted successfully
+        '401':
+          description: Not authenticated
+        '403':
+          description: Not the comment author
+        '404':
+          description: Comment not found
+      security: *ref_0
+      summary: Delete a comment
+      tags: *ref_1
+  /api/articles/feed:
+    get:
+      description: Get recent articles from users you follow (requires authentication)
+      operationId: ArticleListController_getFeed
+      parameters:
+        - name: offset
+          required: false
+          in: query
+          description: Offset for pagination
+          schema:
+            minimum: 0
+            example: 0
+            type: number
+        - name: limit
+          required: false
+          in: query
+          description: Limit for pagination
+          schema:
+            minimum: 1
+            example: 20
+            type: number
+      responses:
+        '200':
+          description: Feed retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MultipleArticlesDto'
+        '400':
+          description: Invalid query parameters
+        '401':
+          description: Not authenticated
+      security:
+        - bearer: []
+      summary: Get feed
+      tags: *ref_3
+  /api/tags:
+    get:
+      description: Get all tags
+      operationId: ArticleListController_getTags
+      parameters: []
+      responses:
+        '200':
+          description: Tags retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TagsDto'
+      summary: Get tags
+      tags: *ref_3
+  /api/auth/check-session:
+    get:
+      description: Check if the user is authenticated without triggering 401 errors
+      operationId: AuthController_checkSession
+      parameters: []
+      responses:
+        '200':
+          description: Returns authentication status and user info if authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckSessionResponse'
+      summary: Check session status
+      tags: &ref_4
+        - Auth
+  /api/auth/login/google:
+    get:
+      description: Redirects to Google OAuth consent page
+      operationId: AuthController_loginGoogle
+      parameters: []
+      responses:
+        '302':
+          description: Redirects to Google OAuth consent page
+      summary: Initiate Google OAuth login
+      tags: *ref_4
+  /api/auth/register:
+    post:
+      description: >-
+        Complete user registration after OAuth. Requires pending-registration
+        cookie.
+      operationId: AuthController_register
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterDto'
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterResponse'
+        '400':
+          description: No pending registration found or invalid input
+      summary: Register a new user
+      tags: *ref_4
+  /api/auth/pending-registration:
+    get:
+      description: Get email from pending OAuth registration
+      operationId: AuthController_getPendingRegistration
+      parameters: []
+      responses:
+        '200':
+          description: Returns pending registration info or null
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PendingRegistrationResponse'
+      summary: Get pending registration info
+      tags: *ref_4
+  /api/auth/refresh:
+    post:
+      description: Get a new access token using the refresh token cookie
+      operationId: AuthController_refresh
+      parameters: []
+      responses:
+        '200':
+          description: Access token refreshed successfully
+        '401':
+          description: No refresh token provided or invalid/expired token
+      security:
+        - refresh-token: []
+      summary: Refresh access token
+      tags: *ref_4
+  /api/auth/logout:
+    post:
+      description: Revoke refresh token and clear authentication cookies
+      operationId: AuthController_logout
+      parameters: []
+      responses:
+        '200':
+          description: Logged out successfully
+      summary: Logout
+      tags: *ref_4
+  /api/auth/me:
+    get:
+      description: Get the authenticated user information
+      operationId: AuthController_getCurrentUser
+      parameters: []
+      responses:
+        '200':
+          description: Current user info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '401':
+          description: Not authenticated
+      security:
+        - bearer: []
+      summary: Get current user
+      tags: *ref_4
+  /api/profiles/{username}:
+    get:
+      description: Get a user profile by username (auth optional)
+      operationId: ProfileController_getProfile
+      parameters:
+        - name: username
+          required: true
+          in: path
+          description: Username of the profile to get
+          schema:
+            example: john_doe
+            type: string
+      responses:
+        '200':
+          description: Profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileResponseDto'
+        '404':
+          description: Profile not found
+      summary: Get a profile
+      tags: &ref_5
+        - Profile
+  /api/profiles/{username}/follow:
+    post:
+      description: Follow a user by username
+      operationId: ProfileController_followUser
+      parameters:
+        - name: username
+          required: true
+          in: path
+          description: Username of the user to follow
+          schema:
+            example: jane_doe
+            type: string
+      responses:
+        '200':
+          description: User followed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileResponseDto'
+        '401':
+          description: Not authenticated
+        '404':
+          description: User not found
+      security:
+        - bearer: []
+      summary: Follow a user
+      tags: *ref_5
+    delete:
+      description: Unfollow a user by username
+      operationId: ProfileController_unfollowUser
+      parameters:
+        - name: username
+          required: true
+          in: path
+          description: Username of the user to unfollow
+          schema:
+            example: jane_doe
+            type: string
+      responses:
+        '200':
+          description: User unfollowed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileResponseDto'
+        '401':
+          description: Not authenticated
+        '404':
+          description: User not found
+      security:
+        - bearer: []
+      summary: Unfollow a user
+      tags: *ref_5
+  /api/sitemap:
+    get:
+      description: Get sitemap data with all articles
+      operationId: SitemapController_getSitemap
+      parameters: []
+      responses:
+        '200':
+          description: Sitemap data retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SitemapDto'
+      summary: Get sitemap
+      tags:
+        - Sitemap
+  /api/user:
+    get:
+      description: Returns the authenticated user information
+      operationId: UserController_getCurrentUser
+      parameters: []
+      responses:
+        '200':
+          description: Current user info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponseDto'
+        '401':
+          description: Not authenticated
+      security: &ref_6
+        - bearer: []
+      summary: Get current user
+      tags: &ref_7
+        - User
+    put:
+      description: Update the authenticated user profile
+      operationId: UserController_updateUser
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserRequestDto'
+      responses:
+        '200':
+          description: Updated user info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponseDto'
+        '400':
+          description: Invalid input data
+        '401':
+          description: Not authenticated
+      security: *ref_6
+      summary: Update current user
+      tags: *ref_7
+info:
+  title: RealWorld API
+  description: Conduit API specification - RealWorld example app
+  version: '1.0'
+  contact: {}
+tags: []
+servers: []
+components:
+  securitySchemes:
+    bearer:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http
+  schemas:
+    CreateArticleDto:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Article title
+          example: How to train your dragon
+        description:
+          type: string
+          description: Article description
+          example: Ever wonder how?
+        body:
+          type: string
+          description: Article body
+          example: It takes a Jacobian
+        tagList:
+          description: List of tags
+          example:
+            - dragons
+            - training
+          type: array
+          items:
+            type: string
+      required:
+        - title
+        - description
+        - body
+    CreateArticleRequestDto:
+      type: object
+      properties:
+        article:
+          description: Article data
+          allOf:
+            - $ref: '#/components/schemas/CreateArticleDto'
+      required:
+        - article
+    SingleArticleDto2:
+      type: object
+      properties:
+        article:
+          type: object
+          description: Article object
+      required:
+        - article
+    UpdateArticleDto:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Article title
+          example: Updated title
+        description:
+          type: string
+          description: Article description
+          example: Updated description
+        body:
+          type: string
+          description: Article body
+          example: Updated body content
+    UpdateArticleRequestDto:
+      type: object
+      properties:
+        article:
+          description: Article update data
+          allOf:
+            - $ref: '#/components/schemas/UpdateArticleDto'
+      required:
+        - article
+    CreateCommentDto:
+      type: object
+      properties:
+        body:
+          type: string
+          description: Comment body
+          example: Great article!
+      required:
+        - body
+    CreateCommentRequestDto:
+      type: object
+      properties:
+        comment:
+          description: Comment data
+          allOf:
+            - $ref: '#/components/schemas/CreateCommentDto'
+      required:
+        - comment
+    SingleCommentDto:
+      type: object
+      properties:
+        comment:
+          type: object
+          description: Comment object
+      required:
+        - comment
+    MultipleArticlesDto:
+      type: object
+      properties:
+        articles:
+          description: List of articles
+          type: array
+          items:
+            type: object
+        articlesCount:
+          type: number
+          description: Total number of articles
+          example: 10
+      required:
+        - articles
+        - articlesCount
+    TagsDto:
+      type: object
+      properties:
+        tags:
+          description: List of tags
+          example:
+            - dragons
+            - training
+            - coding
+          type: array
+          items:
+            type: string
+      required:
+        - tags
+    AuthorDto:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Username
+          example: john_doe
+        bio:
+          type: object
+          description: User bio
+          example: I like to code
+          nullable: true
+        image:
+          type: object
+          description: User image URL
+          example: https://example.com/avatar.jpg
+          nullable: true
+        following:
+          type: boolean
+          description: Whether the current user is following this author
+          example: false
+      required:
+        - username
+        - bio
+        - image
+        - following
+    ArticleDto:
+      type: object
+      properties:
+        slug:
+          type: string
+          description: Article slug
+          example: how-to-train-your-dragon
+        title:
+          type: string
+          description: Article title
+          example: How to train your dragon
+        description:
+          type: object
+          description: Article description
+          example: Ever wonder how?
+          nullable: true
+        body:
+          type: string
+          description: Article body
+          example: It takes a Jacobian
+        tagList:
+          description: List of tags
+          example:
+            - dragons
+            - training
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          description: Creation date (ISO 8601)
+          example: '2024-01-01T00:00:00.000Z'
+        updatedAt:
+          type: string
+          description: Last update date (ISO 8601)
+          example: '2024-01-02T00:00:00.000Z'
+        favorited:
+          type: boolean
+          description: Whether the current user favorited this article
+          example: false
+        favoritesCount:
+          type: number
+          description: Number of users who favorited this article
+          example: 5
+        author:
+          description: Article author
+          allOf:
+            - $ref: '#/components/schemas/AuthorDto'
+      required:
+        - slug
+        - title
+        - description
+        - body
+        - tagList
+        - createdAt
+        - updatedAt
+        - favorited
+        - favoritesCount
+        - author
+    SingleArticleDto:
+      type: object
+      properties:
+        article:
+          description: Article object
+          allOf:
+            - $ref: '#/components/schemas/ArticleDto'
+      required:
+        - article
+    CommentDto:
+      type: object
+      properties:
+        id:
+          type: number
+          description: Comment ID
+          example: 1
+        createdAt:
+          type: string
+          description: Creation date (ISO 8601)
+          example: '2024-01-01T00:00:00.000Z'
+        updatedAt:
+          type: string
+          description: Last update date (ISO 8601)
+          example: '2024-01-02T00:00:00.000Z'
+        body:
+          type: string
+          description: Comment body
+          example: Great article!
+        author:
+          description: Comment author
+          allOf:
+            - $ref: '#/components/schemas/AuthorDto'
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - body
+        - author
+    MultipleCommentsDto:
+      type: object
+      properties:
+        comments:
+          description: List of comments
+          type: array
+          items:
+            $ref: '#/components/schemas/CommentDto'
+      required:
+        - comments
+    UserInfo:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Username
+          example: john_doe
+        email:
+          type: string
+          description: Email address
+          example: john@example.com
+        bio:
+          type: string
+          description: User bio
+          example: I like to code
+        image:
+          type: string
+          description: User image URL
+          example: https://example.com/image.jpg
+      required:
+        - username
+        - email
+        - bio
+        - image
+    CheckSessionResponse:
+      type: object
+      properties:
+        authenticated:
+          type: boolean
+          description: Authentication status
+          example: true
+        user:
+          description: User info (only if authenticated)
+          allOf:
+            - $ref: '#/components/schemas/UserInfo'
+      required:
+        - authenticated
+    RegisterDto:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Username (alphanumeric and underscore only, min 3 characters)
+          example: john_doe
+          minLength: 3
+      required:
+        - username
+    RegisterResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: User public ID
+          example: clxxxxxxxxxxxxxxxxxx
+        username:
+          type: string
+          description: Username
+          example: john_doe
+        email:
+          type: string
+          description: Email address
+          example: john@example.com
+      required:
+        - id
+        - username
+        - email
+    PendingRegistrationResponse:
+      type: object
+      properties:
+        email:
+          type: string
+          description: Email address
+          example: john@example.com
+      required:
+        - email
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: User public ID
+          example: clxxxxxxxxxxxxxxxxxx
+        username:
+          type: string
+          description: Username
+          example: john_doe
+      required:
+        - id
+        - username
+    ProfileDto:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Username
+          example: john_doe
+        bio:
+          type: object
+          description: User bio
+          example: I like to code
+          nullable: true
+        image:
+          type: object
+          description: User image URL
+          example: https://example.com/avatar.jpg
+          nullable: true
+        following:
+          type: boolean
+          description: Whether the current user is following this profile
+          example: false
+      required:
+        - username
+        - bio
+        - image
+        - following
+    ProfileResponseDto:
+      type: object
+      properties:
+        profile:
+          description: Profile object
+          allOf:
+            - $ref: '#/components/schemas/ProfileDto'
+      required:
+        - profile
+    SitemapArticleDto:
+      type: object
+      properties:
+        slug:
+          type: string
+          description: Article slug
+          example: how-to-train-your-dragon
+        updatedAt:
+          type: string
+          description: Last update date (ISO 8601)
+          example: '2024-01-02T00:00:00.000Z'
+      required:
+        - slug
+        - updatedAt
+    SitemapDto:
+      type: object
+      properties:
+        articles:
+          description: List of articles for sitemap
+          type: array
+          items:
+            $ref: '#/components/schemas/SitemapArticleDto'
+      required:
+        - articles
+    UserDto:
+      type: object
+      properties:
+        email:
+          type: string
+          description: Email address
+          example: user@example.com
+        username:
+          type: string
+          description: Username
+          example: john_doe
+        bio:
+          type: object
+          description: User bio
+          example: I like to code
+          nullable: true
+        image:
+          type: object
+          description: User image URL
+          example: https://example.com/avatar.jpg
+          nullable: true
+      required:
+        - email
+        - username
+        - bio
+        - image
+    UserResponseDto:
+      type: object
+      properties:
+        user:
+          description: User object
+          allOf:
+            - $ref: '#/components/schemas/UserDto'
+      required:
+        - user
+    UpdateUserDto:
+      type: object
+      properties:
+        email:
+          type: string
+          description: Email address
+          example: newemail@example.com
+        username:
+          type: string
+          description: Username
+          example: new_username
+          minLength: 3
+        password:
+          type: string
+          description: Password (not used in OAuth mode)
+        bio:
+          type: string
+          description: User bio
+          example: Updated bio
+        image:
+          type: string
+          description: User image URL
+          example: https://example.com/new-avatar.jpg
+    UpdateUserRequestDto:
+      type: object
+      properties:
+        user:
+          description: User update data
+          allOf:
+            - $ref: '#/components/schemas/UpdateUserDto'
+      required:
+        - user

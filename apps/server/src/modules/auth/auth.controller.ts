@@ -36,7 +36,13 @@ import {
   RegisterUserCommand,
   RevokeRefreshTokenCommand,
 } from './commands';
-import { RegisterDto, RegisterResponse, UserResponse } from './contracts';
+import {
+  RegisterDto,
+  RegisterResponse,
+  UserResponse,
+  CheckSessionResponse,
+  PendingRegistrationResponse,
+} from './contracts';
 import { GoogleAuthGuard } from './guards';
 import { GetCurrentAuthUserQuery, GetPendingRegistrationQuery } from './queries';
 import { AuthService } from './services';
@@ -44,7 +50,6 @@ import { AuthService } from './services';
 import type { ProcessOAuthCallbackResult } from './commands/process-oauth-callback/process-oauth-callback.handler';
 import type { RefreshAccessTokenResult } from './commands/refresh-access-token/refresh-access-token.handler';
 import type { RegisterUserResult } from './commands/register-user/register-user.handler';
-import type { PendingRegistrationResult } from './queries/get-pending-registration/get-pending-registration.handler';
 import type { Request, Response } from 'express';
 
 @ApiTags('Auth')
@@ -123,12 +128,13 @@ export class AuthController {
     summary: 'Check session status',
     description: 'Check if the user is authenticated without triggering 401 errors',
   })
-  @ApiOkResponse({ description: 'Returns authentication status and user info if authenticated' })
+  @ApiOkResponse({
+    description: 'Returns authentication status and user info if authenticated',
+    type: CheckSessionResponse,
+  })
   @Get('check-session')
   @HttpCode(HttpStatus.OK)
-  async checkSession(
-    @Req() req: Request,
-  ): Promise<{ authenticated: boolean; user?: { username: string; email: string; bio: string; image: string } }> {
+  async checkSession(@Req() req: Request): Promise<CheckSessionResponse> {
     const accessToken = req.cookies?.['access-token'];
     const refreshToken = req.cookies?.['refresh-token'];
 
@@ -281,10 +287,10 @@ export class AuthController {
    * Used by the register page to display the email from Google.
    */
   @ApiOperation({ summary: 'Get pending registration info', description: 'Get email from pending OAuth registration' })
-  @ApiOkResponse({ description: 'Returns pending registration info or null' })
+  @ApiOkResponse({ description: 'Returns pending registration info or null', type: PendingRegistrationResponse })
   @Get('pending-registration')
   @HttpCode(HttpStatus.OK)
-  async getPendingRegistration(@Req() req: Request): Promise<PendingRegistrationResult | null> {
+  async getPendingRegistration(@Req() req: Request): Promise<PendingRegistrationResponse | null> {
     const pendingToken = req.cookies?.['pending-registration'];
     return this.queryBus.execute(new GetPendingRegistrationQuery(pendingToken));
   }
