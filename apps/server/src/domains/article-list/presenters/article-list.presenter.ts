@@ -21,6 +21,7 @@ export function toArticleDto(
     slug: article.slug,
     title: article.title,
     description: article.description,
+    body: article.body,
     tagList: article.tags,
     createdAt: article.createdAt.toISOString(),
     updatedAt: article.updatedAt.toISOString(),

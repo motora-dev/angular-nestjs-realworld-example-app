@@ -68,6 +68,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     // UnprocessableEntityError returns GitHub-style response
     if (errors) {
       response.status(status).json({
+        errorCode,
         message,
         errors,
       });

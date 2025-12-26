@@ -1,199 +1,304 @@
 # Client Application
 
-Angular 21 + Tailwind CSS 4 + SSR を採用したフロントエンドアプリケーションです。
+Frontend application built with Angular 21 + Tailwind CSS 4 + SSR.
 
-**フレームワーク & ビルド:**</br>
-[![Angular](https://img.shields.io/badge/Angular-21-DD0031.svg?logo=angular)](https://angular.dev/)
-[![Angular CDK](https://img.shields.io/badge/Angular_CDK-21-DD0031.svg?logo=angular)](https://material.angular.io/cdk/categories)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6.svg?logo=typescript)](https://www.typescriptlang.org/)
+**Framework & Build:**</br>
+[![Angular](https://img.shields.io/badge/Angular-21.0.6-DD0031.svg?logo=angular)](https://angular.dev/)
+[![Angular CDK](https://img.shields.io/badge/Angular_CDK-21.0.5-DD0031.svg?logo=angular)](https://material.angular.io/cdk/categories)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6.svg?logo=typescript)](https://www.typescriptlang.org/)
 [![esbuild](https://img.shields.io/badge/esbuild-@angular/build-FFCF00.svg?logo=esbuild)](https://angular.dev/tools/cli/build-system-migration)
 
-**Lint & フォーマット:**</br>
-[![ESLint](https://img.shields.io/badge/ESLint-9.39-4B32C3.svg?logo=eslint)](https://eslint.org/)
-[![Prettier](https://img.shields.io/badge/Prettier-3.7-F7B93E.svg?logo=prettier)](https://prettier.io/)
+**Lint & Format:**</br>
+[![ESLint](https://img.shields.io/badge/ESLint-9.39.2-4B32C3.svg?logo=eslint)](https://eslint.org/)
+[![Prettier](https://img.shields.io/badge/Prettier-3.7.4-F7B93E.svg?logo=prettier)](https://prettier.io/)
 
 **SSR:**</br>
 [![SSR](https://img.shields.io/badge/SSR-Enabled-4CAF50.svg)](https://angular.dev/guide/ssr)
-[![ISR](https://img.shields.io/badge/ISR-@rx--angular-E91E63.svg)](https://www.rx-angular.io/docs/isr)
-[![Express](https://img.shields.io/badge/Express-4.21-000000.svg?logo=express)](https://expressjs.com/)
+[![ISR](https://img.shields.io/badge/ISR-@rx__angular-E91E63.svg)](https://www.rx-angular.io/docs/isr)
+[![Express](https://img.shields.io/badge/Express-4.21.0-000000.svg?logo=express)](https://expressjs.com/)
 
-**状態管理 & リアクティブ:**</br>
-[![NGXS](https://img.shields.io/badge/NGXS-20-3F51B5.svg)](https://www.ngxs.io/)
-[![RxJS](https://img.shields.io/badge/RxJS-7.8-B7178C.svg?logo=reactivex)](https://rxjs.dev/)
-[![RxAngular](https://img.shields.io/badge/RxAngular-20.1-E91E63.svg)](https://www.rx-angular.io/)
+**State Management & Reactive:**</br>
+[![NGXS](https://img.shields.io/badge/NGXS-21.0.0-3F51B5.svg)](https://www.ngxs.io/)
+[![RxJS](https://img.shields.io/badge/RxJS-7.8.2-B7178C.svg?logo=reactivex)](https://rxjs.dev/)
+[![RxAngular](https://img.shields.io/badge/RxAngular-20.1.0-E91E63.svg)](https://www.rx-angular.io/)
 
-**スタイリング:**</br>
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.1-06B6D4.svg?logo=tailwindcss)](https://tailwindcss.com/)
-[![PostCSS](https://img.shields.io/badge/PostCSS-8.5-DD3A0A.svg?logo=postcss)](https://postcss.org/)
+**Styling:**</br>
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.1.18-06B6D4.svg?logo=tailwindcss)](https://tailwindcss.com/)
+[![PostCSS](https://img.shields.io/badge/PostCSS-8.5.6-DD3A0A.svg?logo=postcss)](https://postcss.org/)
 [![CVA](https://img.shields.io/badge/CVA-0.7-7C3AED.svg)](https://cva.style/)
 [![clsx](https://img.shields.io/badge/clsx-2.1-06B6D4.svg)](https://github.com/lukeed/clsx)
 [![tailwind-merge](https://img.shields.io/badge/tailwind--merge-3.4-06B6D4.svg)](https://github.com/dcastil/tailwind-merge)
 
-**テスト & UIカタログ:**</br>
-[![Vite](https://img.shields.io/badge/Vite-7.2-646CFF.svg?logo=vite)](https://vite.dev/)
-[![Vitest](https://img.shields.io/badge/Vitest-4.0.14-6E9F18.svg?logo=vitest)](https://vitest.dev/)
+**Testing & UI Catalog:**</br>
+[![Vite](https://img.shields.io/badge/Vite-7.3.0-646CFF.svg?logo=vite)](https://vite.dev/)
+[![Vitest](https://img.shields.io/badge/Vitest-4.0.16-6E9F18.svg?logo=vitest)](https://vitest.dev/)
 [![Testing Library](https://img.shields.io/badge/Testing_Library-18.1-E33332.svg?logo=testinglibrary)](https://testing-library.com/)
-[![jsdom](https://img.shields.io/badge/jsdom-27.2-F7DF1E.svg)](https://github.com/jsdom/jsdom)
-[![Storybook](https://img.shields.io/badge/Storybook-10.1-FF4785.svg?logo=storybook)](https://storybook.js.org/)
+[![jsdom](https://img.shields.io/badge/jsdom-27.4.0-F7DF1E.svg)](https://github.com/jsdom/jsdom)
+[![Storybook](https://img.shields.io/badge/Storybook-10.1.10-FF4785.svg?logo=storybook)](https://storybook.js.org/)
 
-## 目次
+## Table of Contents
 
-### 実装パターン（よく使う情報）
+**Getting Started**
 
-- [開発コマンド](#開発コマンド)
-- [ディレクトリ構成](#ディレクトリ構成)
-- [配置基準](#配置基準)
-- [状態管理（NGXS）](#状態管理ngxs)
-- [リアクティブパターンの使い分け](#リアクティブパターンの使い分け)
-- [フォーム管理](#フォーム管理)
-- [国際化（i18n）](#国際化i18n)
-- [UI アーキテクチャ](#ui-アーキテクチャ)
-- [エラーハンドリング](#エラーハンドリング)
-- [スピナー（Spinner）](#スピナーspinner)
-- [スナックバー（Snackbar）](#スナックバーsnackbar)
+- [Development Commands](#development-commands)
+- [Environment Variables](#environment-variables)
 
-### 背景知識・設定
+**Architecture**
 
-- [アーキテクチャ](#アーキテクチャ)
-- [設計思想](#設計思想)
-- [パフォーマンス最適化](#パフォーマンス最適化)
-- [パッケージ管理（pnpm catalog）](#パッケージ管理pnpm-catalog)
+- [Design Philosophy](#design-philosophy)
+- [Architecture](#architecture)
+- [Directory Structure](#directory-structure)
+- [Placement Guidelines](#placement-guidelines)
 
-### 補助情報
+**Patterns**
 
-- [テスト戦略](#テスト戦略)
+- [State Management (NGXS)](#state-management-ngxs)
+- [Reactive Pattern Usage](#reactive-pattern-usage)
+- [Form Management](#form-management)
+- [Internationalization (i18n)](#internationalization-i18n)
+- [UI Architecture](#ui-architecture)
+- [Error Handling](#error-handling)
+- [Spinner](#spinner)
+- [Snackbar](#snackbar)
+
+**SSR / SEO**
+
+- [ISR (Incremental Static Regeneration)](#isr-incremental-static-regeneration)
+- [SEO Support](#seo-support)
+- [Cookie Consent (Google Consent Mode v2)](#cookie-consent-google-consent-mode-v2)
+
+**Development**
+
+- [Testing Strategy](#testing-strategy)
 - [Storybook](#storybook)
+- [Performance Optimization](#performance-optimization)
+- [Error Code Sync Test](#error-code-sync-test)
+- [Package Management (pnpm catalog)](#package-management-pnpm-catalog)
 
-## 設計思想
+---
 
-**キーワード**: `設計原則`, `Vertical Slice`, `DDD`, `Facadeパターン`, `shadcn/ui`
+## Development Commands
 
-このセクションでは、プロジェクトの設計思想と、なぜこの構成を採用したかの理由を説明します。詳細は[アーキテクチャ](#アーキテクチャ)セクションも参照してください。
+**Keywords**: `pnpm`, `dev server`, `build`, `test`, `lint`, `Storybook`
 
-### なぜこの構成か
-
-1. **アルファベット順の一貫性**: `app → components → domains → modules → shared` の順で視覚的に整理
-2. **Vertical Slice**: 各ページが独立したスライスとして完結し、凝集度が高い
-3. **DDD境界の意識**: ページ固有のものはページ内に、共有するものだけが上位レイヤーに昇格
-4. **shadcn/uiアプローチ**: `shared/ui/` にUIプリミティブを配置し、コピー＆カスタマイズ可能な構成
-5. **Facade パターン**: Store へのアクセスを抽象化し、コンポーネントとの結合度を下げる
-
-### Angular公式スタイルガイドとの差異
-
-本構成はAngular公式スタイルガイドの推奨（機能ごとのディレクトリ構成）とは一部異なります。これは設計原則（Vertical Slice / Clean Architecture）を優先した意図的な選択です。
-
-チームメンバーはこのREADMEを参照し、配置基準を理解した上で開発を行ってください。
-
-## 開発コマンド
-
-**キーワード**: `pnpm`, `開発サーバー`, `ビルド`, `テスト`, `Lint`, `Storybook`
-
-このセクションでは、プロジェクトで使用する主要な開発コマンドを説明します。
+This section explains the main development commands used in the project.
 
 ```bash
-# 完全クリーンアップ（node_modulesも削除）
+# Complete cleanup (including node_modules)
 pnpm clean
 
-# キャッシュクリア（.angular, .turbo, coverage, dist）
+# Clear cache (.angular, .turbo, coverage, dist)
 pnpm clean:cache
 
-# 開発サーバー起動
+# Start dev server
 pnpm start
 
-# ビルド
+# Build
 pnpm build
 
-# SSR サーバー起動
+# Start SSR server
 pnpm serve:ssr:client
 
-# テスト
+# Test
 pnpm test
 
 # Lint
 pnpm lint
 
-# Storybook 起動
+# Start Storybook
 pnpm storybook
 
-# Storybook ビルド
+# Build Storybook
 pnpm build-storybook
 ```
 
-## パッケージ管理（pnpm catalog）
+## Environment Variables
 
-**キーワード**: `pnpm`, `catalog`, `バージョン管理`, `pnpm-workspace.yaml`
+**Keywords**: `environment variables`, `environment.ts`, `.env`, `environment configuration`, `BUILD_CONFIGURATION`
 
-このセクションでは、pnpm catalogを使用したパッケージバージョンの一元管理方法について説明します。
+This section explains the required environment variables and their configuration methods.
 
-バージョンを `pnpm-workspace.yaml` で一元管理し、モノレポ全体で統一します。
+### environment.ts (Build-time Configuration)
 
-### 設定例
+Configuration embedded during Angular application build.
+
+| Variable        | Description          | Example                 | Required |
+| --------------- | -------------------- | ----------------------- | -------- |
+| **Application** |                      |                         |          |
+| `production`    | Production mode flag | `false`                 | Yes      |
+| **API / URL**   |                      |                         |          |
+| `apiUrl`        | Backend API URL      | `http://localhost:4000` | Yes      |
+| `baseUrl`       | Frontend base URL    | `http://localhost:4200` | Yes      |
+| **Analytics**   |                      |                         |          |
+| `gaId`          | Google Analytics ID  | `G-XXXXXXX`             | No       |
+
+#### Environment File Types
+
+| File                     | Purpose                 | BUILD_CONFIGURATION |
+| ------------------------ | ----------------------- | ------------------- |
+| `environment.ts`         | Development (default)   | -                   |
+| `environment.develop.ts` | Development environment | `develop`           |
+| `environment.preview.ts` | Preview environment     | `preview`           |
+| `environment.prod.ts`    | Production environment  | `production`        |
+
+#### Configuration Example
+
+```typescript
+// File: apps/client/environments/environment.ts
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:4000',
+  baseUrl: 'http://localhost:4200',
+  gaId: '',
+};
+```
+
+### .env (SSR Server Runtime Configuration)
+
+Runtime environment variables used by the SSR server (Express).
+
+| Variable              | Description                          | Example           | Required |
+| --------------------- | ------------------------------------ | ----------------- | -------- |
+| **Server**            |                                      |                   |          |
+| `NODE_ENV`            | Environment (production/development) | `production`      | No       |
+| `PORT`                | Server port number                   | `8080`            | No       |
+| **Basic Auth**        |                                      |                   |          |
+| `BASIC_AUTH_ENABLED`  | Enable Basic authentication          | `true`            | No       |
+| `BASIC_AUTH_USER`     | Basic auth username                  | `admin`           | No       |
+| `BASIC_AUTH_PASSWORD` | Basic auth password                  | `password`        | No       |
+| **ISR**               |                                      |                   |          |
+| `ISR_SECRET`          | ISR invalidate secret                | `MY_SECRET_TOKEN` | No       |
+
+#### Setting Environment Variables
+
+```bash
+# Copy .env.example
+cp .env.example .env
+
+# Edit .env in your editor and set actual values
+```
+
+### BUILD_CONFIGURATION (Docker Build Configuration)
+
+Environment variable used during Docker build. Specifies which environment file to use.
+
+| Variable              | Description                       | Example      | Required |
+| --------------------- | --------------------------------- | ------------ | -------- |
+| `BUILD_CONFIGURATION` | Build configuration (environment) | `production` | No       |
+
+#### Usage
+
+```bash
+# Local build (default: develop)
+pnpm build
+
+# Production environment build
+BUILD_CONFIGURATION=production pnpm build
+
+# During Docker build
+docker build --build-arg BUILD_CONFIGURATION=production -t client .
+```
+
+#### Cloud Build Configuration
+
+Specify as `_BUILD_CONFIGURATION` variable in `cloudbuild.yaml`:
 
 ```yaml
-# ファイル: pnpm-workspace.yaml（ルートディレクトリ）
-versions:
-  angular: &angular 21.0.0
-  ngxs: &ngxs 20.1.0
-
-catalog:
-  '@angular/core': *angular
-  '@ngxs/store': *ngxs
+substitutions:
+  _BUILD_CONFIGURATION: production
 ```
 
-```json
-// ファイル: apps/client/package.json
-{
-  "dependencies": {
-    "@angular/core": "catalog:",
-    "@ngxs/store": "catalog:"
-  }
-}
+---
+
+## Design Philosophy
+
+**Keywords**: `design principles`, `Vertical Slice Architecture`, `DDD`, `Facade pattern`, `shadcn/ui`
+
+This section explains the project's design philosophy and why this structure was chosen. Also refer to the [Architecture](#architecture) section for details.
+
+### Why This Structure?
+
+1. **Alphabetical Consistency**: Visually organized in order: `app → components → domains → modules → shared`
+2. **Vertical Slice**: Each page is self-contained as an independent slice with high cohesion
+3. **DDD Boundary Awareness**: Page-specific items stay within pages; only shared items move to upper layers
+4. **shadcn/ui Approach**: Place UI primitives in `shared/ui/` for copy & customizable structure
+5. **Facade Pattern**: Abstracts Store access, reducing coupling with components
+
+### Differences from Angular Official Style Guide
+
+This structure differs from the Angular official style guide's recommended feature-based directory structure. This is an intentional choice prioritizing design principles (Vertical Slice / Layered Architecture).
+
+Team members should refer to this README and understand the placement guidelines before development.
+
+## Architecture
+
+**Keywords**: `Vertical Slice Architecture`, `Layered Architecture`, `layer structure`, `dependencies`
+
+This section explains the overall architecture design. We adopt a combination of Vertical Slice Architecture and Layered Architecture.
+
+For details, also refer to the [Design Philosophy](#design-philosophy) section.
+
+### Layer Structure
+
+| Directory     | Layer                 | Responsibility                                    | Status |
+| ------------- | --------------------- | ------------------------------------------------- | ------ |
+| `app/`        | Presentation          | Pages, routing, UI display                        | In use |
+| `components/` | Presentation (Shared) | UI components shared across pages                 | In use |
+| `domains/`    | Domain + Application  | Entities, state management (NGXS), business logic | In use |
+| `modules/`    | Application           | Logic shared across app/components/domains        | In use |
+| `shared/`     | Infrastructure        | Utilities, UI primitives, adapters                | In use |
+
+### Dependency Rules
+
+```
+app/ ──→ components/ ──→ domains/ ──→ modules/ ──→ shared/
 ```
 
-### バージョンアップ手順
+- Upper layers can depend on lower layers (rightward dependencies only)
+- Lower layers must not depend on upper layers (leftward dependencies prohibited)
+- `shared/` can be referenced from all layers
 
-1. `pnpm-workspace.yaml` のバージョンを変更
-2. `pnpm install` で全パッケージ一括更新
+## Directory Structure
 
-## ディレクトリ構成
+**Keywords**: `Vertical Slice`, `directory structure`, `app/`, `components/`, `domains/`, `modules/`, `shared/`
 
-**キーワード**: `ディレクトリ構造`, `app/`, `components/`, `domains/`, `modules/`, `shared/`
-
-このセクションでは、プロジェクトのディレクトリ構成と各ディレクトリの役割を説明します。
+This section explains the project's directory structure and each directory's role.
 
 ```
 src/
-├── app/              # (a) ルートコンポーネント + 各ページ
-│   ├── app.ts            # ルートコンポーネント
-│   ├── app.config.ts     # アプリケーション設定
-│   ├── app.routes.ts     # ルーティング定義
-│   └── {page}/           # 各ページ（Vertical Slice）
-│       ├── {page}.ts         # 親コンポーネント（Facade、RxLet）
-│       ├── {page}.html       # レイアウト + サブコンポーネント呼び出し
-│       ├── {page}.routes.ts  # ルーティング定義
-│       └── components/       # ページ固有サブコンポーネント
+├── app/              # (a) Root component + pages
+│   ├── app.ts            # Root component
+│   ├── app.config.ts     # Application config
+│   ├── app.routes.ts     # Routing definition
+│   └── {page}/           # Each page (Vertical Slice)
+│       ├── {page}.ts         # Parent component (Facade, RxLet)
+│       ├── {page}.html       # Layout + sub-component calls
+│       ├── {page}.routes.ts  # Routing definition
+│       └── components/       # Page-specific sub-components
 │           └── {name}/
-├── components/       # (c) 複数ページで共有するコンポーネント（Composed UI）
-├── domains/          # (d) ドメインロジック + 状態管理（NGXS）
-├── modules/          # (m) app/components/domains間で共有するロジック
-├── shared/           # (s) 共有リソース
-│   ├── lib/              # ユーティリティ関数
-│   └── ui/               # UIプリミティブ（shadcn/ui相当）
-├── main.ts
+├── components/       # (c) Components shared across pages (Composed UI)
+├── domains/          # (d) Domain logic + state management (NGXS)
+├── modules/          # (m) Logic shared across app/components/domains
+├── shared/           # (s) Shared resources
+│   ├── lib/              # Utility functions
+│   └── ui/               # UI primitives (shadcn/ui equivalent)
+├── main.ts               # Client entry point
+├── main.server.ts        # SSR entry point
+├── server.ts             # Express server (SSR + ISR)
 └── index.html
 ```
 
-### ページコンポーネントの標準パターン
+### Standard Page Component Pattern
 
-各ページは **親コンポーネント + サブコンポーネント** の構成を標準とします。
+Each page follows the standard pattern: **Parent component + Sub-components**.
 
 ```
 app/{page}/
-├── {page}.ts              # 親（Facade提供、RxLet、Input/Output連携）
-├── {page}.html            # レイアウト + サブコンポーネント呼び出し
-├── {page}.routes.ts       # ルーティング定義
+├── {page}.ts              # Parent (Facade provision, RxLet, Input/Output coordination)
+├── {page}.html            # Layout + sub-component calls
+├── {page}.routes.ts       # Routing definition
 ├── index.ts
-└── components/            # ページ固有サブコンポーネント
+└── components/            # Page-specific sub-components
     ├── index.ts
     └── {name}/
         ├── {name}.ts
@@ -201,16 +306,16 @@ app/{page}/
         └── index.ts
 ```
 
-**責務分離:**
+**Responsibility Separation:**
 
-- **親コンポーネント**: Facade の提供、Observable の購読（`*rxLet`）、サブコンポーネントへの Input/Output 連携
-- **サブコンポーネント**: Input で受け取ったデータの表示のみ（Presentational）
+- **Parent Component**: Facade provision, Observable subscription (`*rxLet`), Input/Output coordination with sub-components
+- **Sub-components**: Display only using data received via Input (Presentational)
 
-**例:**
+**Example:**
 
 ```typescript
-// ファイル: apps/client/src/app/article-list/article-list.ts
-// 親コンポーネントの実装例
+// File: apps/client/src/app/article-list/article-list.ts
+// Parent component implementation example
 @Component({
   imports: [RxLet, ArticleListContentComponent],
   providers: [ArticleListFacade],
@@ -222,28 +327,28 @@ export class ArticleListComponent {
 ```
 
 ```html
-<!-- ファイル: apps/client/src/app/article-list/article-list.html -->
-<!-- 親テンプレートの実装例 -->
+<!-- File: apps/client/src/app/article-list/article-list.html -->
+<!-- Parent template implementation example -->
 <ng-container *rxLet="articleList$; let articles">
   <app-article-list-content [articles]="articles" />
 </ng-container>
 ```
 
 ```typescript
-// ファイル: apps/client/src/app/article-list/components/article-list-content/article-list-content.ts
-// サブコンポーネントの実装例
+// File: apps/client/src/app/article-list/components/article-list-content/article-list-content.ts
+// Sub-component implementation example
 @Component({ ... })
 export class ArticleListContentComponent {
   readonly articles = input.required<Article[]>();
 }
 ```
 
-### ライフサイクルフック
+### Lifecycle Hooks
 
-モダン Angular（`inject()` + Signal）では `ngOnInit` は使用せず、**constructor** で初期化を行います。
+In modern Angular (`inject()` + Signal), don't use `ngOnInit`; initialize in the **constructor**.
 
 ```typescript
-// 推奨: constructor で初期化
+// Recommended: Initialize in constructor
 @Component({ ... })
 export class ArticleListComponent {
   private readonly facade = inject(ArticleListFacade);
@@ -254,7 +359,7 @@ export class ArticleListComponent {
   }
 }
 
-// ❌ ngOnInit は使わない
+// ❌ Don't use ngOnInit
 export class ArticleListComponent implements OnInit {
   ngOnInit(): void {
     this.facade.loadArticleList();
@@ -262,63 +367,35 @@ export class ArticleListComponent implements OnInit {
 }
 ```
 
-**理由:**
+**Reasons:**
 
-- `inject()` は constructor injection context で動作
-- Signal inputs (`input()`) は constructor 時点で利用可能
-- `ActivatedRoute.snapshot` も constructor で取得可能
-- コードがシンプルになる
+- `inject()` works in constructor injection context
+- Signal inputs (`input()`) are available at constructor time
+- `ActivatedRoute.snapshot` can also be retrieved in constructor
+- Code becomes simpler
 
-## アーキテクチャ
+## Placement Guidelines
 
-**キーワード**: `Vertical Slice Architecture`, `Clean Architecture`, `レイヤー構成`, `依存関係`
+**Keywords**: `file placement`, `placement rules`, `path aliases`, `naming conventions`
 
-このセクションでは、プロジェクト全体のアーキテクチャ設計について説明します。Vertical Slice ArchitectureとClean Architectureを組み合わせた構成を採用しています。
+This section explains guidelines for where to place files and components. Also refer to the [Directory Structure](#directory-structure) section for details.
 
-詳細は[設計思想](#設計思想)セクションも参照してください。
+### What Goes Where
 
-### レイヤー構成
+| Item                         | Location                  | Example                                    |
+| ---------------------------- | ------------------------- | ------------------------------------------ |
+| Routing target pages         | `app/{page}/`             | `app/home/home.ts`                         |
+| Page-specific UI parts       | `app/{page}/components/`  | `app/home/components/tag-list/tag-list.ts` |
+| UI shared across pages       | `components/`             | `components/fields/input-field/`           |
+| Composed UI (logic binding)  | `components/`             | `components/fields/input-field/`           |
+| State management (NGXS)      | `domains/{domain}/store/` | `domains/home/store/home.state.ts`         |
+| Facade                       | `domains/{domain}/`       | `domains/home/home.facade.ts`              |
+| Business logic               | `domains/{domain}/`       | `domains/user/user.service.ts`             |
+| Shared across app/comp/dom   | `modules/`                | `modules/ui/ui.facade.ts`                  |
+| UI primitives (minimal unit) | `shared/ui/`              | `shared/ui/button/button.ts`               |
+| Utility functions            | `shared/lib/`             | `shared/lib/utils.ts`                      |
 
-| ディレクトリ  | レイヤー              | 責務                                             | 状態   |
-| ------------- | --------------------- | ------------------------------------------------ | ------ |
-| `app/`        | Presentation          | ページ・ルーティング・UI表示                     | 使用中 |
-| `components/` | Presentation (Shared) | 複数ページで共有するUIコンポーネント             | 使用中 |
-| `domains/`    | Domain + Application  | エンティティ・状態管理（NGXS）・ビジネスロジック | 使用中 |
-| `modules/`    | Application           | app/components/domains間で共有するロジック       | 使用中 |
-| `shared/`     | Infrastructure        | ユーティリティ・UIプリミティブ・アダプター       | 使用中 |
-
-### 依存関係のルール
-
-```
-app/ ──→ components/ ──→ domains/ ──→ modules/ ──→ shared/
-```
-
-- 上位レイヤーは下位レイヤーに依存できる（右方向への依存のみ許可）
-- 下位レイヤーは上位レイヤーに依存してはならない（左方向への依存は禁止）
-- `shared/` は全レイヤーから参照可能
-
-## 配置基準
-
-**キーワード**: `ファイル配置`, `配置ルール`, `パスエイリアス`, `命名規則`
-
-このセクションでは、ファイルやコンポーネントをどこに配置すべきかの基準を説明します。詳細は[ディレクトリ構成](#ディレクトリ構成)セクションも参照してください。
-
-### どこに何を置くか
-
-| 対象                         | 配置先                    | 例                                   |
-| ---------------------------- | ------------------------- | ------------------------------------ |
-| ルーティング対象のページ     | `app/{page}/`             | `app/home/home.ts`                   |
-| ページ固有のUI部品           | `app/{page}/templates/`   | `app/home/templates/hero-section.ts` |
-| 複数ページで共有するUI       | `components/`             | `components/fields/input-field/`     |
-| Composed UI（ロジック連携）  | `components/`             | `components/fields/input-field/`     |
-| 状態管理（NGXS State）       | `domains/{domain}/store/` | `domains/home/store/home.state.ts`   |
-| Facade                       | `domains/{domain}/`       | `domains/home/home.facade.ts`        |
-| ビジネスロジック             | `domains/{domain}/`       | `domains/user/user.service.ts`       |
-| app/components/domains間共有 | `modules/`                | `modules/ui/ui.facade.ts`            |
-| UIプリミティブ（最小単位）   | `shared/ui/`              | `shared/ui/button/button.ts`         |
-| ユーティリティ関数           | `shared/lib/`             | `shared/lib/utils.ts`                |
-
-### パスエイリアス
+### Path Aliases
 
 ```typescript
 import { ButtonDirective } from '$shared/ui';
@@ -327,7 +404,7 @@ import { HomeFacade } from '$domains/home';
 import { InputFieldComponent } from '$components/fields';
 ```
 
-| エイリアス      | パス               |
+| Alias           | Path               |
 | --------------- | ------------------ |
 | `$app/*`        | `src/app/*`        |
 | `$components/*` | `src/components/*` |
@@ -335,61 +412,63 @@ import { InputFieldComponent } from '$components/fields';
 | `$modules/*`    | `src/modules/*`    |
 | `$shared/*`     | `src/shared/*`     |
 
-### 命名規則
+### Naming Conventions
 
-- コンポーネント: `{name}.ts`（単一ファイルコンポーネント）
-- テンプレート: `{name}.html`（必要な場合のみ分離）
-- スタイル: `{name}.css`（必要な場合のみ分離）
-- テスト: `{name}.spec.ts` または `{name}.test.ts`
+- Component: `{name}.ts` (single-file component)
+- Template: `{name}.html` (separate only when necessary)
+- Style: `{name}.css` (separate only when necessary)
+- Test: `{name}.spec.ts` or `{name}.test.ts`
 
-## 状態管理（NGXS）
+---
 
-**キーワード**: `NGXS`, `状態管理`, `Facade`, `Store`, `Action`, `Selector`
+## State Management (NGXS)
 
-このセクションでは、NGXSを使用した状態管理のパターンについて説明します。Facadeパターンによる責務分離と、Storeの状態更新方法を中心に解説します。
+**Keywords**: `NGXS`, `state management`, `Facade`, `Store`, `Action`, `Selector`
 
-**関連ファイル**:
+This section explains state management patterns using NGXS. Focuses on responsibility separation through the Facade pattern and Store state update methods.
 
-- `apps/client/src/domains/{domain}/{domain}.facade.ts` - Facade実装
-- `apps/client/src/domains/{domain}/store/{domain}.state.ts` - State定義
-- `apps/client/src/domains/{domain}/store/{domain}.actions.ts` - Action定義
+**Related Files**:
 
-### ドメイン構造
+- `apps/client/src/domains/{domain}/{domain}.facade.ts` - Facade implementation
+- `apps/client/src/domains/{domain}/store/{domain}.state.ts` - State definition
+- `apps/client/src/domains/{domain}/store/{domain}.actions.ts` - Action definition
+
+### Domain Structure
 
 ```
 domains/{domain}/
 ├── api/
-│   ├── {domain}.api.ts          # API呼び出し（内部）
-│   ├── {domain}.response.ts     # APIレスポンス型（内部）
+│   ├── {domain}.api.ts          # API calls (internal)
+│   ├── {domain}.response.ts     # API response types (internal)
 │   └── index.ts
 ├── model/
-│   ├── {domain}.model.ts        # State/UI用モデル（公開）
+│   ├── {domain}.model.ts        # State/UI models (public)
 │   └── index.ts
 ├── store/
-│   ├── {domain}.state.ts        # State定義 + Selector（内部）
-│   ├── {domain}.actions.ts      # Action定義（内部）
+│   ├── {domain}.state.ts        # State definition + Selector (internal)
+│   ├── {domain}.actions.ts      # Action definition (internal)
 │   └── index.ts
-├── {domain}.facade.ts           # API呼び出し + Store操作（公開）
-└── index.ts                     # model と facade のみエクスポート
+├── {domain}.facade.ts           # API calls + Store operations (public)
+└── index.ts                     # Export only model and facade
 ```
 
-### 設計原則
+### Design Principles
 
-#### 1. app/ と domains/ の命名統一
+#### 1. Naming Alignment between app/ and domains/
 
-`app/` のページディレクトリと `domains/` のドメインディレクトリは **同じ名前**で統一します。
+Page directories in `app/` and domain directories in `domains/` use **the same name**.
 
 ```
 app/
-  article-list/     ← 記事一覧ページ
-  article-page/     ← 記事詳細ページ
+  article-list/     ← Article list page
+  article-page/     ← Article detail page
 
 domains/
-  article-list/     ← 記事一覧ドメイン
-  article-page/     ← 記事詳細ドメイン
+  article-list/     ← Article list domain
+  article-page/     ← Article detail domain
 ```
 
-また、ドメイン内のファイル名・型名も統一します。
+File names and type names within domains are also unified.
 
 ```
 domains/article-page/
@@ -401,58 +480,58 @@ domains/article-page/
   article-page.facade.ts            # ArticlePageFacade
 ```
 
-**メリット:**
+**Benefits:**
 
-- どのページがどのドメインを使うか一目瞭然
-- `ArticlePage` で検索すれば関連ファイルが全てヒット
-- 新しいメンバーも迷わない
+- Clear which page uses which domain
+- Searching for `ArticlePage` hits all related files
+- New members won't get lost
 
-#### 2. 公開範囲の制限
+#### 2. Limited Public Scope
 
-`index.ts` では **model と facade のみ**をエクスポートし、`api` と `store` は内部実装として隠蔽します。
+`index.ts` exports **only model and facade**, hiding `api` and `store` as internal implementation.
 
 ```typescript
 // domains/article-list/index.ts
-export * from './model'; // ✅ 公開
-export * from './article-list.facade'; // ✅ 公開
-// api/ と store/ はエクスポートしない
+export * from './model'; // ✅ Public
+export * from './article-list.facade'; // ✅ Public
+// Don't export api/ and store/
 ```
 
-**メリット:**
+**Benefits:**
 
-- 外部から使うべきものが明確
-- 内部実装の変更が外部に影響しない
-- 認知負荷の軽減
+- Clear what should be used externally
+- Internal implementation changes don't affect external code
+- Reduces cognitive load
 
-#### 3. APIモデルとStateモデルの分離
+#### 3. Separation of API Models and State Models
 
-API レスポンスの型と State で使用する型は別々に定義します。
+Define API response types and State types separately.
 
 ```typescript
-// api/article-list.response.ts（内部で隠蔽）
+// api/article-list.response.ts (internal, hidden)
 export interface ArticleResponse {
   id: string;
-  createdAt: string; // APIはstringで返す
+  createdAt: string; // API returns string
 }
 
-// model/article-list.model.ts（外部に公開）
+// model/article-list.model.ts (public)
 export interface Article {
   id: string;
-  createdAt: Date; // アプリ内ではDateで扱う
+  createdAt: Date; // App uses Date
 }
 ```
 
-**メリット:**
+**Benefits:**
 
-- API の形式変更が State/UI 層に影響しない
-- 変換ロジックを Facade に集約
+- API format changes don't affect State/UI layers
+- Conversion logic centralized in Facade
 
-#### 4. Facade パターンによる責務分離
+#### 4. Responsibility Separation via Facade Pattern
 
-一般的な「State 内で API を呼び出す」パターンではなく、**Facade 内で API 呼び出しと Store 操作を結合**します。
+Instead of the common "call API within State" pattern, **bind API calls and Store operations within Facade**.
 
 ```typescript
-// 非推奨: State内でAPI呼び出し（密結合）
+// Not recommended: Call API within State (tight coupling)
 @Action(LoadArticleList)
 loadArticleList(ctx) {
   return this.api.getArticleList().pipe(
@@ -461,7 +540,7 @@ loadArticleList(ctx) {
   );
 }
 
-// 推奨: Facade内でAPI呼び出し + Store操作
+// Recommended: API calls + Store operations in Facade
 loadArticleList(): void {
   this.api.getArticleList().subscribe((response) => {
     const articles: Article[] = response.articleList.map((r) => ({
@@ -474,37 +553,37 @@ loadArticleList(): void {
 }
 ```
 
-**メリット:**
+**Benefits:**
 
-- State は純粋なデータ保持のみ（get/set）
-- API と Store の密結合を解消
-- Action 名が対照的で分かりやすい（`getArticleList` / `setArticleList`）
+- State is purely for data holding (get/set)
+- Decouples API and Store
+- Action names are symmetrical and clear (`getArticleList` / `setArticleList`)
 
-#### 5. エラーハンドリングの共通化
+#### 5. Common Error Handling
 
-`loading` / `error` 状態は各ドメインでは実装せず、共通処理で対応します。
+`loading` / `error` states aren't implemented in each domain; handled by common processing.
 
-- **Interceptor**: HTTP エラーをキャッチし、通知ドメインへ連携
-- **通知ドメイン**: Toast 表示などの UI フィードバック
+- **Interceptor**: Catches HTTP errors and forwards to notification domain
+- **Notification domain**: UI feedback like toast display
 
 ```typescript
-// 非推奨: 各ドメインで loading/error を管理しない
+// Not recommended: Don't manage loading/error in each domain
 interface ArticleListStateModel {
   articleList: Article[];
-  loading: boolean; // 不要
-  error: string; // 不要
+  loading: boolean; // Unnecessary
+  error: string; // Unnecessary
 }
 
-// ✅ データのみ保持
+// ✅ Hold only data
 interface ArticleListStateModel {
   articleList: Article[];
 }
 ```
 
-### Facade の使用例
+### Facade Usage Example
 
 ```typescript
-// Facadeの使用例（コンポーネントから）
+// Facade usage example (from component)
 private readonly facade = inject(ArticleListFacade);
 readonly articleList$ = this.facade.articleList$;
 
@@ -513,9 +592,9 @@ constructor() {
 }
 ```
 
-### フォーム連携（@ngxs/form-plugin）
+### Form Integration (@ngxs/form-plugin)
 
-Reactive Forms と NGXS Store を自動同期します。詳細は[フォーム管理](#フォーム管理)セクションも参照してください。
+Automatically syncs Reactive Forms with NGXS Store. For details, also refer to the [Form Management](#form-management) section.
 
 ```html
 <form [formGroup]="form" ngxsForm="domain.formPath">
@@ -523,20 +602,20 @@ Reactive Forms と NGXS Store を自動同期します。詳細は[フォーム�
 </form>
 ```
 
-State に `textForm` を定義すると、フォームの値が自動的に Store に同期されます。
+Defining `textForm` in State automatically syncs form values to Store.
 
-### 状態更新パターン
+### State Update Pattern
 
-NGXS Storeの状態更新では、以下のパターンを使用します：
+For NGXS Store state updates, use the following patterns:
 
-- **使用するメソッド**: `ctx.setState()`と`patch`オペレーター（`@ngxs/store/operators`）
-- **使用しないメソッド**: `ctx.patchState()`は使用しない
+- **Methods to use**: `ctx.setState()` and `patch` operator (`@ngxs/store/operators`)
+- **Methods not to use**: Don't use `ctx.patchState()`
 
-実装例:
+Implementation example:
 
 ```typescript
-// ファイル: apps/client/src/domains/article-edit/store/article-edit.state.ts
-// 状態更新パターンの実装例
+// File: apps/client/src/domains/article-edit/store/article-edit.state.ts
+// State update pattern implementation example
 @Action(SetArticle)
 setArticle(ctx: StateContext<ArticleEditStateModel>, action: SetArticle) {
   ctx.setState(
@@ -551,111 +630,75 @@ setArticle(ctx: StateContext<ArticleEditStateModel>, action: SetArticle) {
 }
 ```
 
-## リアクティブパターンの使い分け
+## Reactive Pattern Usage
 
-**キーワード**: `Signal`, `Observable`, `NGXS`, `RxLet`, `Reactive Forms`, `@ngxs/form-plugin`
+**Keywords**: `Signal`, `Observable`, `NGXS`, `RxLet`, `Reactive Forms`, `@ngxs/form-plugin`
 
-このセクションでは、Signal、Observable、NGXS、Reactive Formsなどのリアクティブパターンの使い分けを説明します。
+This section explains the usage of reactive patterns like Signal, Observable, NGXS, and Reactive Forms.
 
-| スコープ       | 技術                              | 用途                       | 例                         |
-| -------------- | --------------------------------- | -------------------------- | -------------------------- |
-| ローカル状態   | **Signal**                        | コンポーネント内部         | `signal()`, `computed()`   |
-| グローバル状態 | **NGXS + `*rxLet`**               | domains連携、大規模データ  | `facade.data$` + `*rxLet`  |
-| フォーム       | **Reactive Forms + form-plugin**  | バリデーション + Store同期 | `ngxsForm`                 |
-| テンプレート   | **RxLet**（AsyncPipe は使わない） | Observable の描画          | `*rxLet="data$; let data"` |
+| Scope        | Technology                       | Purpose                          | Example                    |
+| ------------ | -------------------------------- | -------------------------------- | -------------------------- |
+| Local state  | **Signal**                       | Component internal               | `signal()`, `computed()`   |
+| Global state | **NGXS + `*rxLet`**              | Domain binding, large-scale data | `facade.data$` + `*rxLet`  |
+| Forms        | **Reactive Forms + form-plugin** | Validation + Store sync          | `ngxsForm`                 |
+| Templates    | **RxLet** (Don't use AsyncPipe)  | Observable rendering             | `*rxLet="data$; let data"` |
 
-### 使い分けの指針
+### Usage Guidelines
 
-- **shared/ui/, components/**: 内部実装は Signal を使用
-- **domains との連携**: NGXS Store + `*rxLet` で Observable を描画（詳細は[状態管理（NGXS）](#状態管理ngxs)セクションを参照）
-- **フォーム**: Reactive Forms でバリデーション、@ngxs/form-plugin で Store 同期（詳細は[フォーム管理](#フォーム管理)セクションを参照）
-- **テンプレートでの Observable**: `AsyncPipe` は使わず、必ず `RxLet` を使用
+- **shared/ui/, components/**: Use Signal for internal implementation
+- **Domain integration**: NGXS Store + `*rxLet` to render Observables (refer to [State Management (NGXS)](#state-management-ngxs) section)
+- **Forms**: Validation with Reactive Forms, Store sync with @ngxs/form-plugin (refer to [Form Management](#form-management) section)
+- **Observables in templates**: Don't use `AsyncPipe`; always use `RxLet`
 
-## フォーム管理
+## Form Management
 
-**キーワード**: `Reactive Forms`, `@ngxs/form-plugin`, `バリデーション`, `InputFieldComponent`, `親子コンポーネント連携`
+**Keywords**: `Reactive Forms`, `@ngxs/form-plugin`, `validation`, `InputFieldComponent`, `parent-child component coordination`
 
-このセクションでは、Reactive FormsとNGXS Storeを連携したフォーム管理パターンについて説明します。親子コンポーネントでの連携方法や、トップダウンバリデーション戦略も含みます。
+This section explains form management patterns integrating Reactive Forms with NGXS Store, including parent-child component coordination and top-down validation strategy.
 
-**関連ファイル**:
+**Related Files**:
 
-- `apps/client/src/app/article-edit/components/edit-form/edit-form.ts` - フォームコンポーネント例
-- `apps/client/src/components/fields/input-field/input-field.ts` - InputFieldComponent実装
+- `apps/client/src/app/article-edit/components/edit-form/edit-form.ts` - Form component example
+- `apps/client/src/components/fields/input-field/input-field.ts` - InputFieldComponent implementation
 
-### 技術構成
+### Technology Stack
 
-| 技術                | 役割                                         |
-| ------------------- | -------------------------------------------- |
-| Reactive Forms      | バリデーション（`required`, `minLength` 等） |
-| @ngxs/form-plugin   | Store との自動同期                           |
-| InputFieldComponent | エラー表示の共通化                           |
+| Technology          | Role                                       |
+| ------------------- | ------------------------------------------ |
+| Reactive Forms      | Validation (`required`, `minLength`, etc.) |
+| @ngxs/form-plugin   | Automatic Store sync                       |
+| InputFieldComponent | Common error display                       |
 
-### InputFieldComponent の使用
+### Using InputFieldComponent
 
-**ファイル**: `apps/client/src/components/fields/input-field/input-field.ts`
+**File**: `apps/client/src/components/fields/input-field/input-field.ts`
 
 ```html
-<app-input-field label="ユーザー名" [control]="form.controls.username">
+<app-input-field label="Username" [control]="form.controls.username">
   <input appInput formControlName="username" />
 </app-input-field>
 ```
 
-機能:
+Features:
 
-- ラベル表示
-- バリデーションエラーの自動表示
-- エラー状態のスタイル適用
+- Label display
+- Automatic validation error display
+- Error state styling
 
-## 国際化（i18n）
+### Form Management Pattern (Parent-Child Component Coordination)
 
-**キーワード**: `i18n`, `国際化`, `ja.json`, `翻訳`, `エラーコード`
+Form management pattern used in article-edit:
 
-このセクションでは、HTML上で表示される文言の管理方法と、ja.jsonの構造ルールについて説明します。
+- **Parent component**: Facade calls, get `isFormInvalid$` and `isFormDirty$` via Facade
+- **Child component**: Define `FormGroup`, connect with NGXS Store via `ngxsForm` directive
+- **Save action**: Defined in parent component (`onSave()` method)
+- **URL parameter validation**: Store URL parameters and validate simultaneously using Forms Validators
 
-**関連ファイル**:
-
-- `apps/client/public/i18n/ja.json` - 日本語翻訳ファイル
-
-### ルール
-
-HTML上で表示される文言は`apps/client/public/i18n/ja.json`で定義します。
-
-### ja.jsonの構造ルール
-
-- **エラーコード（`errorCodes`）**: 最下部に配置
-- **それ以外のキー**: アルファベット順で配置
-
-例:
-
-```json
-{
-  "articleEdit": {
-    "title": "記事設定",
-    "form": {
-      "titleLabel": "タイトル",
-      "saveButton": "保存"
-    }
-  },
-  "errorCodes": {
-    "E-999": "予期しないエラーが発生しました"
-  }
-}
-```
-
-### フォーム管理パターン（親子コンポーネント連携）
-
-article-editで使用しているフォーム管理パターン：
-
-- **親コンポーネント**: Facadeの呼び出し、`isFormInvalid$`と`isFormDirty$`をFacade経由で取得
-- **子コンポーネント**: `FormGroup`を定義し、`ngxsForm`ディレクティブでNGXS Storeと連携
-- **保存アクション**: 親コンポーネント側で定義（`onSave()`メソッド）
-- **URLパラメータのバリデーション**: URLパラメータもStoreに保存し、FormsのValidatorsを利用することで同時にvalidateを実施
-
-実装例:
+Implementation example:
 
 ```typescript
-// ファイル: apps/client/src/app/article-edit/article-edit.ts
-// 親コンポーネントの実装例
+// File: apps/client/src/app/article-edit/article-edit.ts
+// Parent component implementation example
 @Component({ ... })
 export class ArticleEditComponent {
   private readonly facade = inject(ArticleEditFacade);
@@ -665,14 +708,14 @@ export class ArticleEditComponent {
   onSave(): void {
     const form = this.editForm()?.form;
     if (!form || form.invalid) return;
-    // 保存処理
+    // Save processing
   }
 }
 ```
 
 ```typescript
-// ファイル: apps/client/src/app/article-edit/components/edit-form/edit-form.ts
-// 子コンポーネントの実装例
+// File: apps/client/src/app/article-edit/components/edit-form/edit-form.ts
+// Child component implementation example
 @Component({ ... })
 export class EditFormComponent {
   readonly form = this.fb.nonNullable.group({
@@ -684,109 +727,202 @@ export class EditFormComponent {
 ```
 
 ```html
-<!-- ファイル: apps/client/src/app/article-edit/components/edit-form/edit-form.html -->
-<!-- 子コンポーネントテンプレートの実装例 -->
+<!-- File: apps/client/src/app/article-edit/components/edit-form/edit-form.html -->
+<!-- Child component template implementation example -->
 <form [formGroup]="form" ngxsForm="articleEdit.articleForm">
   <input formControlName="title" />
 </form>
 ```
 
-### バリデーション戦略（トップダウンバリデーション）
+### Validation Strategy (Top-Down Validation)
 
-**トップダウンバリデーション**を採用しています：
+We adopt **top-down validation**:
 
-- **バリデーション対象**: ユーザー入力（フォーム）のみ
-- **バリデーション対象外**: APIレスポンス、Storeのデータ
-- **メリット**: 必要最小限のバリデーションで高い保守性・拡張性を実現
+- **Validation target**: User input (forms) only
+- **Not validated**: API responses, Store data
+- **Benefits**: Achieves high maintainability and extensibility with minimal necessary validation
 
-**実装方針**:
+**Implementation policy**:
 
-- APIからのレスポンスやストアには直接Zodを使わず、コンポーネントからの入力にのみValidateをかける
-- Reactive Formsの`Validators`を使用（`required`、`minLength`など）
+- Don't use Zod directly on API responses or Store; only validate component inputs
+- Use Reactive Forms `Validators` (`required`, `minLength`, etc.)
 
 ```typescript
-// 推奨: フォームでバリデーション
+// Recommended: Validate in forms
 readonly form = this.fb.nonNullable.group({
   title: ['', [Validators.required, Validators.minLength(1)]],
 });
 
-// 非推奨: APIレスポンスやStoreのデータにはバリデーションをかけない
+// Not recommended: Don't validate API responses or Store data
 interface ArticleResponse {
   id: string;
-  title: string; // バリデーション不要
+  title: string; // Validation unnecessary
 }
 ```
 
-## UI アーキテクチャ
+## Internationalization (i18n)
 
-**キーワード**: `UIプリミティブ`, `Composed UI`, `shared/ui/`, `components/`, `shadcn/ui`
+**Keywords**: `i18n`, `internationalization`, `TranslateModule`, `MultiTranslateHttpLoader`, `translation`
 
-このセクションでは、UIプリミティブとComposed UIの違い、配置場所の基準について説明します。
+This section explains internationalization implementation using `@ngx-translate/core`.
+
+**Related Files**:
+
+- `apps/client/public/i18n/ui/*.json` - UI translation files
+- `apps/client/public/i18n/error/*.json` - Error translation files
+- `apps/client/src/shared/i18n/multi-translate-http-loader.ts` - Custom Loader implementation
+
+### Translation File Structure
+
+Translation files are split into `ui` (for screen display) and `error` (for error messages), merged during application load.
+
+```
+apps/client/public/i18n/
+├── error/
+│   ├── en.json
+│   └── ja.json
+└── ui/
+    ├── en.json
+    └── ja.json
+```
+
+### MultiTranslateHttpLoader
+
+`MultiTranslateHttpLoader` is a custom loader that fetches multiple translation files in parallel and merges them into a single translation object.
+
+```typescript
+// apps/client/src/shared/i18n/multi-translate-http-loader.ts
+export class MultiTranslateHttpLoader implements TranslateLoader {
+  constructor(private http: HttpClient) {}
+
+  getTranslation(lang: string): Observable<TranslationObject> {
+    return forkJoin({
+      error: this.http.get<TranslationObject>(`/i18n/error/${lang}.json`),
+      ui: this.http.get<TranslationObject>(`/i18n/ui/${lang}.json`),
+    }).pipe(map(({ error, ui }) => ({ ...ui, ...error })));
+  }
+}
+```
+
+### Configuration and Initialization
+
+#### Application Configuration
+
+Configure `TranslateModule` in `app.config.ts` and apply the custom loader.
+
+```typescript
+// apps/client/src/app/app.config.ts
+export const appConfig: ApplicationConfig = {
+  providers: [
+    // ...
+    importProvidersFrom(
+      TranslateModule.forRoot({
+        fallbackLang: 'en',
+        loader: {
+          provide: TranslateLoader,
+          useFactory: (http: HttpClient) => new MultiTranslateHttpLoader(http),
+          deps: [HttpClient],
+        },
+      }),
+    ),
+    // ...
+  ],
+};
+```
+
+#### Language Initialization
+
+In `app.ts`, detect browser language settings and apply appropriate language (Japanese or English).
+Since browser APIs aren't accessible during Server-Side Rendering (SSR), execute only on client side.
+
+```typescript
+// apps/client/src/app/app.ts
+export class App {
+  private readonly translateService = inject(TranslateService);
+
+  constructor() {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
+    // Load translation based on browser language setting
+    const browserLang = this.translateService.getBrowserLang();
+    const langToUse = browserLang === 'ja' ? 'ja' : 'en';
+    this.translateService.use(langToUse).subscribe();
+  }
+}
+```
+
+## UI Architecture
+
+**Keywords**: `UI primitives`, `Composed UI`, `shared/ui/`, `components/`, `shadcn/ui`
+
+This section explains the difference between UI primitives and Composed UI, and placement guidelines.
 
 ### Primitives vs Composed
 
-| 種類           | 配置先        | 責務                       | パッケージ化       |
-| -------------- | ------------- | -------------------------- | ------------------ |
-| **Primitives** | `shared/ui/`  | スタイリングのみ、状態なし | 可能               |
-| **Composed**   | `components/` | ロジック連携、状態あり     | このリポジトリ固有 |
+| Type           | Location      | Responsibility          | Packageability           |
+| -------------- | ------------- | ----------------------- | ------------------------ |
+| **Primitives** | `shared/ui/`  | Styling only, stateless | Possible                 |
+| **Composed**   | `components/` | Logic binding, stateful | This repository-specific |
 
-**Primitives（shared/ui/）**:
+**Primitives (shared/ui/)**:
 
-- `ButtonDirective` - ボタンスタイル
-- `InputDirective` - 入力フィールドスタイル
-- 外部パッケージ化可能、依存なし
+- `ButtonDirective` - Button styling
+- `InputDirective` - Input field styling
+- Can be externalized as package, no dependencies
 
-**Composed（components/）**:
+**Composed (components/)**:
 
-- `InputFieldComponent` - Reactive Forms連携、エラー表示
-- このリポジトリ固有のロジックを含む
+- `InputFieldComponent` - Reactive Forms integration, error display
+- Contains this repository-specific logic
 
-## エラーハンドリング
+## Error Handling
 
-**キーワード**: `エラーハンドリング`, `HttpInterceptor`, `ErrorFacade`, `ErrorHandler`, `エラーダイアログ`, `ページ遷移`
+**Keywords**: `error handling`, `HttpInterceptor`, `ErrorFacade`, `ErrorHandler`, `error dialog`, `page navigation`
 
-このセクションでは、APIエラーやクライアントエラーの処理方法について説明します。HttpInterceptorによるエラー集約と、ErrorHandlerによるページ遷移の実装パターンを解説します。
+This section explains how to handle API errors and client errors, including error aggregation via HttpInterceptor and page navigation implementation via ErrorHandler.
 
-**関連ファイル**:
+**Related Files**:
 
-- `apps/client/src/domains/interceptors/http-error.interceptor.ts` - HTTPエラーインターセプター
-- `apps/client/src/domains/error-handlers/client-error.handler.ts` - クライアントエラーハンドラー
-- `apps/client/src/modules/error/error.facade.ts` - ErrorFacade実装
+- `apps/client/src/domains/infrastructure/interceptors/http-error.interceptor.ts` - HTTP error interceptor
+- `apps/client/src/domains/infrastructure/error-handlers/client-error.handler.ts` - Client error handler
+- `apps/client/src/modules/error/error.facade.ts` - ErrorFacade implementation
 
-### 主な利用例
+### Main Use Cases
 
-- **APIのエラー**: HTTPリクエスト時のエラー（400, 500など）
-- **クライアントから発生するエラー**: コンポーネント内で発生するエラー（NotFoundErrorなど）
+- **API errors**: Errors during HTTP requests (400, 500, etc.)
+- **Client-side errors**: Errors within components (NotFoundError, etc.)
 
-### 実装パターン
+### Implementation Patterns
 
-#### API呼び出し時のエラー
+#### Errors During API Calls
 
-`HttpInterceptor`（`apps/client/src/domains/interceptors/http-error.interceptor.ts`）でエラーを集約し、`ErrorFacade.showError()`経由でエラーダイアログを表示します。
+`HttpInterceptor` (`apps/client/src/domains/infrastructure/interceptors/http-error.interceptor.ts`) aggregates errors and displays error dialogs via `ErrorFacade.showError()`.
 
-- 401/403/404はダイアログ表示せず、`ErrorHandler`でページ遷移
-- その他のエラー（400, 500など）はエラーダイアログで表示
+- 401/403/404 don't show dialog; navigate via `ErrorHandler`
+- Other errors (400, 500, etc.) show in error dialog
 
-#### ErrorHandlerでのページ遷移
+#### Page Navigation via ErrorHandler
 
-`ClientErrorHandler`（`apps/client/src/domains/error-handlers/client-error.handler.ts`）で401/403/404エラーをキャッチし、エラーページに遷移します。
+`ClientErrorHandler` (`apps/client/src/domains/infrastructure/error-handlers/client-error.handler.ts`) catches 401/403/404 errors and navigates to error pages.
 
-- エラーページ: `/error/401`、`/error/403`、`/error/404`
-- `skipLocationChange: true`でURLは元のまま
+- Error pages: `/error/401`, `/error/403`, `/error/404`
+- `skipLocationChange: true` keeps original URL
 
-実装例:
+Implementation example:
 
 ```typescript
-// ファイル: apps/client/src/domains/interceptors/http-error.interceptor.ts
-// HttpInterceptorでエラーをキャッチする実装例
+// File: apps/client/src/domains/infrastructure/interceptors/http-error.interceptor.ts
+// HttpInterceptor error catching implementation example
 export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(
     catchError((e: HttpErrorResponse) => {
-      // 401/403/404はスキップ → ErrorHandlerで処理
+      // Skip 401/403/404 → Handle in ErrorHandler
       if ([401, 403, 404].includes(e.status)) {
         return throwError(() => e);
       }
-      // その他のエラーはダイアログ表示
+      // Show other errors in dialog
       errorFacade.showError(apiError);
       return throwError(() => e);
     }),
@@ -795,8 +931,8 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
 ```
 
 ```typescript
-// ファイル: apps/client/src/domains/error-handlers/client-error.handler.ts
-// ErrorHandlerでページ遷移する実装例
+// File: apps/client/src/domains/infrastructure/error-handlers/client-error.handler.ts
+// ErrorHandler page navigation implementation example
 handleError(error: unknown): void {
   if (error instanceof HttpErrorResponse) {
     const route = PAGE_NAVIGATE_ROUTES[error.status];
@@ -807,97 +943,374 @@ handleError(error: unknown): void {
 }
 ```
 
-## スピナー（Spinner）
+## Spinner
 
-**キーワード**: `Spinner`, `ローディング`, `SpinnerFacade`, `withSpinner`, `API呼び出し`
+**Keywords**: `Spinner`, `loading`, `SpinnerFacade`, `withSpinner`, `API call`
 
-このセクションでは、API呼び出し時にSpinnerを表示する方法について説明します。
+This section explains how to display Spinner during API calls.
 
-**関連ファイル**:
+**Related Files**:
 
-- `apps/client/src/modules/spinner/spinner.facade.ts` - SpinnerFacade実装
+- `apps/client/src/modules/spinner/spinner.facade.ts` - SpinnerFacade implementation
 
-### 主な利用例
+### Main Use Cases
 
-- **API呼び出し時のロック**: APIリクエスト中にユーザー操作をロックし、処理中であることを視覚的に示す
+- **Lock during API calls**: Lock user operations during API requests and visually indicate processing
 
-### 実装パターン
+### Implementation Pattern
 
-API呼び出し時は`SpinnerFacade.withSpinner()`を使用してSpinnerを表示します。
+Use `SpinnerFacade.withSpinner()` to display Spinner during API calls.
 
-- RxJSオペレーターとして使用し、Observableにパイプで接続
-- 自動的にスピナーを表示/非表示し、最小表示時間を保証してちらつきを防止
+- Use as RxJS operator, pipe to Observable
+- Automatically shows/hides spinner and guarantees minimum display time to prevent flickering
 
-実装例:
+Implementation example:
 
 ```typescript
-// SpinnerFacadeを使用したAPI呼び出しの実装例
+// SpinnerFacade API call implementation example
 this.api
   .getArticle(articleId)
   .pipe(this.spinnerFacade.withSpinner())
   .subscribe((response) => {
-    // 処理
+    // Processing
   });
 ```
 
-## スナックバー（Snackbar）
+## Snackbar
 
-**キーワード**: `Snackbar`, `通知`, `SnackbarFacade`, `showSnackbar`, `成功メッセージ`
+**Keywords**: `Snackbar`, `notification`, `SnackbarFacade`, `showSnackbar`, `success message`
 
-このセクションでは、API呼び出し後にSnackbarでメッセージを表示する方法について説明します。
+This section explains how to display messages in Snackbar after API calls.
 
-**関連ファイル**:
+**Related Files**:
 
-- `apps/client/src/modules/snackbar/snackbar.facade.ts` - SnackbarFacade実装
+- `apps/client/src/modules/snackbar/snackbar.facade.ts` - SnackbarFacade implementation
 
-### 主な利用例
+### Main Use Cases
 
-- **API呼び出し後のメッセージ**: 保存成功、更新完了などの成功メッセージを表示
+- **Messages after API calls**: Display success messages like save successful, update complete
 
-### 実装パターン
+### Implementation Pattern
 
-保存成功時は`SnackbarFacade.showSnackbar()`でメッセージを表示します。
+Use `SnackbarFacade.showSnackbar()` to display messages on save success.
 
-実装例:
+Implementation example:
 
 ```typescript
-// SnackbarFacadeを使用した成功メッセージ表示の実装例
+// SnackbarFacade success message display implementation example
 this.facade.updateArticle(articleId, request).subscribe(() => {
-  this.snackbarFacade.showSnackbar('保存しました', 'success');
+  this.snackbarFacade.showSnackbar('Saved', 'success');
 });
 ```
 
-## パフォーマンス最適化
+---
 
-**キーワード**: `Zoneless`, `変更検知`, `@rx-angular/template`, `RxLet`, `RxIf`, `ISR`
+## ISR (Incremental Static Regeneration)
 
-このセクションでは、Zoneless変更検知と@rx-angular/templateを使用したパフォーマンス最適化について説明します。
+**Keywords**: `ISR`, `SSR`, `@rx-angular/isr`, `cache`, `static generation`, `regeneration`
 
-### Zoneless 変更検知
+This section explains ISR (Incremental Static Regeneration) implementation using `@rx-angular/isr`.
 
-`provideZonelessChangeDetection()` により Zone.js を使用せず、効率的な変更検知を実現。
+**Related Files**:
+
+- `apps/client/src/server.ts` - Express server (ISR configuration)
+- `apps/client/src/modules/isr/isr.service.ts` - ISR cache invalidation service
+
+### How ISR Works
+
+ISR is a mechanism to incrementally regenerate statically generated pages. Returns cached HTML on request while generating latest version in background.
+
+```mermaid
+sequenceDiagram
+    participant Browser
+    participant SSRServer
+    participant Cache
+    participant NestJS
+
+    Browser->>SSRServer: GET /article/123
+    SSRServer->>Cache: Check cache
+    alt Cache available (within expiry)
+        Cache->>Browser: Cached HTML
+    else No cache or expired
+        SSRServer->>NestJS: API call
+        NestJS->>SSRServer: Return data
+        SSRServer->>Cache: Save HTML
+        SSRServer->>Browser: Newly generated HTML
+    end
+```
+
+### Route Configuration
+
+Specify `revalidate` option for each route to set cache expiry.
+
+```typescript
+// apps/client/src/app/app.routes.ts
+export const routes: Routes = [
+  { path: '', component: HomeComponent, data: { revalidate: 60 } }, // 60 seconds
+  { path: 'article/:id', component: ArticleComponent, data: { revalidate: 300 } }, // 5 minutes
+];
+```
+
+### Cache Invalidation
+
+Use `IsrService` to manually invalidate cache on article update or deletion.
+
+```typescript
+// apps/client/src/modules/isr/isr.service.ts
+@Injectable({ providedIn: 'root' })
+export class IsrService {
+  invalidateCache(urlsToInvalidate: string[]): Observable<void> {
+    return this.http.post<void>('/api/invalidate-cache', {
+      secret: environment.isrSecret,
+      urlsToInvalidate,
+    });
+  }
+
+  // Invalidate article page cache
+  invalidateArticle(articleId: string): Observable<void> {
+    return this.invalidateCache([`/article/${articleId}`]);
+  }
+}
+```
+
+### SSR Server Configuration
+
+```typescript
+// apps/client/src/server.ts
+import { ISRHandler } from '@rx-angular/isr/server';
+
+const isr = new ISRHandler({
+  indexHtml,
+  invalidateSecretToken: process.env['ISR_SECRET'] || 'MY_SECRET_TOKEN',
+  enableLogging: !isProd,
+});
+
+// ISR cache invalidation endpoint
+server.post('/api/invalidate-cache', async (req, res) => {
+  await isr.invalidate(req, res, req.body);
+});
+```
+
+## SEO Support
+
+**Keywords**: `SEO`, `Open Graph`, `Twitter Card`, `meta tags`, `OG image`, `Sitemap`
+
+This section explains SEO optimization implementation.
+
+**Related Files**:
+
+- `apps/client/src/modules/seo/seo.service.ts` - SEO service
+- `apps/client/src/server.ts` - Sitemap generation
+
+### SeoService
+
+`SeoService` dynamically sets meta tags like Open Graph and Twitter Card.
+
+```typescript
+// apps/client/src/modules/seo/seo.service.ts
+@Injectable({ providedIn: 'root' })
+export class SeoService {
+  setArticleMeta(article: Article): void {
+    this.meta.updateTag({ property: 'og:title', content: article.title });
+    this.meta.updateTag({ property: 'og:description', content: article.description });
+    this.meta.updateTag({ property: 'og:image', content: article.ogImageUrl });
+    this.meta.updateTag({ property: 'og:type', content: 'article' });
+    this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
+  }
+}
+```
+
+### Dynamic OG Image Generation
+
+OG images are dynamically generated and cached by NestJS API.
+
+```typescript
+// Article OG image URL
+const ogImageUrl = `${environment.apiUrl}/api/og-image/article/${articleId}`;
+```
+
+### Dynamic Sitemap Generation
+
+Sitemap is dynamically generated by SSR server.
+
+```typescript
+// apps/client/src/server.ts
+server.get('/sitemap.xml', async (_req, res) => {
+  const response = await fetch(`${apiUrl}/api/sitemap`);
+  const sitemapData = await response.json();
+
+  const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  ${sitemapData.urls.map((url) => `<url><loc>${url}</loc></url>`).join('\n')}
+</urlset>`;
+
+  res.type('application/xml').send(sitemap);
+});
+```
+
+## Cookie Consent (Google Consent Mode v2)
+
+**Keywords**: `Cookie Consent`, `GDPR`, `CCPA`, `Google Consent Mode`, `privacy`
+
+This section explains Google Consent Mode v2 implementation for GDPR/CCPA compliance.
+
+**Related Files**:
+
+- `apps/client/src/index.html` - Consent Mode initialization
+- `apps/client/src/modules/consent/consent.service.ts` - Consent management service
+
+### How Consent Mode v2 Works
+
+Google Consent Mode v2 controls Google Analytics and ad tag behavior based on user consent status.
+
+| State     | Behavior                                   |
+| --------- | ------------------------------------------ |
+| `denied`  | No cookies, only anonymous data collection |
+| `granted` | Full tracking with cookies                 |
+
+### Default Configuration
+
+On page load, default to `denied` and wait for user consent.
+
+```html
+<!-- apps/client/src/index.html -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() {
+    dataLayer.push(arguments);
+  }
+
+  // Default to denied (before consent)
+  gtag('consent', 'default', {
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+    analytics_storage: 'denied',
+    wait_for_update: 500,
+  });
+</script>
+```
+
+### Post-Consent Update
+
+After user consent, update state with `ConsentService`.
+
+```typescript
+// apps/client/src/modules/consent/consent.service.ts
+@Injectable({ providedIn: 'root' })
+export class ConsentService {
+  grantConsent(): void {
+    gtag('consent', 'update', {
+      ad_storage: 'granted',
+      ad_user_data: 'granted',
+      ad_personalization: 'granted',
+      analytics_storage: 'granted',
+    });
+    localStorage.setItem('cookie_consent', 'granted');
+  }
+}
+```
+
+---
+
+## Testing Strategy
+
+**Keywords**: `testing`, `Vitest`, `@testing-library/angular`, `coverage`
+
+This section explains component testing execution methods and role division with Storybook.
+
+Component tests run with **Vitest + @testing-library/angular**.
+
+```bash
+pnpm test           # CI/development common
+pnpm test:coverage  # With coverage
+pnpm test:watch     # Watch mode
+```
+
+### Role Division
+
+| Tool      | Role                      |
+| --------- | ------------------------- |
+| Storybook | UI catalog, documentation |
+| Vitest    | Component, unit tests     |
+
+> **Note**: `@storybook/addon-vitest` doesn't support Angular, so tests run with Vitest.
+
+## Storybook
+
+**Keywords**: `Storybook`, `UI catalog`, `documentation`, `Stories`
+
+This section explains how to create UI component catalogs and documentation using Storybook.
+
+Provides UI component catalog and documentation.
+
+### Startup
+
+```bash
+pnpm storybook        # http://localhost:6006
+```
+
+### Target Components
+
+| Category   | Path                             | Contents            |
+| ---------- | -------------------------------- | ------------------- |
+| UI         | `shared/ui/button/`              | ButtonDirective     |
+| UI         | `shared/ui/input/`               | InputDirective      |
+| Components | `components/fields/input-field/` | InputFieldComponent |
+
+### Writing Stories
+
+Define each variant in `*.stories.ts` files:
+
+```typescript
+// File: apps/client/src/shared/ui/button/button.stories.ts
+// Storybook Stories implementation example
+import { ButtonDirective } from './button';
+import type { Meta, StoryObj } from '@storybook/angular';
+
+const meta: Meta<ButtonDirective> = {
+  title: 'UI/Button',
+  component: ButtonDirective,
+  tags: ['autodocs'],
+  // ...
+};
+
+export const Default: Story = {
+  args: { variant: 'default' },
+};
+```
+
+## Performance Optimization
+
+**Keywords**: `Zoneless`, `change detection`, `@rx-angular/template`, `RxLet`, `RxIf`, `ISR`
+
+This section explains performance optimization using Zoneless change detection and @rx-angular/template.
+
+### Zoneless Change Detection
+
+`provideZonelessChangeDetection()` enables efficient change detection without using Zone.js.
 
 ### @rx-angular/template
 
-Observable をテンプレートで使用する際は `AsyncPipe` ではなく `@rx-angular/template` を使用します。
+When using Observables in templates, use `@rx-angular/template` instead of `AsyncPipe`.
 
-**なぜ rx-angular を使うか:**
+**Why use rx-angular:**
 
-- Zoneless 環境で必須（`AsyncPipe` は Zone.js に依存）
-- 変更検知の効率化（最適なタイミングで `markForCheck()` を呼び出し）
-- SSR との相性が良い
+- Mandatory in Zoneless environment (`AsyncPipe` depends on Zone.js)
+- Optimizes change detection (calls `markForCheck()` at optimal timing)
+- Good compatibility with SSR
 
-#### ディレクティブ・パイプの使い分け
+#### Directive & Pipe Usage
 
-| 機能        | 用途                                         | 例                                           |
-| ----------- | -------------------------------------------- | -------------------------------------------- |
-| `RxLet`     | Observable を変数として展開                  | `*rxLet="data$; let data"`                   |
-| `RxIf`      | Observable の値で条件分岐 + suspense 対応    | `*rxIf="page$; let page; suspense: loading"` |
-| `RxFor`     | Observable 配列のループ（将来用）            | `*rxFor="let item of items$; trackBy: 'id'"` |
-| `RxPush`    | プロパティバインディングで Observable を使用 | `[data]="data$ \| push"`                     |
-| `RxUnpatch` | イベントを Zone.js から除外                  | `<div [unpatch]="['click']" (click)="...">`  |
+| Feature     | Purpose                                  | Example                                      |
+| ----------- | ---------------------------------------- | -------------------------------------------- |
+| `RxLet`     | Expand Observable as variable            | `*rxLet="data$; let data"`                   |
+| `RxIf`      | Conditional branching + suspense support | `*rxIf="page$; let page; suspense: loading"` |
+| `RxFor`     | Observable array loop (for future use)   | `*rxFor="let item of items$; trackBy: 'id'"` |
+| `RxPush`    | Use Observable in property binding       | `[data]="data$ \| push"`                     |
+| `RxUnpatch` | Exclude events from Zone.js              | `<div [unpatch]="['click']" (click)="...">`  |
 
-#### RxIf + RxPush の使用例
+#### RxIf + RxPush Usage Example
 
 ```typescript
 import { RxIf } from '@rx-angular/template/if';
@@ -913,26 +1326,26 @@ export class MyComponent {
 ```
 
 ```html
-<!-- RxIf: 条件分岐 + suspense -->
+<!-- RxIf: Conditional branching + suspense -->
 <ng-container *rxIf="page$; let page; suspense: loading">
-  <!-- RxPush: 子コンポーネントへのバインディング -->
+  <!-- RxPush: Binding to child components -->
   <app-content [page]="page" [items]="items$ | push" />
 </ng-container>
 
 <ng-template #loading>
-  <p>読み込み中...</p>
+  <p>Loading...</p>
 </ng-template>
 ```
 
-#### RxUnpatch の使用例
+#### RxUnpatch Usage Example
 
-Change Detection が不要なイベント（オーバーレイのクリックなど）に使用します。
+Use for events that don't require Change Detection (like overlay clicks).
 
 ```html
-<!-- unpatch: Zone.js を介さずにイベントを処理 -->
+<!-- unpatch: Process events without going through Zone.js -->
 <div class="overlay" [unpatch]="['click']" (click)="closeSidebar()"></div>
 
-<!-- 複数のイベントを unpatch -->
+<!-- Unpatch multiple events -->
 <div [unpatch]="['scroll', 'mousemove']" (scroll)="onScroll()">...</div>
 ```
 
@@ -945,22 +1358,22 @@ import { RxUnpatch } from '@rx-angular/template/unpatch';
 export class SidebarComponent { ... }
 ```
 
-#### Signal vs Observable の使い分け
+#### Signal vs Observable Usage
 
-| データソース   | 推奨技術                | 理由                                            |
-| -------------- | ----------------------- | ----------------------------------------------- |
-| **Signal**     | 組み込み `@if` / `@for` | Signal はすでに効率的な Change Detection を持つ |
-| **Observable** | RxIf / RxFor / RxPush   | Zone.js を介さず Observable をサブスクライブ    |
+| Data Source    | Recommended Technology  | Reason                                                |
+| -------------- | ----------------------- | ----------------------------------------------------- |
+| **Signal**     | Built-in `@if` / `@for` | Signal already has efficient Change Detection         |
+| **Observable** | RxIf / RxFor / RxPush   | Subscribe to Observable without going through Zone.js |
 
-**Signal を rx-angular に置き換えない理由:**
+**Why not convert Signal to rx-angular:**
 
-1. **Signal はすでに効率的**: Angular Signal は Zone.js に依存しないリアクティブプリミティブ
-2. **rx-angular は Observable 向け**: RxIf/RxFor/RxPush は非同期ストリーム（Observable）を効率的にテンプレートにバインドするために設計
-3. **変換オーバーヘッドを避ける**: Signal を Observable に変換（`toObservable()`）するのは不要な複雑さ
-4. **Angular 17+ の `@if`/`@for` は Signal と最適化**: 組み込みコントロールフローは Signal を意識して設計されている
+1. **Signal is already efficient**: Angular Signal is a reactive primitive that doesn't depend on Zone.js
+2. **rx-angular is for Observable**: RxIf/RxFor/RxPush are designed to efficiently bind asynchronous streams (Observable) to templates
+3. **Avoid conversion overhead**: Converting Signal to Observable (`toObservable()`) is unnecessary complexity
+4. **Angular 17+ `@if`/`@for` are optimized for Signal**: Built-in control flow is designed with Signal in mind
 
 ```typescript
-// 推奨: Signal には組み込み @if/@for を使用
+// Recommended: Use built-in @if/@for for Signal
 @Component({ ... })
 export class ArticleListContentComponent {
   readonly articles = input.required<Article[]>();
@@ -968,14 +1381,14 @@ export class ArticleListContentComponent {
 ```
 
 ```html
-<!-- Signal ベース: 組み込み @for で十分 -->
+<!-- Signal-based: Built-in @for is sufficient -->
 @for (article of articles(); track article.id) {
 <app-article-card [article]="article" />
 }
 ```
 
 ```typescript
-// 推奨: Observable には rx-angular を使用
+// Recommended: Use rx-angular for Observable
 @Component({
   imports: [RxIf, RxPush],
 })
@@ -986,85 +1399,99 @@ export class ArticlePageComponent {
 ```
 
 ```html
-<!-- Observable ベース: RxIf + RxPush -->
+<!-- Observable-based: RxIf + RxPush -->
 <ng-container *rxIf="page$; let page">
   <app-content [items]="items$ | push" />
 </ng-container>
 ```
 
-### ISR（Incremental Static Regeneration）
+## Error Code Sync Test
 
-`@rx-angular/isr` により、静的ページを増分的に再生成。
+**Keywords**: `error codes`, `translation sync`, `automated testing`, `multilingual support`
 
-```typescript
-// ファイル: apps/client/src/app/app.routes.ts
-// ISR設定の例
-{ path: 'home', data: { revalidate: 60 } }  // 60秒ごとに再生成
-```
+This section explains tests that verify synchronization between server-side error codes and client-side translation files.
 
-## テスト戦略
+**Related Files**:
 
-**キーワード**: `テスト`, `Vitest`, `@testing-library/angular`, `カバレッジ`
+- `apps/client/src/shared/i18n/error-code-sync.spec.ts` - Sync test
+- `packages/error-code/src/error-code.ts` - Error code definitions
 
-このセクションでは、コンポーネントテストの実行方法と、Storybookとの役割分担について説明します。
+### Purpose of Sync Tests
 
-コンポーネントテストは **Vitest + @testing-library/angular** で実行します。
+Automatically verify that `ERROR_CODE` defined on server side is synchronized with client-side translation files (`error/ja.json`, `error/en.json`).
 
-```bash
-pnpm test           # CI・開発共通
-pnpm test:coverage  # カバレッジ付き
-pnpm test:watch     # ウォッチモード
-```
+**Validation content:**
 
-### 役割分担
+1. Translation exists for all error codes
+2. No unused keys exist in translation files
+3. Translations are complete in both Japanese and English
 
-| ツール    | 役割                           |
-| --------- | ------------------------------ |
-| Storybook | UIカタログ・ドキュメント       |
-| Vitest    | コンポーネント・ユニットテスト |
-
-> **Note**: `@storybook/addon-vitest` は Angular では未対応のため、テストは Vitest で行います。
-
-## Storybook
-
-**キーワード**: `Storybook`, `UIカタログ`, `ドキュメント`, `Stories`
-
-このセクションでは、Storybookを使用したUIコンポーネントのカタログ・ドキュメント作成方法について説明します。
-
-UIコンポーネントのカタログ・ドキュメントを提供します。
-
-### 起動
-
-```bash
-pnpm storybook        # http://localhost:6006
-```
-
-### 対象コンポーネント
-
-| カテゴリ   | パス                             | 内容                |
-| ---------- | -------------------------------- | ------------------- |
-| UI         | `shared/ui/button/`              | ButtonDirective     |
-| UI         | `shared/ui/input/`               | InputDirective      |
-| Components | `components/fields/input-field/` | InputFieldComponent |
-
-### Stories の書き方
-
-`*.stories.ts` ファイルに各バリアントを定義：
+### Test Implementation
 
 ```typescript
-// ファイル: apps/client/src/shared/ui/button/button.stories.ts
-// Storybook Storiesの実装例
-import { ButtonDirective } from './button';
-import type { Meta, StoryObj } from '@storybook/angular';
+// apps/client/src/shared/i18n/error-code-sync.spec.ts
+import { ERROR_CODE } from '@monorepo/error-code';
+import jaErrors from '../../../public/i18n/error/ja.json';
+import enErrors from '../../../public/i18n/error/en.json';
 
-const meta: Meta<ButtonDirective> = {
-  title: 'UI/Button',
-  component: ButtonDirective,
-  tags: ['autodocs'],
-  // ...
-};
+describe('Error Code Sync', () => {
+  const errorCodes = Object.values(ERROR_CODE);
 
-export const Default: Story = {
-  args: { variant: 'default' },
-};
+  it('should have Japanese translations for all error codes', () => {
+    const missingCodes = errorCodes.filter((code) => !jaErrors[code]);
+    expect(missingCodes).toEqual([]);
+  });
+
+  it('should have English translations for all error codes', () => {
+    const missingCodes = errorCodes.filter((code) => !enErrors[code]);
+    expect(missingCodes).toEqual([]);
+  });
+
+  it('should not have unused translations in Japanese', () => {
+    const unusedKeys = Object.keys(jaErrors).filter((key) => !errorCodes.includes(key as ERROR_CODE));
+    expect(unusedKeys).toEqual([]);
+  });
+});
 ```
+
+### Benefits
+
+- **Automated validation**: Detect missing translations in CI/CD pipeline
+- **Type safety**: Types and error codes always synchronized
+- **Multilingual support**: Ensures translations are complete in both Japanese and English
+
+## Package Management (pnpm catalog)
+
+**Keywords**: `pnpm`, `catalog`, `version management`, `pnpm-workspace.yaml`
+
+This section explains centralized package version management using pnpm catalog.
+
+Versions are managed centrally in `pnpm-workspace.yaml` and unified across the monorepo.
+
+### Configuration Example
+
+```yaml
+# File: pnpm-workspace.yaml (root directory)
+versions:
+  angular: &angular 21.0.0
+  ngxs: &ngxs 20.1.0
+
+catalog:
+  '@angular/core': *angular
+  '@ngxs/store': *ngxs
+```
+
+```json
+// File: apps/client/package.json
+{
+  "dependencies": {
+    "@angular/core": "catalog:",
+    "@ngxs/store": "catalog:"
+  }
+}
+```
+
+### Version Update Procedure
+
+1. Change versions in `pnpm-workspace.yaml`
+2. Run `pnpm install` to update all packages at once

@@ -45,11 +45,23 @@ export class HomeComponent {
     });
 
     // Load initial articles based on auth status
-    this.authFacade.isAuthenticated$.pipe(take(1)).subscribe((isAuth) => {
-      const config: ArticleListConfig = isAuth ? { type: 'feed', filters: {} } : { type: 'all', filters: {} };
-      this.listConfig.set(config);
-      this.facade.loadArticles(config);
-    });
+    // 楽観的UI: 認証チェックを待たずに、まずはGlobal Feed (未ログイン状態) を表示する
+    const initialConfig: ArticleListConfig = { type: 'all', filters: {} };
+    this.listConfig.set(initialConfig);
+    this.facade.loadArticles(initialConfig);
+
+    // 認証状態が確定したら、必要に応じてフィードを切り替える
+    this.authFacade.isAuthenticated$
+      .pipe(
+        filter((isAuth): isAuth is boolean => isAuth === true),
+        take(1),
+      )
+      .subscribe(() => {
+        // ログイン済みと判明したら、Your Feedに切り替える
+        const config: ArticleListConfig = { type: 'feed', filters: {} };
+        this.listConfig.set(config);
+        this.facade.loadArticles(config);
+      });
   }
 
   setListTo(type: 'all' | 'feed', filters: ArticleListConfig['filters'] = {}): void {
@@ -66,7 +78,7 @@ export class HomeComponent {
     this.authFacade.isAuthenticated$
       .pipe(
         take(1),
-        filter((isAuth) => type !== 'feed' || isAuth),
+        filter((isAuth): isAuth is boolean => type !== 'feed' || isAuth === true),
       )
       .subscribe(() => {
         const config: ArticleListConfig = { type, filters };

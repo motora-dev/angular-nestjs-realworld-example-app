@@ -75,6 +75,26 @@ describe('ERROR_CODE', () => {
     it('should have USERNAME_INVALID_FORMAT', () => {
       expect(ERROR_CODE.USERNAME_INVALID_FORMAT).toBe('USERNAME_INVALID_FORMAT');
     });
+
+    it('should have EMAIL_INVALID', () => {
+      expect(ERROR_CODE.EMAIL_INVALID).toBe('EMAIL_INVALID');
+    });
+
+    it('should have TITLE_REQUIRED', () => {
+      expect(ERROR_CODE.TITLE_REQUIRED).toBe('TITLE_REQUIRED');
+    });
+
+    it('should have DESCRIPTION_REQUIRED', () => {
+      expect(ERROR_CODE.DESCRIPTION_REQUIRED).toBe('DESCRIPTION_REQUIRED');
+    });
+
+    it('should have BODY_REQUIRED', () => {
+      expect(ERROR_CODE.BODY_REQUIRED).toBe('BODY_REQUIRED');
+    });
+
+    it('should have COMMENT_BODY_REQUIRED', () => {
+      expect(ERROR_CODE.COMMENT_BODY_REQUIRED).toBe('COMMENT_BODY_REQUIRED');
+    });
   });
 
   it('should have all expected error codes', () => {
@@ -91,6 +111,11 @@ describe('ERROR_CODE', () => {
       'USERNAME_REQUIRED',
       'USERNAME_TOO_SHORT',
       'USERNAME_INVALID_FORMAT',
+      'EMAIL_INVALID',
+      'TITLE_REQUIRED',
+      'DESCRIPTION_REQUIRED',
+      'BODY_REQUIRED',
+      'COMMENT_BODY_REQUIRED',
     ];
 
     const actualCodes = Object.values(ERROR_CODE);
@@ -115,6 +140,11 @@ describe('Type definitions', () => {
         'USERNAME_REQUIRED',
         'USERNAME_TOO_SHORT',
         'USERNAME_INVALID_FORMAT',
+        'EMAIL_INVALID',
+        'TITLE_REQUIRED',
+        'DESCRIPTION_REQUIRED',
+        'BODY_REQUIRED',
+        'COMMENT_BODY_REQUIRED',
       ];
 
       expect(codes).toBeDefined();
@@ -179,6 +209,11 @@ describe('Type definitions', () => {
         ERROR_CODE.USERNAME_REQUIRED,
         ERROR_CODE.USERNAME_TOO_SHORT,
         ERROR_CODE.USERNAME_INVALID_FORMAT,
+        ERROR_CODE.EMAIL_INVALID,
+        ERROR_CODE.TITLE_REQUIRED,
+        ERROR_CODE.DESCRIPTION_REQUIRED,
+        ERROR_CODE.BODY_REQUIRED,
+        ERROR_CODE.COMMENT_BODY_REQUIRED,
       ];
 
       expect(codes).toBeDefined();

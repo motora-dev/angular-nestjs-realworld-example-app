@@ -73,6 +73,11 @@ CRUD操作、認証、ルーティング、ページネーションなどの機�
 - **Angular SSR + ISR** による高速な初期表示と SEO 最適化
 - **NestJS + CQRS** によるスケーラブルなバックエンド設計
 - **Prisma ORM** による型安全なデータベースアクセス
+- **OAuth認証（Google）+ JWT** による安全なセッション管理
+- **CSRF対策（Double Submit Cookie）** によるクロスサイトリクエストフォージェリ防止
+- **SEO最適化**（動的OG画像生成、Sitemap自動生成）
+- **Google Consent Mode v2** 対応のCookie Consent
+- **エラーコード同期テスト** によるサーバー/クライアント間の翻訳整合性保証
 
 **RealWorld仕様との差異:**
 
@@ -135,20 +140,20 @@ angular-nestjs-realworld-example-app/
 
 #### 📱 Client (`apps/client`)
 
-- **Framework**: [Angular](https://angular.dev/) 21.0.3 + SSR + ISR
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/) 4.1.17 + CVA + tailwind-merge
+- **Framework**: [Angular](https://angular.dev/) 21.0.6 + SSR + ISR
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/) 4.1.18 + CVA + tailwind-merge
 - **State Management**: [NGXS](https://www.ngxs.io/) 21.0.0 + @ngxs/form-plugin
 - **Reactive**: [RxAngular](https://www.rx-angular.io/) 20.1.0 + RxJS 7.8.2
-- **Testing**: Vitest 4.0.15 + @testing-library/angular + Storybook 10.1.4
-- **Linting**: ESLint 9.39.1 (Flat Config)
+- **Testing**: Vitest 4.0.16 + @testing-library/angular + Storybook 10.1.10
+- **Linting**: ESLint 9.39.2 (Flat Config)
 
 #### 🚀 Server (`apps/server`)
 
-- **Framework**: [NestJS](https://nestjs.com/) 11.1.9
+- **Framework**: [NestJS](https://nestjs.com/) 11.1.10
 - **Platform**: Express
-- **ORM**: [Prisma](https://www.prisma.io/) 7.1.0
-- **Testing**: Vitest 4.0.15 + Supertest
-- **Linting**: ESLint 9.39.1 (Flat Config)
+- **ORM**: [Prisma](https://www.prisma.io/) 7.2.0
+- **Testing**: Vitest 4.0.16 + Supertest
+- **Linting**: ESLint 9.39.2 (Flat Config)
 
 #### 📦 Shared Packages
 
@@ -234,10 +239,10 @@ flowchart TB
 ## 🛠 技術スタック
 
 - **Package Manager**: [pnpm](https://pnpm.io/) 10.24.0 (ワークスペース機能使用)
-- **Build System**: [Turborepo](https://turbo.build/repo) 2.6.3
+- **Build System**: [Turborepo](https://turbo.build/repo) 2.7.2
 - **Language**: [TypeScript](https://www.typescriptlang.org/) 5.9.3
-- **Code Quality**: ESLint 9.39.1 + Prettier 3.7.4
-- **Testing**: Vitest 4.0.15 + Testing Library
+- **Code Quality**: ESLint 9.39.2 + Prettier 3.7.4
+- **Testing**: Vitest 4.0.16 + Testing Library
 - **Module System**: ES Modules (`"type": "module"`)
 
 ## 🚀 開発環境のセットアップ
@@ -415,29 +420,29 @@ pnpm test --filter=@monorepo/server
 
 ### 共通
 
-![Turborepo](https://img.shields.io/badge/Turborepo-2.6.3-ef4444?logo=turborepo&logoColor=white)
+![Turborepo](https://img.shields.io/badge/Turborepo-2.7.2-ef4444?logo=turborepo&logoColor=white)
 ![pnpm](https://img.shields.io/badge/pnpm-10.24.0-f69220?logo=pnpm&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178c6?logo=typescript&logoColor=white)
-![ESLint](https://img.shields.io/badge/ESLint-9.39.1-4b32c3?logo=eslint&logoColor=white)
-![Vitest](https://img.shields.io/badge/Vitest-4.0.15-729B1B?logo=vitest&logoColor=white)
+![ESLint](https://img.shields.io/badge/ESLint-9.39.2-4b32c3?logo=eslint&logoColor=white)
+![Vitest](https://img.shields.io/badge/Vitest-4.0.16-729B1B?logo=vitest&logoColor=white)
 ![Prettier](https://img.shields.io/badge/Prettier-3.7.4-F7B93E?logo=prettier&logoColor=white)
 
 ### Client
 
-![Angular](https://img.shields.io/badge/Angular-21.0.3-DD0031?logo=angular&logoColor=white)
-![Angular CDK](https://img.shields.io/badge/Angular%20CDK-21.0.2-DD0031?logo=angular&logoColor=white)
-![TailwindCSS](https://img.shields.io/badge/Tailwind%20CSS-4.1.17-38bdf8?logo=tailwindcss&logoColor=white)
+![Angular](https://img.shields.io/badge/Angular-21.0.6-DD0031?logo=angular&logoColor=white)
+![Angular CDK](https://img.shields.io/badge/Angular%20CDK-21.0.5-DD0031?logo=angular&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/Tailwind%20CSS-4.1.18-38bdf8?logo=tailwindcss&logoColor=white)
 ![NGXS](https://img.shields.io/badge/NGXS-21.0.0-3F51B5?logoColor=white)
 ![RxAngular](https://img.shields.io/badge/RxAngular-20.1.0-E91E63?logoColor=white)
 ![RxJS](https://img.shields.io/badge/RxJS-7.8.2-b7178c?logo=reactivex&logoColor=white)
-![Storybook](https://img.shields.io/badge/Storybook-10.1.4-FF4785?logo=storybook&logoColor=white)
+![Storybook](https://img.shields.io/badge/Storybook-10.1.10-FF4785?logo=storybook&logoColor=white)
 
 ### Server
 
-![NestJS](https://img.shields.io/badge/NestJS-11.1.9-e0234e?logo=nestjs&logoColor=white)
+![NestJS](https://img.shields.io/badge/NestJS-11.1.10-e0234e?logo=nestjs&logoColor=white)
 ![Express](https://img.shields.io/badge/Express-via%20NestJS-000000?logo=express&logoColor=white)
 ![RxJS](https://img.shields.io/badge/RxJS-7.8.2-b7178c?logo=reactivex&logoColor=white)
-![Prisma](https://img.shields.io/badge/Prisma-7.1.0-2d3748?logo=prisma&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-7.2.0-2d3748?logo=prisma&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-via%20Prisma-4169e1?logo=postgresql&logoColor=white)
 
 ## 📖 API仕様
