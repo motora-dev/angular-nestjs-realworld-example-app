@@ -61,11 +61,18 @@ Angular 21 + Tailwind CSS 4 + SSR を採用したフロントエンドアプリ�
 - [スピナー（Spinner）](#スピナーspinner)
 - [スナックバー（Snackbar）](#スナックバーsnackbar)
 
+**SSR / SEO**
+
+- [ISR（Incremental Static Regeneration）](#isrincremental-static-regeneration)
+- [SEO対応](#seo対応)
+- [Cookie Consent（Google Consent Mode v2）](#cookie-consentgoogle-consent-mode-v2)
+
 **Development**
 
 - [テスト戦略](#テスト戦略)
 - [Storybook](#storybook)
 - [パフォーマンス最適化](#パフォーマンス最適化)
+- [エラーコード同期テスト](#エラーコード同期テスト)
 - [パッケージ管理（pnpm catalog）](#パッケージ管理pnpm-catalog)
 
 ---
@@ -998,6 +1005,214 @@ this.facade.updateArticle(articleId, request).subscribe(() => {
 
 ---
 
+## ISR（Incremental Static Regeneration）
+
+**キーワード**: `ISR`, `SSR`, `@rx-angular/isr`, `キャッシュ`, `静的生成`, `再生成`
+
+このセクションでは、`@rx-angular/isr` を使用した ISR（Incremental Static Regeneration）の実装について説明します。
+
+**関連ファイル**:
+
+- `apps/client/src/server.ts` - Express サーバー（ISR 設定）
+- `apps/client/src/modules/isr/isr.service.ts` - ISR キャッシュ無効化サービス
+
+### ISR の仕組み
+
+ISR は、静的に生成されたページを増分的に再生成する仕組みです。リクエスト時にキャッシュされたHTMLを返しつつ、バックグラウンドで最新版を生成します。
+
+```mermaid
+sequenceDiagram
+    participant Browser
+    participant SSRServer
+    participant Cache
+    participant NestJS
+
+    Browser->>SSRServer: GET /article/123
+    SSRServer->>Cache: キャッシュ確認
+    alt キャッシュあり（有効期限内）
+        Cache->>Browser: キャッシュされたHTML
+    else キャッシュなし or 期限切れ
+        SSRServer->>NestJS: API呼び出し
+        NestJS->>SSRServer: データ返却
+        SSRServer->>Cache: HTML保存
+        SSRServer->>Browser: 新規生成HTML
+    end
+```
+
+### ルート設定
+
+各ルートに `revalidate` オプションを指定して、キャッシュの有効期限を設定します。
+
+```typescript
+// apps/client/src/app/app.routes.ts
+export const routes: Routes = [
+  { path: '', component: HomeComponent, data: { revalidate: 60 } }, // 60秒
+  { path: 'article/:id', component: ArticleComponent, data: { revalidate: 300 } }, // 5分
+];
+```
+
+### キャッシュ無効化
+
+記事の更新や削除時に、`IsrService` を使用してキャッシュを手動で無効化します。
+
+```typescript
+// apps/client/src/modules/isr/isr.service.ts
+@Injectable({ providedIn: 'root' })
+export class IsrService {
+  invalidateCache(urlsToInvalidate: string[]): Observable<void> {
+    return this.http.post<void>('/api/invalidate-cache', {
+      secret: environment.isrSecret,
+      urlsToInvalidate,
+    });
+  }
+
+  // 記事ページのキャッシュを無効化
+  invalidateArticle(articleId: string): Observable<void> {
+    return this.invalidateCache([`/article/${articleId}`]);
+  }
+}
+```
+
+### SSR サーバー側の設定
+
+```typescript
+// apps/client/src/server.ts
+import { ISRHandler } from '@rx-angular/isr/server';
+
+const isr = new ISRHandler({
+  indexHtml,
+  invalidateSecretToken: process.env['ISR_SECRET'] || 'MY_SECRET_TOKEN',
+  enableLogging: !isProd,
+});
+
+// ISR キャッシュ無効化エンドポイント
+server.post('/api/invalidate-cache', async (req, res) => {
+  await isr.invalidate(req, res, req.body);
+});
+```
+
+## SEO対応
+
+**キーワード**: `SEO`, `Open Graph`, `Twitter Card`, `meta タグ`, `OG画像`, `Sitemap`
+
+このセクションでは、SEO 最適化のための実装について説明します。
+
+**関連ファイル**:
+
+- `apps/client/src/modules/seo/seo.service.ts` - SEO サービス
+- `apps/client/src/server.ts` - Sitemap 生成
+
+### SeoService
+
+`SeoService` は、Open Graph や Twitter Card などの meta タグを動的に設定します。
+
+```typescript
+// apps/client/src/modules/seo/seo.service.ts
+@Injectable({ providedIn: 'root' })
+export class SeoService {
+  setArticleMeta(article: Article): void {
+    this.meta.updateTag({ property: 'og:title', content: article.title });
+    this.meta.updateTag({ property: 'og:description', content: article.description });
+    this.meta.updateTag({ property: 'og:image', content: article.ogImageUrl });
+    this.meta.updateTag({ property: 'og:type', content: 'article' });
+    this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
+  }
+}
+```
+
+### OG画像の動的生成
+
+OG画像は NestJS API で動的に生成し、キャッシュされます。
+
+```typescript
+// 記事のOG画像URL
+const ogImageUrl = `${environment.apiUrl}/api/og-image/article/${articleId}`;
+```
+
+### Sitemap 動的生成
+
+Sitemap は SSR サーバーで動的に生成されます。
+
+```typescript
+// apps/client/src/server.ts
+server.get('/sitemap.xml', async (_req, res) => {
+  const response = await fetch(`${apiUrl}/api/sitemap`);
+  const sitemapData = await response.json();
+
+  const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  ${sitemapData.urls.map((url) => `<url><loc>${url}</loc></url>`).join('\n')}
+</urlset>`;
+
+  res.type('application/xml').send(sitemap);
+});
+```
+
+## Cookie Consent（Google Consent Mode v2）
+
+**キーワード**: `Cookie Consent`, `GDPR`, `CCPA`, `Google Consent Mode`, `プライバシー`
+
+このセクションでは、GDPR/CCPA 対応のための Google Consent Mode v2 の実装について説明します。
+
+**関連ファイル**:
+
+- `apps/client/src/index.html` - Consent Mode 初期化
+- `apps/client/src/modules/consent/consent.service.ts` - Consent 管理サービス
+
+### Consent Mode v2 の仕組み
+
+Google Consent Mode v2 では、ユーザーの同意状態に応じて Google Analytics や広告タグの動作を制御します。
+
+| 状態      | 動作                                  |
+| --------- | ------------------------------------- |
+| `denied`  | Cookie を使用せず、匿名データのみ収集 |
+| `granted` | Cookie を使用した完全なトラッキング   |
+
+### デフォルト設定
+
+ページ読み込み時はデフォルトで `denied` に設定し、ユーザーの同意を待ちます。
+
+```html
+<!-- apps/client/src/index.html -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() {
+    dataLayer.push(arguments);
+  }
+
+  // デフォルトで denied（同意前）
+  gtag('consent', 'default', {
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+    analytics_storage: 'denied',
+    wait_for_update: 500,
+  });
+</script>
+```
+
+### 同意後の更新
+
+ユーザーが同意した後、`ConsentService` で状態を更新します。
+
+```typescript
+// apps/client/src/modules/consent/consent.service.ts
+@Injectable({ providedIn: 'root' })
+export class ConsentService {
+  grantConsent(): void {
+    gtag('consent', 'update', {
+      ad_storage: 'granted',
+      ad_user_data: 'granted',
+      ad_personalization: 'granted',
+      analytics_storage: 'granted',
+    });
+    localStorage.setItem('cookie_consent', 'granted');
+  }
+}
+```
+
+---
+
 ## テスト戦略
 
 **キーワード**: `テスト`, `Vitest`, `@testing-library/angular`, `カバレッジ`
@@ -1190,15 +1405,60 @@ export class ArticlePageComponent {
 </ng-container>
 ```
 
-### ISR（Incremental Static Regeneration）
+## エラーコード同期テスト
 
-`@rx-angular/isr` により、静的ページを増分的に再生成。
+**キーワード**: `エラーコード`, `翻訳同期`, `自動テスト`, `多言語対応`
+
+このセクションでは、サーバー側のエラーコードとクライアント側の翻訳ファイルの同期を検証するテストについて説明します。
+
+**関連ファイル**:
+
+- `apps/client/src/shared/i18n/error-code-sync.spec.ts` - 同期テスト
+- `packages/error-code/src/error-code.ts` - エラーコード定義
+
+### 同期テストの目的
+
+サーバー側で定義された `ERROR_CODE` と、クライアント側の翻訳ファイル（`error/ja.json`、`error/en.json`）が同期していることを自動的に検証します。
+
+**検証内容:**
+
+1. すべてのエラーコードに対応する翻訳が存在すること
+2. 翻訳ファイルに未使用のキーが存在しないこと
+3. 日本語と英語の両方で翻訳が揃っていること
+
+### テスト実装
 
 ```typescript
-// ファイル: apps/client/src/app/app.routes.ts
-// ISR設定の例
-{ path: 'home', data: { revalidate: 60 } }  // 60秒ごとに再生成
+// apps/client/src/shared/i18n/error-code-sync.spec.ts
+import { ERROR_CODE } from '@monorepo/error-code';
+import jaErrors from '../../../public/i18n/error/ja.json';
+import enErrors from '../../../public/i18n/error/en.json';
+
+describe('Error Code Sync', () => {
+  const errorCodes = Object.values(ERROR_CODE);
+
+  it('should have Japanese translations for all error codes', () => {
+    const missingCodes = errorCodes.filter((code) => !jaErrors[code]);
+    expect(missingCodes).toEqual([]);
+  });
+
+  it('should have English translations for all error codes', () => {
+    const missingCodes = errorCodes.filter((code) => !enErrors[code]);
+    expect(missingCodes).toEqual([]);
+  });
+
+  it('should not have unused translations in Japanese', () => {
+    const unusedKeys = Object.keys(jaErrors).filter((key) => !errorCodes.includes(key as ERROR_CODE));
+    expect(unusedKeys).toEqual([]);
+  });
+});
 ```
+
+### メリット
+
+- **自動検証**: CI/CD パイプラインで翻訳漏れを検出
+- **型安全**: TypeScript の型とエラーコードが常に同期
+- **多言語対応**: 日本語・英語の両方で翻訳が揃っていることを保証
 
 ## パッケージ管理（pnpm catalog）
 

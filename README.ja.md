@@ -73,6 +73,11 @@ CRUD操作、認証、ルーティング、ページネーションなどの機�
 - **Angular SSR + ISR** による高速な初期表示と SEO 最適化
 - **NestJS + CQRS** によるスケーラブルなバックエンド設計
 - **Prisma ORM** による型安全なデータベースアクセス
+- **OAuth認証（Google）+ JWT** による安全なセッション管理
+- **CSRF対策（Double Submit Cookie）** によるクロスサイトリクエストフォージェリ防止
+- **SEO最適化**（動的OG画像生成、Sitemap自動生成）
+- **Google Consent Mode v2** 対応のCookie Consent
+- **エラーコード同期テスト** によるサーバー/クライアント間の翻訳整合性保証
 
 **RealWorld仕様との差異:**
 
