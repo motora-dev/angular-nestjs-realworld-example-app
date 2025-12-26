@@ -3,22 +3,22 @@
 NestJS + esbuild + swc + Vitest + Prisma + CQRS を採用したバックエンド API です。
 
 **フレームワーク & ビルド:**</br>
-[![NestJS](https://img.shields.io/badge/NestJS-11.1-E0234E.svg?logo=nestjs)](https://nestjs.com/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6.svg?logo=typescript)](https://www.typescriptlang.org/)
-[![esbuild](https://img.shields.io/badge/esbuild-0.27-FFCF00.svg?logo=esbuild)](https://esbuild.github.io/)
-[![SWC](https://img.shields.io/badge/SWC-1.15-F8C457.svg)](https://swc.rs/)
+[![NestJS](https://img.shields.io/badge/NestJS-11.1.10-E0234E.svg?logo=nestjs)](https://nestjs.com/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6.svg?logo=typescript)](https://www.typescriptlang.org/)
+[![esbuild](https://img.shields.io/badge/esbuild-0.27.2-FFCF00.svg?logo=esbuild)](https://esbuild.github.io/)
+[![SWC](https://img.shields.io/badge/SWC-1.15.7-F8C457.svg)](https://swc.rs/)
 
 **Lint & フォーマット:**</br>
-[![ESLint](https://img.shields.io/badge/ESLint-9-4B32C3.svg?logo=eslint)](https://eslint.org/)
-[![Prettier](https://img.shields.io/badge/Prettier-3.7-F7B93E.svg?logo=prettier)](https://prettier.io/)
+[![ESLint](https://img.shields.io/badge/ESLint-9.39.2-4B32C3.svg?logo=eslint)](https://eslint.org/)
+[![Prettier](https://img.shields.io/badge/Prettier-3.7.4-F7B93E.svg?logo=prettier)](https://prettier.io/)
 
 **データベース:**</br>
-[![Prisma](https://img.shields.io/badge/Prisma-7.1-2D3748.svg?logo=prisma)](https://www.prisma.io/)
+[![Prisma](https://img.shields.io/badge/Prisma-7.2.0-2D3748.svg?logo=prisma)](https://www.prisma.io/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1.svg?logo=postgresql)](https://www.postgresql.org/)
 
 **テスト:**</br>
-[![Vitest](https://img.shields.io/badge/Vitest-4.0-6E9F18.svg?logo=vitest)](https://vitest.dev/)
-[![jsdom](https://img.shields.io/badge/jsdom-27.3-F7DF1E.svg)](https://github.com/jsdom/jsdom)
+[![Vitest](https://img.shields.io/badge/Vitest-4.0.16-6E9F18.svg?logo=vitest)](https://vitest.dev/)
+[![jsdom](https://img.shields.io/badge/jsdom-27.4.0-F7DF1E.svg)](https://github.com/jsdom/jsdom)
 
 ## 目次
 
@@ -272,6 +272,9 @@ src/
 │       ├── presenters/             # レスポンス整形
 │       ├── repositories/           # データアクセス
 │       └── services/               # ビジネスロジック
+│   └── sitemap/            # サイトマップドメイン
+│       ├── sitemap.controller.ts
+│       └── ...
 ├── modules/          # (m) 複数ドメイン間で共有するモジュール
 │   └── auth/             # 認証モジュール
 ├── shared/           # (s) 共有リソース
@@ -682,21 +685,45 @@ export class InternalServerError extends AppError {
     this.name = 'InternalServerError';
   }
 }
+
+// 3. Validation error types (for 422 Unprocessable Entity)
+
+/**
+ * Validation field error for GitHub-style error response
+ */
+export interface ValidationFieldError {
+  field: string;
+  code: ValidationErrorCode;
+}
+
+// Use for 422 Unprocessable Entity errors (validation errors)
+export class UnprocessableEntityError extends AppError {
+  constructor(public readonly errors: ValidationFieldError[]) {
+    super(ERROR_CODE.VALIDATION_ERROR);
+    this.name = 'UnprocessableEntityError';
+  }
+}
 ```
 
 ```typescript
 // Recommended: Use appropriate error class for each situation
 // Usage examples
 import { ERROR_CODE } from '@monorepo/error-code';
-import { NotFoundError, UnauthorizedError } from '$errors';
+import { NotFoundError, UnauthorizedError, UnprocessableEntityError } from '$errors';
 
 throw new UnauthorizedError(ERROR_CODE.UNAUTHORIZED);
 throw new NotFoundError(ERROR_CODE.ARTICLE_NOT_FOUND);
+
+// Validation Error
+throw new UnprocessableEntityError([{ field: 'email', code: ERROR_CODE.INVALID_EMAIL }]);
 ```
 
 ### HttpExceptionFilter
 
 すべての例外をキャッチし、統一されたレスポンス形式に変換します。
+バリデーションエラー（422）の場合は GitHub スタイルの詳細なエラー情報を返し、それ以外は標準のエラーレスポンスを返します。
+
+また、本番環境（`NODE_ENV=production`）では、5xx 系エラーの詳細（`errorCode` や `params`）を隠蔽してセキュリティを確保しています。
 
 ```typescript
 // Recommended: Use HttpExceptionFilter to convert all exceptions to unified format
@@ -705,23 +732,48 @@ throw new NotFoundError(ERROR_CODE.ARTICLE_NOT_FOUND);
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
     // Handle AppError / HttpException / other errors
-    // Return unified JSON response
-    response.status(status).json({
-      errorCode,
-      message,
-      params,
-    });
+
+    // UnprocessableEntityError returns GitHub-style response
+    if (errors) {
+      response.status(status).json({
+        message,
+        errors,
+      });
+    } else {
+      response.status(status).json({
+        errorCode,
+        message,
+        params,
+      });
+    }
   }
 }
 ```
 
 ### エラーレスポンス形式
 
+**通常のエラー:**
+
 ```json
 {
   "errorCode": "NOT_FOUND",
   "message": "Article not found",
   "params": { "id": "123" }
+}
+```
+
+**バリデーションエラー (422):**
+
+```json
+{
+  "errorCode": "VALIDATION_ERROR",
+  "message": "Validation Failed",
+  "errors": [
+    {
+      "field": "email",
+      "code": "INVALID_EMAIL"
+    }
+  ]
 }
 ```
 

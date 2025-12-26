@@ -3,9 +3,9 @@ packages:
   - packages/*
 
 versions:
-  angular: &angular 21.0.3
-  angular-build: &angular-build 21.0.2
-  angular-cdk: &angular-cdk 21.0.2
+  angular: &angular 21.0.6
+  angular-build: &angular-build 21.0.4
+  angular-cdk: &angular-cdk 21.0.5
   angular-eslint: &angular-eslint 21.1.0
   class-transformer: &class-transformer 0.5.1
   class-validator: &class-validator 0.14.3
@@ -16,22 +16,23 @@ versions:
   cookie-parser: &cookie-parser 1.4.7
   csrf-csrf: &csrf-csrf 4.0.3
   dotenv: &dotenv 17.2.3
-  esbuild: &esbuild 0.27.1
-  eslint: &eslint 9.39.1
+  esbuild: &esbuild 0.27.2
+  eslint: &eslint 9.39.2
   eslint-eslintrc: &eslint-eslintrc 3.3.3
   eslint-plugin-boundaries: &eslint-plugin-boundaries 5.3.1
   eslint-plugin-storybook: &eslint-plugin-storybook 10.1.2
   eslint-plugin-testing-library: &eslint-plugin-testing-library 7.13.5
-  eslint-plugin-turbo: &eslint-plugin-turbo 2.6.3
+  eslint-plugin-turbo: &eslint-plugin-turbo 2.7.2
   express-session: &express-session 1.18.2
   google-auth-library: &google-auth-library 10.5.0
   husky: &husky 9.1.7
-  jsdom: &jsdom 27.3.0
+  jsdom: &jsdom 27.4.0
   katex: &katex 0.16.27
   lint-staged: &lint-staged 16.2.7
-  marked: &marked 13.0.3
-  nestjs: &nestjs 11.1.9
+  marked: &marked 17.0.1
+  nestjs: &nestjs 11.1.10
   nestjs-cli: &nestjs-cli 11.0.14
+  nestjs-swagger: &nestjs-swagger 11.2.0
   nestjs-config: &nestjs-config 4.0.2
   nestjs-cqrs: &nestjs-cqrs 11.0.3
   nestjs-passport: &nestjs-passport 11.0.5
@@ -45,28 +46,28 @@ versions:
   playwright: &playwright 1.57.0
   postcss: &postcss 8.5.6
   prettier: &prettier 3.7.4
-  prisma: &prisma 7.1.0
+  prisma: &prisma 7.2.0
   reflect-metadata: &reflect-metadata 0.2.2
   rimraf: &rimraf 6.1.2
   rx-angular: &rx-angular 20.1.0
   rx-angular-isr: &rx-angular-isr 20.0.0
   rxjs: &rxjs 7.8.2
-  storybook: &storybook 10.1.4
-  swc: &swc 1.15.3
+  storybook: &storybook 10.1.10
+  swc: &swc 1.15.7
   tailwind-merge: &tailwind-merge 3.4.0
-  tailwindcss: &tailwindcss 4.1.17
+  tailwindcss: &tailwindcss 4.1.18
   ts-node: &ts-node 10.9.2
   tslib: &tslib 2.8.1
-  tsx: &tsx 4.20.6
-  turbo: &turbo 2.6.3
-  types-cookie-parser: &types-cookie-parser 1.4.9
-  types-express: &types-express 5.0.0
+  tsx: &tsx 4.21.0
+  turbo: &turbo 2.7.2
+  types-cookie-parser: &types-cookie-parser 1.4.10
+  types-express: &types-express 5.0.6
   types-express-session: &types-express-session 1.18.2
   typescript: &typescript 5.9.3
-  typescript-eslint: &typescript-eslint 8.48.1
+  typescript-eslint: &typescript-eslint 8.50.1
   unplugin-swc: &unplugin-swc 1.5.9
-  vite: &vite 7.2.7
-  vitest: &vitest 4.0.15
+  vite: &vite 7.3.0
+  vitest: &vitest 4.0.16
 
 catalog:
   '@angular/animations': *angular
@@ -96,6 +97,7 @@ catalog:
   '@nestjs/passport': *nestjs-passport
   '@nestjs/platform-express': *nestjs
   '@nestjs/schematics': *nestjs-schematics
+  '@nestjs/swagger': *nestjs-swagger
   '@nestjs/testing': *nestjs
   '@nestjs/throttler': *nestjs-throttler
   '@ngx-translate/core': *ngx-translate-core

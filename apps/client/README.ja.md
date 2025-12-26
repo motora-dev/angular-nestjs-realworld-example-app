@@ -3,38 +3,38 @@
 Angular 21 + Tailwind CSS 4 + SSR を採用したフロントエンドアプリケーションです。
 
 **フレームワーク & ビルド:**</br>
-[![Angular](https://img.shields.io/badge/Angular-21-DD0031.svg?logo=angular)](https://angular.dev/)
-[![Angular CDK](https://img.shields.io/badge/Angular_CDK-21-DD0031.svg?logo=angular)](https://material.angular.io/cdk/categories)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6.svg?logo=typescript)](https://www.typescriptlang.org/)
+[![Angular](https://img.shields.io/badge/Angular-21.0.6-DD0031.svg?logo=angular)](https://angular.dev/)
+[![Angular CDK](https://img.shields.io/badge/Angular_CDK-21.0.5-DD0031.svg?logo=angular)](https://material.angular.io/cdk/categories)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6.svg?logo=typescript)](https://www.typescriptlang.org/)
 [![esbuild](https://img.shields.io/badge/esbuild-@angular/build-FFCF00.svg?logo=esbuild)](https://angular.dev/tools/cli/build-system-migration)
 
 **Lint & フォーマット:**</br>
-[![ESLint](https://img.shields.io/badge/ESLint-9.39-4B32C3.svg?logo=eslint)](https://eslint.org/)
-[![Prettier](https://img.shields.io/badge/Prettier-3.7-F7B93E.svg?logo=prettier)](https://prettier.io/)
+[![ESLint](https://img.shields.io/badge/ESLint-9.39.2-4B32C3.svg?logo=eslint)](https://eslint.org/)
+[![Prettier](https://img.shields.io/badge/Prettier-3.7.4-F7B93E.svg?logo=prettier)](https://prettier.io/)
 
 **SSR:**</br>
 [![SSR](https://img.shields.io/badge/SSR-Enabled-4CAF50.svg)](https://angular.dev/guide/ssr)
 [![ISR](https://img.shields.io/badge/ISR-@rx--angular-E91E63.svg)](https://www.rx-angular.io/docs/isr)
-[![Express](https://img.shields.io/badge/Express-4.21-000000.svg?logo=express)](https://expressjs.com/)
+[![Express](https://img.shields.io/badge/Express-4.21.0-000000.svg?logo=express)](https://expressjs.com/)
 
 **状態管理 & リアクティブ:**</br>
-[![NGXS](https://img.shields.io/badge/NGXS-21-3F51B5.svg)](https://www.ngxs.io/)
-[![RxJS](https://img.shields.io/badge/RxJS-7.8-B7178C.svg?logo=reactivex)](https://rxjs.dev/)
-[![RxAngular](https://img.shields.io/badge/RxAngular-20.1-E91E63.svg)](https://www.rx-angular.io/)
+[![NGXS](https://img.shields.io/badge/NGXS-21.0.0-3F51B5.svg)](https://www.ngxs.io/)
+[![RxJS](https://img.shields.io/badge/RxJS-7.8.2-B7178C.svg?logo=reactivex)](https://rxjs.dev/)
+[![RxAngular](https://img.shields.io/badge/RxAngular-20.1.0-E91E63.svg)](https://www.rx-angular.io/)
 
 **スタイリング:**</br>
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.1-06B6D4.svg?logo=tailwindcss)](https://tailwindcss.com/)
-[![PostCSS](https://img.shields.io/badge/PostCSS-8.5-DD3A0A.svg?logo=postcss)](https://postcss.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.1.18-06B6D4.svg?logo=tailwindcss)](https://tailwindcss.com/)
+[![PostCSS](https://img.shields.io/badge/PostCSS-8.5.6-DD3A0A.svg?logo=postcss)](https://postcss.org/)
 [![CVA](https://img.shields.io/badge/CVA-0.7-7C3AED.svg)](https://cva.style/)
 [![clsx](https://img.shields.io/badge/clsx-2.1-06B6D4.svg)](https://github.com/lukeed/clsx)
 [![tailwind-merge](https://img.shields.io/badge/tailwind--merge-3.4-06B6D4.svg)](https://github.com/dcastil/tailwind-merge)
 
 **テスト & UIカタログ:**</br>
-[![Vite](https://img.shields.io/badge/Vite-7.2-646CFF.svg?logo=vite)](https://vite.dev/)
-[![Vitest](https://img.shields.io/badge/Vitest-4.0.15-6E9F18.svg?logo=vitest)](https://vitest.dev/)
+[![Vite](https://img.shields.io/badge/Vite-7.3.0-646CFF.svg?logo=vite)](https://vite.dev/)
+[![Vitest](https://img.shields.io/badge/Vitest-4.0.16-6E9F18.svg?logo=vitest)](https://vitest.dev/)
 [![Testing Library](https://img.shields.io/badge/Testing_Library-18.1-E33332.svg?logo=testinglibrary)](https://testing-library.com/)
-[![jsdom](https://img.shields.io/badge/jsdom-27.2-F7DF1E.svg)](https://github.com/jsdom/jsdom)
-[![Storybook](https://img.shields.io/badge/Storybook-10.1-FF4785.svg?logo=storybook)](https://storybook.js.org/)
+[![jsdom](https://img.shields.io/badge/jsdom-27.4.0-F7DF1E.svg)](https://github.com/jsdom/jsdom)
+[![Storybook](https://img.shields.io/badge/Storybook-10.1.10-FF4785.svg?logo=storybook)](https://storybook.js.org/)
 
 ## 目次
 
@@ -755,36 +755,93 @@ interface ArticleResponse {
 
 ## 国際化（i18n）
 
-**キーワード**: `i18n`, `国際化`, `ja.json`, `翻訳`, `エラーコード`
+**キーワード**: `i18n`, `国際化`, `TranslateModule`, `MultiTranslateHttpLoader`, `翻訳`
 
-このセクションでは、HTML上で表示される文言の管理方法と、ja.jsonの構造ルールについて説明します。
+このセクションでは、`@ngx-translate/core` を使用した国際化の実装方法について説明します。
 
 **関連ファイル**:
 
-- `apps/client/public/i18n/ja.json` - 日本語翻訳ファイル
+- `apps/client/public/i18n/ui/*.json` - UI用翻訳ファイル
+- `apps/client/public/i18n/error/*.json` - エラー用翻訳ファイル
+- `apps/client/src/shared/i18n/multi-translate-http-loader.ts` - カスタムLoader実装
 
-### ルール
+### 翻訳ファイルの構成
 
-HTML上で表示される文言は`apps/client/public/i18n/ja.json`で定義します。
+翻訳ファイルは `ui`（画面表示用）と `error`（エラーメッセージ用）に分割して管理し、アプリケーション読み込み時にマージされます。
 
-### ja.jsonの構造ルール
+```
+apps/client/public/i18n/
+├── error/
+│   ├── en.json
+│   └── ja.json
+└── ui/
+    ├── en.json
+    └── ja.json
+```
 
-- **エラーコード（`errorCodes`）**: 最下部に配置
-- **それ以外のキー**: アルファベット順で配置
+### MultiTranslateHttpLoader
 
-例:
+`MultiTranslateHttpLoader` は、複数の翻訳ファイルを並列で取得し、1つの翻訳オブジェクトにマージするカスタムローダーです。
 
-```json
-{
-  "articleEdit": {
-    "title": "記事設定",
-    "form": {
-      "titleLabel": "タイトル",
-      "saveButton": "保存"
+```typescript
+// apps/client/src/shared/i18n/multi-translate-http-loader.ts
+export class MultiTranslateHttpLoader implements TranslateLoader {
+  constructor(private http: HttpClient) {}
+
+  getTranslation(lang: string): Observable<TranslationObject> {
+    return forkJoin({
+      error: this.http.get<TranslationObject>(`/i18n/error/${lang}.json`),
+      ui: this.http.get<TranslationObject>(`/i18n/ui/${lang}.json`),
+    }).pipe(map(({ error, ui }) => ({ ...ui, ...error })));
+  }
+}
+```
+
+### 設定と初期化
+
+#### アプリケーション設定
+
+`app.config.ts` で `TranslateModule` を設定し、カスタムローダーを適用します。
+
+```typescript
+// apps/client/src/app/app.config.ts
+export const appConfig: ApplicationConfig = {
+  providers: [
+    // ...
+    importProvidersFrom(
+      TranslateModule.forRoot({
+        fallbackLang: 'en',
+        loader: {
+          provide: TranslateLoader,
+          useFactory: (http: HttpClient) => new MultiTranslateHttpLoader(http),
+          deps: [HttpClient],
+        },
+      }),
+    ),
+    // ...
+  ],
+};
+```
+
+#### 言語の初期化
+
+`app.ts` でブラウザの言語設定を検出し、適切な言語（日本語または英語）を適用します。
+サーバーサイドレンダリング（SSR）時はブラウザAPIにアクセスできないため、クライアントサイドでのみ実行します。
+
+```typescript
+// apps/client/src/app/app.ts
+export class App {
+  private readonly translateService = inject(TranslateService);
+
+  constructor() {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
     }
-  },
-  "errorCodes": {
-    "E-999": "予期しないエラーが発生しました"
+
+    // ブラウザの言語設定に基づいて翻訳をロード
+    const browserLang = this.translateService.getBrowserLang();
+    const langToUse = browserLang === 'ja' ? 'ja' : 'en';
+    this.translateService.use(langToUse).subscribe();
   }
 }
 ```
