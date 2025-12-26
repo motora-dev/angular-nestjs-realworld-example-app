@@ -6,7 +6,6 @@ import { RxLet } from '@rx-angular/template/let';
 import { filter, map, startWith } from 'rxjs';
 
 import { AuthFacade } from '$modules/auth';
-import { UiFacade } from '$modules/ui';
 
 @Component({
   selector: 'app-header',
@@ -17,7 +16,6 @@ import { UiFacade } from '$modules/ui';
 })
 export class HeaderComponent {
   private readonly router = inject(Router);
-  private readonly uiFacade = inject(UiFacade);
   private readonly authFacade = inject(AuthFacade);
 
   readonly isAuthenticated$ = this.authFacade.isAuthenticated$;
@@ -35,10 +33,6 @@ export class HeaderComponent {
     const url = this.currentUrl();
     return url?.startsWith('/article/') ?? false;
   });
-
-  openSidebar(): void {
-    this.uiFacade.openSidebar();
-  }
 
   logout(): void {
     this.authFacade.logout();
