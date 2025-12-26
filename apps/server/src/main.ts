@@ -26,7 +26,10 @@ async function bootstrap() {
   app.use(cookieParser());
 
   // CORSを有効化
-  const allowedOrigins = config.get('CORS_ORIGINS')?.split(',');
+  const allowedOrigins = config
+    .get('CORS_ORIGINS')
+    ?.split(',')
+    .map((origin) => origin.trim());
 
   app.enableCors({
     origin: allowedOrigins,

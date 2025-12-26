@@ -15,10 +15,7 @@
       <!-- Authentication navigation -->
       <nav class="flex items-center gap-4">
         <ng-container *rxLet="isAuthenticated$; let isAuth">
-          @if (isAuth === null) {
-          <!-- Skeleton loader while checking auth status -->
-          <div class="h-9 w-24 animate-pulse rounded-lg bg-gray-200"></div>
-          } @else if (isAuth === false) {
+          @if (!isAuth) {
           <!-- Not authenticated: Login / Register -->
           <a
             routerLink="/login"
