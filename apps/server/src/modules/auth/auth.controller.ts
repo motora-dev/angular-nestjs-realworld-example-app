@@ -14,6 +14,18 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import {
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiBody,
+  ApiCookieAuth,
+  ApiExcludeEndpoint,
+  ApiOkResponse,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import { OAuth2Client } from 'google-auth-library';
 
 import type { CurrentUserType } from '$decorators';
@@ -24,6 +36,7 @@ import {
   RegisterUserCommand,
   RevokeRefreshTokenCommand,
 } from './commands';
+import { RegisterDto, RegisterResponse, UserResponse } from './contracts';
 import { GoogleAuthGuard } from './guards';
 import { GetCurrentAuthUserQuery, GetPendingRegistrationQuery } from './queries';
 import { AuthService } from './services';
@@ -31,10 +44,10 @@ import { AuthService } from './services';
 import type { ProcessOAuthCallbackResult } from './commands/process-oauth-callback/process-oauth-callback.handler';
 import type { RefreshAccessTokenResult } from './commands/refresh-access-token/refresh-access-token.handler';
 import type { RegisterUserResult } from './commands/register-user/register-user.handler';
-import type { RegisterDto, UserResponse } from './contracts';
 import type { PendingRegistrationResult } from './queries/get-pending-registration/get-pending-registration.handler';
 import type { Request, Response } from 'express';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   private readonly googleClient: OAuth2Client;
@@ -106,6 +119,11 @@ export class AuthController {
    * Returns 200 OK with authentication status (never 401).
    * Used by client to check session without triggering console errors.
    */
+  @ApiOperation({
+    summary: 'Check session status',
+    description: 'Check if the user is authenticated without triggering 401 errors',
+  })
+  @ApiOkResponse({ description: 'Returns authentication status and user info if authenticated' })
   @Get('check-session')
   @HttpCode(HttpStatus.OK)
   async checkSession(
@@ -146,6 +164,8 @@ export class AuthController {
    * Initiates Google OAuth login flow.
    * Redirects the user to Google's OAuth consent page.
    */
+  @ApiOperation({ summary: 'Initiate Google OAuth login', description: 'Redirects to Google OAuth consent page' })
+  @ApiResponse({ status: 302, description: 'Redirects to Google OAuth consent page' })
   @Get('login/google')
   async loginGoogle(@Res() res: Response): Promise<void> {
     const authorizeUrl = this.googleClient.generateAuthUrl({
@@ -162,6 +182,7 @@ export class AuthController {
    * If user exists, sets JWT cookies and redirects to home.
    * If user does not exist, sets pending registration token and redirects to register page.
    */
+  @ApiExcludeEndpoint()
   @Get('callback')
   async callback(@Query('code') code: string, @Query('error') error: string, @Res() res: Response): Promise<void> {
     const clientUrl = this.configService.get<string>('CLIENT_URL') || 'http://localhost:4200';
@@ -221,6 +242,13 @@ export class AuthController {
    * Register a new user.
    * Uses pending registration token from cookie (set during OAuth callback).
    */
+  @ApiOperation({
+    summary: 'Register a new user',
+    description: 'Complete user registration after OAuth. Requires pending-registration cookie.',
+  })
+  @ApiBody({ type: RegisterDto })
+  @ApiResponse({ status: 201, description: 'User registered successfully', type: RegisterResponse })
+  @ApiBadRequestResponse({ description: 'No pending registration found or invalid input' })
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   async register(@Body() body: RegisterDto, @Req() req: Request, @Res() res: Response): Promise<void> {
@@ -252,6 +280,8 @@ export class AuthController {
    * Get pending registration email.
    * Used by the register page to display the email from Google.
    */
+  @ApiOperation({ summary: 'Get pending registration info', description: 'Get email from pending OAuth registration' })
+  @ApiOkResponse({ description: 'Returns pending registration info or null' })
   @Get('pending-registration')
   @HttpCode(HttpStatus.OK)
   async getPendingRegistration(@Req() req: Request): Promise<PendingRegistrationResult | null> {
@@ -262,6 +292,13 @@ export class AuthController {
   /**
    * Refresh access token using refresh token.
    */
+  @ApiOperation({
+    summary: 'Refresh access token',
+    description: 'Get a new access token using the refresh token cookie',
+  })
+  @ApiCookieAuth('refresh-token')
+  @ApiOkResponse({ description: 'Access token refreshed successfully' })
+  @ApiUnauthorizedResponse({ description: 'No refresh token provided or invalid/expired token' })
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   async refresh(@Req() req: Request, @Res() res: Response): Promise<void> {
@@ -296,6 +333,8 @@ export class AuthController {
    * Revokes refresh token and clears cookies.
    * No authentication required - just clears cookies and revokes token if present.
    */
+  @ApiOperation({ summary: 'Logout', description: 'Revoke refresh token and clear authentication cookies' })
+  @ApiOkResponse({ description: 'Logged out successfully' })
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   async logout(@Req() req: Request, @Res() res: Response): Promise<void> {
@@ -314,6 +353,10 @@ export class AuthController {
    * Get current user endpoint.
    * Returns the authenticated user's information.
    */
+  @ApiOperation({ summary: 'Get current user', description: 'Get the authenticated user information' })
+  @ApiBearerAuth()
+  @ApiOkResponse({ description: 'Current user info', type: UserResponse })
+  @ApiUnauthorizedResponse({ description: 'Not authenticated' })
   @UseGuards(GoogleAuthGuard)
   @Get('me')
   @HttpCode(HttpStatus.OK)

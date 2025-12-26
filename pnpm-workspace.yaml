@@ -170,6 +170,7 @@ ignoredBuiltDependencies:
   - '@parcel/watcher'
   - '@prisma/client'
   - '@prisma/engines'
+  - '@scarf/scarf'
   - '@swc/core'
   - '@tailwindcss/oxide'
   - esbuild

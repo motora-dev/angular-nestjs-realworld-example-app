@@ -1,6 +1,7 @@
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 import { randomUUID } from 'crypto';
 import { doubleCsrf } from 'csrf-csrf';
@@ -95,6 +96,40 @@ async function bootstrap() {
 
   // グローバルな例外フィルターとして登録
   app.useGlobalFilters(new HttpExceptionFilter());
+
+  // OpenAPI configuration
+  const swaggerConfig = new DocumentBuilder()
+    .setTitle('RealWorld API')
+    .setDescription('Conduit API specification - RealWorld example app')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
+  const document = SwaggerModule.createDocument(app, swaggerConfig);
+
+  // Serve OpenAPI JSON at /api/docs.json
+  app.use('/api/docs.json', (_req: any, res: any) => {
+    res.json(document);
+  });
+
+  // Serve Redoc UI at /api/docs
+  app.use('/api/docs', (_req: any, res: any) => {
+    res.send(`
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>RealWorld API - Documentation</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700" rel="stylesheet">
+    <style>body { margin: 0; padding: 0; }</style>
+  </head>
+  <body>
+    <redoc spec-url='/api/docs.json'></redoc>
+    <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"></script>
+  </body>
+</html>
+    `);
+  });
 
   await app.listen(config.get('PORT') ?? 4000);
 }
