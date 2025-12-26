@@ -45,11 +45,16 @@ export class HomeComponent {
     });
 
     // Load initial articles based on auth status
-    this.authFacade.isAuthenticated$.pipe(take(1)).subscribe((isAuth) => {
-      const config: ArticleListConfig = isAuth ? { type: 'feed', filters: {} } : { type: 'all', filters: {} };
-      this.listConfig.set(config);
-      this.facade.loadArticles(config);
-    });
+    this.authFacade.isAuthenticated$
+      .pipe(
+        filter((isAuth) => isAuth !== null),
+        take(1),
+      )
+      .subscribe((isAuth) => {
+        const config: ArticleListConfig = isAuth ? { type: 'feed', filters: {} } : { type: 'all', filters: {} };
+        this.listConfig.set(config);
+        this.facade.loadArticles(config);
+      });
   }
 
   setListTo(type: 'all' | 'feed', filters: ArticleListConfig['filters'] = {}): void {
@@ -66,7 +71,7 @@ export class HomeComponent {
     this.authFacade.isAuthenticated$
       .pipe(
         take(1),
-        filter((isAuth) => type !== 'feed' || isAuth),
+        filter((isAuth): isAuth is boolean => type !== 'feed' || isAuth === true),
       )
       .subscribe(() => {
         const config: ArticleListConfig = { type, filters };
