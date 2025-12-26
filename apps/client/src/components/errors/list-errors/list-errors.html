@@ -1,0 +1,8 @@
+@if (errorList().length > 0) {
+  <ul class="text-red-500 list-disc pl-5">
+    @for (error of errorList(); track error) {
+      <li>{{ error }}</li>
+    }
+  </ul>
+}
+

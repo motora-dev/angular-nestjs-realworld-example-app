@@ -1,0 +1,30 @@
+/* Snackbar animations */
+@keyframes snackbar-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes snackbar-leave {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+.snackbar-item {
+  animation: snackbar-enter 300ms ease-out;
+}
+
+.snackbar-item.leaving {
+  animation: snackbar-leave 200ms ease-in forwards;
+}

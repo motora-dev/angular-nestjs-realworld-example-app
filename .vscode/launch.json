@@ -1,0 +1,41 @@
+{
+  // IntelliSense を使用して利用可能な属性を学べます。
+  // 既存の属性の説明をホバーして表示します。
+  // 詳細情報は次を確認してください: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Start Angular",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["run", "start", "--filter=@monorepo/client"],
+      "restart": true,
+      "console": "integratedTerminal"
+    },
+    {
+      "type": "msedge",
+      "request": "launch",
+      "name": "Attach to Angular",
+      "url": "http://localhost:4200",
+      "port": 9229,
+      "webRoot": "${workspaceFolder}/apps/client",
+      "sourceMaps": true
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Server",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["run", "start", "--filter=@monorepo/server"],
+      "restart": true,
+      "console": "integratedTerminal"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Debug All",
+      "configurations": ["Start Angular", "Attach to Angular", "Debug Server"]
+    }
+  ]
+}

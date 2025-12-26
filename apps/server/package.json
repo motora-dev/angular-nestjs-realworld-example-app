@@ -1,0 +1,78 @@
+{
+  "name": "@monorepo/server",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "clean": "rimraf .tsbuildinfo .turbo coverage dist node_modules",
+    "clean:cache": "rimraf .tsbuildinfo .turbo coverage dist",
+    "build": "node esbuild.config.mjs",
+    "start": "node esbuild.config.mjs --watch --debug",
+    "start:prd": "node dist/main.js",
+    "check-all": "pnpm lint && pnpm format && pnpm build && pnpm tsc && pnpm test",
+    "format": "prettier --check \"src/**/*.ts\"",
+    "format:fix": "prettier --write \"src/**/*.ts\"",
+    "lint": "eslint \"src/**/*.ts\" --config eslint.config.mjs",
+    "lint:fix": "pnpm lint --fix",
+    "tsc": "pnpm tsc:build && pnpm tsc:test",
+    "tsc:build": "tsc --noEmit --project tsconfig.build.json",
+    "tsc:test": "tsc --noEmit --project tsconfig.spec.json",
+    "test": "vitest run",
+    "test:unit": "vitest run --project unit",
+    "test:e2e": "vitest run --project e2e",
+    "test:coverage": "vitest run --project unit --coverage"
+  },
+  "dependencies": {
+    "@monorepo/database": "workspace:*",
+    "@monorepo/error-code": "workspace:*",
+    "@nestjs/common": "catalog:",
+    "@nestjs/config": "catalog:",
+    "@nestjs/core": "catalog:",
+    "@nestjs/cqrs": "catalog:",
+    "@nestjs/passport": "catalog:",
+    "@nestjs/platform-express": "catalog:",
+    "@nestjs/throttler": "catalog:",
+    "@paralleldrive/cuid2": "catalog:",
+    "@prisma/adapter-pg": "catalog:",
+    "@prisma/client": "catalog:",
+    "@prisma/client-runtime-utils": "catalog:",
+    "class-transformer": "catalog:",
+    "class-validator": "catalog:",
+    "cookie-parser": "catalog:",
+    "csrf-csrf": "catalog:",
+    "google-auth-library": "catalog:",
+    "jsonwebtoken": "^9.0.3",
+    "pg": "catalog:",
+    "reflect-metadata": "catalog:",
+    "rxjs": "catalog:"
+  },
+  "devDependencies": {
+    "@monorepo/eslint-config": "workspace:*",
+    "@monorepo/typescript-config": "workspace:*",
+    "@nestjs/cli": "catalog:",
+    "@nestjs/schematics": "catalog:",
+    "@nestjs/testing": "catalog:",
+    "@swc/core": "catalog:",
+    "@types/cookie-parser": "catalog:",
+    "@types/express": "catalog:",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@vitest/coverage-v8": "catalog:",
+    "dotenv": "catalog:",
+    "esbuild": "catalog:",
+    "rimraf": "catalog:",
+    "ts-node": "catalog:",
+    "tsx": "catalog:",
+    "unplugin-swc": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
+  },
+  "lint-staged": {
+    "src/**/*.ts": [
+      "prettier --write",
+      "eslint --fix --config eslint.config.mjs --max-warnings 0"
+    ]
+  },
+  "volta": {
+    "extends": "../../package.json"
+  }
+}

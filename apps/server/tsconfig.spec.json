@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["src/**/*.ts", "test/**/*.ts", "vitest.config.ts"],
+  "exclude": [".turbo", "coverage", "dist", "node_modules"],
+  "compilerOptions": {
+    "composite": true,
+    "tsBuildInfoFile": "./.tsbuildinfo/spec.tsbuildinfo",
+    "types": ["node", "vitest/globals"]
+  }
+}
