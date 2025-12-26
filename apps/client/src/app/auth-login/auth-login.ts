@@ -28,7 +28,7 @@ export class AuthLoginComponent implements OnInit {
     // 既にログイン済みの場合はホームへリダイレクト
     this.authFacade.isAuthenticated$
       .pipe(
-        filter((isAuthenticated) => isAuthenticated),
+        filter((isAuthenticated): isAuthenticated is boolean => isAuthenticated === true),
         take(1),
         takeUntilDestroyed(this.destroyRef),
       )

@@ -6,21 +6,21 @@ import { User } from '../model';
 import { SetAuthenticated, SetCurrentUser } from './auth.actions';
 
 export interface AuthStateModel {
-  isAuthenticated: boolean;
+  isAuthenticated: boolean | null;
   currentUser: User | null;
 }
 
 @State<AuthStateModel>({
   name: 'auth',
   defaults: {
-    isAuthenticated: false,
+    isAuthenticated: null,
     currentUser: null,
   },
 })
 @Injectable()
 export class AuthState {
   @Selector()
-  static isAuthenticated(state: AuthStateModel): boolean {
+  static isAuthenticated(state: AuthStateModel): boolean | null {
     return state.isAuthenticated;
   }
 

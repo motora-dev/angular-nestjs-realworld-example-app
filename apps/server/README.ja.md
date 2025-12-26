@@ -3,22 +3,22 @@
 NestJS + esbuild + swc + Vitest + Prisma + CQRS を採用したバックエンド API です。
 
 **フレームワーク & ビルド:**</br>
-[![NestJS](https://img.shields.io/badge/NestJS-11.1-E0234E.svg?logo=nestjs)](https://nestjs.com/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6.svg?logo=typescript)](https://www.typescriptlang.org/)
-[![esbuild](https://img.shields.io/badge/esbuild-0.27-FFCF00.svg?logo=esbuild)](https://esbuild.github.io/)
-[![SWC](https://img.shields.io/badge/SWC-1.15-F8C457.svg)](https://swc.rs/)
+[![NestJS](https://img.shields.io/badge/NestJS-11.1.10-E0234E.svg?logo=nestjs)](https://nestjs.com/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6.svg?logo=typescript)](https://www.typescriptlang.org/)
+[![esbuild](https://img.shields.io/badge/esbuild-0.27.2-FFCF00.svg?logo=esbuild)](https://esbuild.github.io/)
+[![SWC](https://img.shields.io/badge/SWC-1.15.7-F8C457.svg)](https://swc.rs/)
 
 **Lint & フォーマット:**</br>
-[![ESLint](https://img.shields.io/badge/ESLint-9-4B32C3.svg?logo=eslint)](https://eslint.org/)
-[![Prettier](https://img.shields.io/badge/Prettier-3.7-F7B93E.svg?logo=prettier)](https://prettier.io/)
+[![ESLint](https://img.shields.io/badge/ESLint-9.39.2-4B32C3.svg?logo=eslint)](https://eslint.org/)
+[![Prettier](https://img.shields.io/badge/Prettier-3.7.4-F7B93E.svg?logo=prettier)](https://prettier.io/)
 
 **データベース:**</br>
-[![Prisma](https://img.shields.io/badge/Prisma-7.1-2D3748.svg?logo=prisma)](https://www.prisma.io/)
+[![Prisma](https://img.shields.io/badge/Prisma-7.2.0-2D3748.svg?logo=prisma)](https://www.prisma.io/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1.svg?logo=postgresql)](https://www.postgresql.org/)
 
 **テスト:**</br>
-[![Vitest](https://img.shields.io/badge/Vitest-4.0-6E9F18.svg?logo=vitest)](https://vitest.dev/)
-[![jsdom](https://img.shields.io/badge/jsdom-27.3-F7DF1E.svg)](https://github.com/jsdom/jsdom)
+[![Vitest](https://img.shields.io/badge/Vitest-4.0.16-6E9F18.svg?logo=vitest)](https://vitest.dev/)
+[![jsdom](https://img.shields.io/badge/jsdom-27.4.0-F7DF1E.svg)](https://github.com/jsdom/jsdom)
 
 ## 目次
 
@@ -39,6 +39,9 @@ NestJS + esbuild + swc + Vitest + Prisma + CQRS を採用したバックエン�
 - [CQRS（@nestjs/cqrs）](#cqrsnestjscqrs)
 - [データベースアクセス（Prisma）](#データベースアクセスprisma)
 - [エラーハンドリング](#エラーハンドリング)
+- [CSRF対策](#csrf対策)
+- [認証フロー（OAuth）](#認証フローoauth)
+- [API ドキュメント（OpenAPI）](#api-ドキュメントopenapi)
 
 **Development**
 
@@ -272,6 +275,9 @@ src/
 │       ├── presenters/             # レスポンス整形
 │       ├── repositories/           # データアクセス
 │       └── services/               # ビジネスロジック
+│   └── sitemap/            # サイトマップドメイン
+│       ├── sitemap.controller.ts
+│       └── ...
 ├── modules/          # (m) 複数ドメイン間で共有するモジュール
 │   └── auth/             # 認証モジュール
 ├── shared/           # (s) 共有リソース
@@ -682,21 +688,45 @@ export class InternalServerError extends AppError {
     this.name = 'InternalServerError';
   }
 }
+
+// 3. Validation error types (for 422 Unprocessable Entity)
+
+/**
+ * Validation field error for GitHub-style error response
+ */
+export interface ValidationFieldError {
+  field: string;
+  code: ValidationErrorCode;
+}
+
+// Use for 422 Unprocessable Entity errors (validation errors)
+export class UnprocessableEntityError extends AppError {
+  constructor(public readonly errors: ValidationFieldError[]) {
+    super(ERROR_CODE.VALIDATION_ERROR);
+    this.name = 'UnprocessableEntityError';
+  }
+}
 ```
 
 ```typescript
 // Recommended: Use appropriate error class for each situation
 // Usage examples
 import { ERROR_CODE } from '@monorepo/error-code';
-import { NotFoundError, UnauthorizedError } from '$errors';
+import { NotFoundError, UnauthorizedError, UnprocessableEntityError } from '$errors';
 
 throw new UnauthorizedError(ERROR_CODE.UNAUTHORIZED);
 throw new NotFoundError(ERROR_CODE.ARTICLE_NOT_FOUND);
+
+// Validation Error
+throw new UnprocessableEntityError([{ field: 'email', code: ERROR_CODE.INVALID_EMAIL }]);
 ```
 
 ### HttpExceptionFilter
 
 すべての例外をキャッチし、統一されたレスポンス形式に変換します。
+バリデーションエラー（422）の場合は GitHub スタイルの詳細なエラー情報を返し、それ以外は標準のエラーレスポンスを返します。
+
+また、本番環境（`NODE_ENV=production`）では、5xx 系エラーの詳細（`errorCode` や `params`）を隠蔽してセキュリティを確保しています。
 
 ```typescript
 // Recommended: Use HttpExceptionFilter to convert all exceptions to unified format
@@ -705,17 +735,27 @@ throw new NotFoundError(ERROR_CODE.ARTICLE_NOT_FOUND);
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
     // Handle AppError / HttpException / other errors
-    // Return unified JSON response
-    response.status(status).json({
-      errorCode,
-      message,
-      params,
-    });
+
+    // UnprocessableEntityError returns GitHub-style response
+    if (errors) {
+      response.status(status).json({
+        message,
+        errors,
+      });
+    } else {
+      response.status(status).json({
+        errorCode,
+        message,
+        params,
+      });
+    }
   }
 }
 ```
 
 ### エラーレスポンス形式
+
+**通常のエラー:**
 
 ```json
 {
@@ -723,6 +763,184 @@ export class HttpExceptionFilter implements ExceptionFilter {
   "message": "Article not found",
   "params": { "id": "123" }
 }
+```
+
+**バリデーションエラー (422):**
+
+```json
+{
+  "errorCode": "VALIDATION_ERROR",
+  "message": "Validation Failed",
+  "errors": [
+    {
+      "field": "email",
+      "code": "INVALID_EMAIL"
+    }
+  ]
+}
+```
+
+## CSRF対策
+
+**キーワード**: `CSRF`, `Double Submit Cookie`, `csrf-csrf`, `セキュリティ`
+
+このセクションでは、CSRF（Cross-Site Request Forgery）攻撃からAPIを保護するための実装について説明します。
+
+**関連ファイル**:
+
+- `apps/server/src/main.ts` - CSRF設定
+
+### Double Submit Cookie パターン
+
+本プロジェクトでは `csrf-csrf` ライブラリを使用した **Double Submit Cookie** パターンを採用しています。
+
+```typescript
+// main.ts
+import { doubleCsrf } from 'csrf-csrf';
+
+const { doubleCsrfProtection, generateCsrfToken } = doubleCsrf({
+  getSecret: () => csrfSecret,
+  getSessionIdentifier: (req) => req.cookies?.['csrf-session-id'] || '',
+  cookieName: 'XSRF-TOKEN',
+  cookieOptions: {
+    httpOnly: false, // JavaScriptから読み取り可能
+    sameSite: 'lax',
+    secure: isProd,
+    path: '/',
+  },
+  ignoredMethods: ['GET', 'HEAD', 'OPTIONS'],
+  getCsrfTokenFromRequest: (req) => req.headers['x-xsrf-token'],
+});
+```
+
+### セッション識別（express-session不要）
+
+`csrf-session-id` クッキーを使用してセッションを識別します。これにより `express-session` なしで CSRF 保護を実現しています。
+
+```typescript
+// csrf-session-id がない場合は自動生成
+app.use((req, res, next) => {
+  if (!req.cookies?.['csrf-session-id']) {
+    const csrfSessionId = randomUUID();
+    res.cookie('csrf-session-id', csrfSessionId, {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: isProd,
+      path: '/',
+      maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year
+    });
+  }
+  next();
+});
+```
+
+### クライアント側の実装
+
+クライアントは `XSRF-TOKEN` クッキーの値を読み取り、`x-xsrf-token` ヘッダーに設定してリクエストを送信します。
+
+## 認証フロー（OAuth）
+
+**キーワード**: `OAuth`, `Google認証`, `JWT`, `Access Token`, `Refresh Token`
+
+このセクションでは、Google OAuth を使用した認証フローと、JWT によるセッション管理について説明します。
+
+**関連ファイル**:
+
+- `apps/server/src/modules/auth/auth.controller.ts` - 認証エンドポイント
+- `apps/server/src/modules/auth/services/auth.service.ts` - 認証ロジック
+
+### 認証フロー概要
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Server
+    participant Google
+
+    Client->>Server: GET /api/auth/login/google
+    Server->>Google: リダイレクト（OAuth同意画面）
+    Google->>Server: コールバック（認可コード）
+    alt ユーザーが存在
+        Server->>Client: access-token, refresh-token 設定
+        Client->>Client: ホームへリダイレクト
+    else 新規ユーザー
+        Server->>Client: pending-registration 設定
+        Client->>Client: 登録ページへリダイレクト
+        Client->>Server: POST /api/auth/register
+        Server->>Client: access-token, refresh-token 設定
+    end
+```
+
+### Pending Registration パターン
+
+新規ユーザーの場合、OAuth 認証後に直接アカウントを作成せず、一時的な `pending-registration` トークンを発行します。
+
+**メリット:**
+
+- ユーザーが自分のユーザー名を選択できる
+- OAuth プロバイダーから取得したメールアドレスを確認画面で表示できる
+- 誤ったアカウント作成を防止
+
+### トークン構成
+
+| トークン        | 有効期限 | 用途                          | Cookie パス |
+| --------------- | -------- | ----------------------------- | ----------- |
+| `access-token`  | 短寿命   | API認証（各リクエストで送信） | `/`         |
+| `refresh-token` | 長寿命   | Access Token の更新           | `/api/auth` |
+
+### check-session エンドポイント
+
+クライアントが認証状態を確認するためのエンドポイントです。**401を返さない**設計により、コンソールエラーを回避しています。
+
+```typescript
+// GET /api/auth/check-session
+// 常に 200 OK を返し、authenticated: true/false で状態を通知
+async checkSession(): Promise<{ authenticated: boolean; user?: User }> {
+  // 1. access-token が有効 → authenticated: true
+  // 2. refresh-token で更新可能 → authenticated: true
+  // 3. いずれも無効 → authenticated: false
+}
+```
+
+## API ドキュメント（OpenAPI）
+
+**キーワード**: `OpenAPI`, `Swagger`, `Redoc`, `APIドキュメント`
+
+このセクションでは、OpenAPI 仕様によるAPI ドキュメントの提供について説明します。
+
+**関連ファイル**:
+
+- `apps/server/src/main.ts` - OpenAPI設定
+
+### Redoc UI
+
+開発・本番環境で API ドキュメントを提供しています。
+
+| エンドポイント   | 内容                                     |
+| ---------------- | ---------------------------------------- |
+| `/api/docs`      | Redoc UI（インタラクティブドキュメント） |
+| `/api/docs.json` | OpenAPI JSON 仕様                        |
+
+### 設定例
+
+```typescript
+// main.ts
+const swaggerConfig = new DocumentBuilder()
+  .setTitle('RealWorld API')
+  .setDescription('Conduit API specification - RealWorld example app')
+  .setVersion('1.0')
+  .addBearerAuth()
+  .build();
+
+const document = SwaggerModule.createDocument(app, swaggerConfig);
+
+// Redoc UI を提供
+app.use('/api/docs', (_req, res) => {
+  res.send(`
+    <redoc spec-url='/api/docs.json'></redoc>
+    <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"></script>
+  `);
+});
 ```
 
 ---

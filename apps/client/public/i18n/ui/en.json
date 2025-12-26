@@ -103,7 +103,7 @@
   "footer": {
     "privacyPolicy": "Privacy Policy",
     "cookieSettings": "Cookie Settings",
-    "copyright": "© 2025 Motora's dev"
+    "copyright": "© 2025 Angular NestJS RealWorld Example App"
   },
   "header": {
     "siteName": "conduit",
@@ -175,5 +175,94 @@
   },
   "spinner": {
     "defaultMessage": "Loading..."
+  },
+  "privacyPolicy": {
+    "title": "Privacy Policy",
+    "sections": {
+      "introduction": {
+        "title": "1. Introduction",
+        "content": "Angular NestJS Example App (hereinafter referred to as \"this site\") respects the privacy of our users and strives to protect personal information. This privacy policy explains how we handle personal information on this site."
+      },
+      "googleAnalytics": {
+        "title": "2. Use of Google Analytics",
+        "content1": "This site uses Google Analytics to understand site usage and improve services.",
+        "content2": "Google Analytics uses cookies to analyze user site usage. This analytical data is collected anonymously and does not identify individuals.",
+        "optOutLink": "opt-out add-on",
+        "optOutText": "To disable Google Analytics data collection, please use the",
+        "optOutSuffix": "provided by Google.",
+        "termsLink": "here",
+        "termsText": "For Google Analytics terms of service, please see",
+        "termsSuffix": "."
+      },
+      "requiredCookies": {
+        "title": "3. Required Cookies",
+        "content1": "This site uses the following required cookies to provide basic site functionality. These cookies are essential for site operation and are used without user consent.",
+        "authCookies": "Authentication Cookies",
+        "authCookiesDesc": "access-token, refresh-token - Used to maintain login status",
+        "securityCookies": "Security Cookies",
+        "securityCookiesDesc": "XSRF-TOKEN, csrf-session-id - Used to protect the site from CSRF attacks",
+        "technicalCookies": "Technically Necessary Cookies",
+        "technicalCookiesDesc": "Used for hosting service provision",
+        "content2": "These cookies fall under \"strictly necessary cookies\" as defined by GDPR and may be used without consent."
+      },
+      "googleAdSense": {
+        "title": "4. Google AdSense",
+        "content1": "This site plans to use Google AdSense as an advertising service.",
+        "content2": "Google AdSense is a third-party advertising service that uses cookies to display ads based on user interests. Cookies can identify the user's browser but cannot identify individuals.",
+        "content3": "Google's DoubleClick Cookie used for ad delivery enables appropriate ads to be displayed based on information when users access this site or other sites.",
+        "adsSettingsLink": "Ad Settings",
+        "adsSettingsText": "To disable personalized ads, you can opt out from",
+        "adsSettingsSuffix": ". You can also disable third-party advertiser cookies from",
+        "aboutAdsLink": "www.aboutads.info",
+        "aboutAdsText": ".",
+        "policyLink": "here",
+        "policyText": "For Google's advertising policies and terms, please see",
+        "policySuffix": "."
+      },
+      "cookies": {
+        "title": "5. Cookies",
+        "content1": "This site uses cookies to improve site convenience. Cookies are small text files that websites save on users' computers.",
+        "content2": "Browser settings allow you to refuse cookies or display warnings when receiving cookies. However, disabling cookies may cause some site features to not work properly."
+      },
+      "consentMode": {
+        "title": "6. Google Consent Mode v2",
+        "content1": "This site uses Google Consent Mode v2. This allows appropriate data collection based on cookie consent status.",
+        "acceptedTitle": "If you consent:",
+        "acceptedContent": "Google Analytics and Google AdSense will use cookies normally and perform detailed access analysis and ad delivery.",
+        "rejectedTitle": "If you do not consent:",
+        "rejectedContent": "Cookies will not be used, but only anonymous aggregated data will be sent to Google. This anonymous data does not contain personally identifiable information and is used only to understand overall site statistics."
+      },
+      "cookieSettings": {
+        "title": "7. Changing Cookie Settings",
+        "content": "Cookie consent settings can be changed at any time. Clicking the button below will redisplay the cookie consent banner, allowing you to change settings."
+      },
+      "personalInfo": {
+        "title": "8. Handling of Personal Information",
+        "content1": "This site may obtain personal information through inquiries and comments. Personal information obtained will be used only for the following purposes:",
+        "purpose1": "Responding to inquiries",
+        "purpose2": "Necessary communications for site operation",
+        "purpose3": "Service improvement",
+        "content2": "This site will not provide personal information to third parties without user consent, except as required by law."
+      },
+      "disclaimer": {
+        "title": "9. Disclaimer",
+        "content1": "While we strive for accuracy of information posted on this site, this site assumes no responsibility for any actions taken by users using information from this site.",
+        "content2": "This site assumes no responsibility for external sites linked from this site."
+      },
+      "policyChanges": {
+        "title": "10. Privacy Policy Changes",
+        "content": "This site may review and change this privacy policy at any time without notice. The changed privacy policy will take effect from the time it is posted on this site."
+      },
+      "contact": {
+        "title": "11. Contact",
+        "content1": "For inquiries regarding this privacy policy, please contact us via",
+        "githubIssuesLink": "GitHub Issues",
+        "content2": "."
+      },
+      "enactmentDate": "Enactment Date: January 1, 2025"
+    }
+  },
+  "cookieSettingsButton": {
+    "changeSettings": "Change Cookie Settings"
   }
 }

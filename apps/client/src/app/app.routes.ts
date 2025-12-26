@@ -38,6 +38,10 @@ export const routes: Routes = [
     loadChildren: () => import('./error/error.routes').then((m) => m.ERROR_ROUTES),
   },
   {
+    path: 'privacy-policy',
+    loadChildren: () => import('./privacy-policy/privacy-policy.routes').then((m) => m.PRIVACY_POLICY_ROUTES),
+  },
+  {
     path: '**',
     loadComponent: () => import('./error/not-found/not-found').then((m) => m.NotFoundComponent),
   },
