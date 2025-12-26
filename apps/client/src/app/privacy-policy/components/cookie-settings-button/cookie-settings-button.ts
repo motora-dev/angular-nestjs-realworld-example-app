@@ -1,0 +1,19 @@
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
+
+import { CookieConsentService } from '$modules/cookie-consent';
+
+@Component({
+  selector: 'app-cookie-settings-button',
+  standalone: true,
+  imports: [TranslateModule],
+  templateUrl: './cookie-settings-button.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class CookieSettingsButtonComponent {
+  private readonly cookieConsentService = inject(CookieConsentService);
+
+  resetCookieSettings(): void {
+    this.cookieConsentService.resetConsent();
+  }
+}

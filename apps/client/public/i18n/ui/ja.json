@@ -103,7 +103,7 @@
   "footer": {
     "privacyPolicy": "プライバシーポリシー",
     "cookieSettings": "Cookie設定",
-    "copyright": "© 2025 もとら's dev"
+    "copyright": "© 2025 Angular NestJS RealWorld Example App"
   },
   "header": {
     "siteName": "conduit",
@@ -175,5 +175,94 @@
   },
   "spinner": {
     "defaultMessage": "読み込み中..."
+  },
+  "privacyPolicy": {
+    "title": "プライバシーポリシー",
+    "sections": {
+      "introduction": {
+        "title": "1. はじめに",
+        "content": "Angular NestJS Example App（以下「当サイト」）では、ユーザーの皆様のプライバシーを尊重し、個人情報の保護に努めています。本プライバシーポリシーでは、当サイトにおける個人情報の取り扱いについて説明します。"
+      },
+      "googleAnalytics": {
+        "title": "2. Google Analyticsの使用について",
+        "content1": "当サイトでは、サイトの利用状況を把握し、サービスの改善を目的として、Google Analytics を使用しています。",
+        "content2": "Google Analytics は、クッキー（Cookie）を使用して、ユーザーのサイト利用状況を分析します。この分析データは匿名で収集されており、個人を特定するものではありません。",
+        "optOutLink": "オプトアウトアドオン",
+        "optOutText": "Google Analytics による情報収集を無効にしたい場合は、Google が提供する",
+        "optOutSuffix": "をご利用ください。",
+        "termsLink": "こちら",
+        "termsText": "Google Analytics の利用規約については、",
+        "termsSuffix": "をご覧ください。"
+      },
+      "requiredCookies": {
+        "title": "3. 必須Cookieについて",
+        "content1": "当サイトでは、サイトの基本機能を提供するために、以下の必須Cookieを使用しています。これらのCookieは、サイトの動作に不可欠であり、ユーザーの同意なしで使用されます。",
+        "authCookies": "認証Cookie",
+        "authCookiesDesc": "access-token、refresh-token - ログイン状態の維持に使用",
+        "securityCookies": "セキュリティCookie",
+        "securityCookiesDesc": "XSRF-TOKEN、csrf-session-id - CSRF攻撃からサイトを保護するために使用",
+        "technicalCookies": "技術的に必要なCookie",
+        "technicalCookiesDesc": "ホスティングサービスの提供に使用",
+        "content2": "これらのCookieは、GDPRで定義される「厳密に必要なCookie」に該当し、同意なしで使用することが認められています。"
+      },
+      "googleAdSense": {
+        "title": "4. Google AdSenseについて",
+        "content1": "当サイトでは、広告配信サービスとして Google AdSense を利用する予定です。",
+        "content2": "Google AdSense は、第三者配信の広告サービスであり、ユーザーの興味に応じた広告を表示するために、クッキー（Cookie）を使用します。クッキーを使用することで、ユーザーのブラウザを識別できますが、個人を特定することはできません。",
+        "content3": "Google が広告配信に使用する DoubleClick Cookie により、ユーザーが当サイトや他のサイトにアクセスした際の情報に基づいて、適切な広告を表示できます。",
+        "adsSettingsLink": "広告設定",
+        "adsSettingsText": "パーソナライズド広告を無効にする場合は、",
+        "adsSettingsSuffix": "からオプトアウトできます。また、",
+        "aboutAdsLink": "www.aboutads.info",
+        "aboutAdsText": "から、第三者配信事業者のクッキーを無効にすることもできます。",
+        "policyLink": "こちら",
+        "policyText": "Google の広告に関するポリシーと規約については、",
+        "policySuffix": "をご覧ください。"
+      },
+      "cookies": {
+        "title": "5. クッキー（Cookie）について",
+        "content1": "当サイトでは、サイトの利便性向上のためにクッキーを使用しています。クッキーとは、ウェブサイトがユーザーのコンピューターに保存する小さなテキストファイルです。",
+        "content2": "ブラウザの設定により、クッキーの受け取りを拒否したり、クッキーを受け取った際に警告を表示させることが可能です。ただし、クッキーを無効にすると、当サイトの一部機能が正常に動作しない場合があります。"
+      },
+      "consentMode": {
+        "title": "6. Google Consent Mode v2について",
+        "content1": "当サイトでは、Google Consent Mode v2を使用しています。これにより、Cookieの同意状態に応じて、適切にデータを収集します。",
+        "acceptedTitle": "同意いただいた場合：",
+        "acceptedContent": "Google AnalyticsやGoogle AdSenseは、通常通りCookieを使用し、詳細なアクセス解析や広告配信を行います。",
+        "rejectedTitle": "同意いただけなかった場合：",
+        "rejectedContent": "Cookieは使用されませんが、Googleに匿名の集計データのみが送信されます。この匿名データは個人を特定できる情報を含まず、サイト全体の統計情報の把握にのみ使用されます。"
+      },
+      "cookieSettings": {
+        "title": "7. Cookie設定の変更",
+        "content": "Cookieの同意設定は、いつでも変更することができます。以下のボタンをクリックすると、Cookie同意バナーが再表示され、設定を変更できます。"
+      },
+      "personalInfo": {
+        "title": "8. 個人情報の取り扱いについて",
+        "content1": "当サイトでは、お問い合わせやコメントなどを通じて個人情報を取得する場合があります。取得した個人情報は、以下の目的でのみ使用します：",
+        "purpose1": "お問い合わせへの対応",
+        "purpose2": "サイト運営上必要な連絡",
+        "purpose3": "サービスの改善",
+        "content2": "当サイトは、法令に基づく場合を除き、ユーザーの同意なく第三者に個人情報を提供することはありません。"
+      },
+      "disclaimer": {
+        "title": "9. 免責事項",
+        "content1": "当サイトに掲載されている情報の正確性には万全を期していますが、利用者が当サイトの情報を用いて行う一切の行為について、当サイトは一切の責任を負いません。",
+        "content2": "当サイトからリンクされている外部サイトについては、当サイトは一切の責任を負いません。"
+      },
+      "policyChanges": {
+        "title": "10. プライバシーポリシーの変更",
+        "content": "当サイトは、本プライバシーポリシーの内容を適宜見直し、予告なく変更することがあります。変更後のプライバシーポリシーは、当サイトに掲載した時点から効力を生じるものとします。"
+      },
+      "contact": {
+        "title": "11. お問い合わせ",
+        "content1": "本プライバシーポリシーに関するお問い合わせは、",
+        "githubIssuesLink": "GitHub Issues",
+        "content2": "よりお願いいたします。"
+      },
+      "enactmentDate": "制定日：2025年1月1日"
+    }
+  },
+  "cookieSettingsButton": {
+    "changeSettings": "Cookie設定を変更する"
   }
 }
