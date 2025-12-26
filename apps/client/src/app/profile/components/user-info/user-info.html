@@ -1,0 +1,35 @@
+<div class="bg-gray-100 py-8">
+  <div class="container mx-auto px-4 text-center">
+    <img
+      [src]="profile().image || 'https://api.realworld.io/images/smiley-cyrus.jpeg'"
+      [alt]="profile().username"
+      class="mx-auto mb-4 h-24 w-24 rounded-full"
+    />
+    <h1 class="mb-2 text-2xl font-bold text-gray-900">{{ profile().username }}</h1>
+    <p class="mb-4 text-gray-600">{{ profile().bio }}</p>
+
+    @if (isCurrentUser()) {
+      <a
+        routerLink="/settings"
+        class="inline-flex items-center gap-2 rounded border border-gray-400 px-4 py-2 text-sm text-gray-600 hover:bg-gray-200"
+      >
+        ⚙ {{ 'profile.editSettings' | translate }}
+      </a>
+    } @else {
+      <button
+        class="rounded border px-4 py-2 text-sm transition-colors"
+        [class.border-emerald-500]="profile().following"
+        [class.bg-emerald-500]="profile().following"
+        [class.text-white]="profile().following"
+        [class.border-gray-400]="!profile().following"
+        [class.text-gray-600]="!profile().following"
+        [class.hover:bg-gray-200]="!profile().following"
+        (click)="onToggleFollow()"
+      >
+        {{ profile().following ? ('profile.unfollow' | translate) : ('profile.follow' | translate) }}
+        {{ profile().username }}
+      </button>
+    }
+  </div>
+</div>
+

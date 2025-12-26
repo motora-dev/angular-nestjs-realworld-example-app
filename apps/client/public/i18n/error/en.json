@@ -1,0 +1,17 @@
+{
+  "errorCodes": {
+    "UNEXPECTED_ERROR": "An unexpected error occurred",
+    "INTERNAL_SERVER_ERROR": "Internal server error occurred",
+    "UNAUTHORIZED": "Authentication required",
+    "FORBIDDEN": "Access denied",
+    "USER_NOT_FOUND": "User not found",
+    "EMAIL_ALREADY_EXISTS": "This email is already in use",
+    "USERNAME_ALREADY_EXISTS": "This username is already taken",
+    "ARTICLE_NOT_FOUND": "Article not found",
+    "COMMENT_NOT_FOUND": "Comment not found",
+    "VALIDATION_ERROR": "Input validation error",
+    "USERNAME_REQUIRED": "Username is required",
+    "USERNAME_TOO_SHORT": "Username is too short",
+    "USERNAME_INVALID_FORMAT": "Invalid username format"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "errorCodes": {
+    "UNEXPECTED_ERROR": "予期しないエラーが発生しました",
+    "INTERNAL_SERVER_ERROR": "サーバー内部エラーが発生しました",
+    "UNAUTHORIZED": "認証が必要です",
+    "FORBIDDEN": "アクセス権限がありません",
+    "USER_NOT_FOUND": "ユーザーが見つかりません",
+    "EMAIL_ALREADY_EXISTS": "このメールアドレスは既に使用されています",
+    "USERNAME_ALREADY_EXISTS": "このユーザー名は既に使用されています",
+    "ARTICLE_NOT_FOUND": "記事が見つかりません",
+    "COMMENT_NOT_FOUND": "コメントが見つかりません",
+    "VALIDATION_ERROR": "入力内容に誤りがあります",
+    "USERNAME_REQUIRED": "ユーザー名は必須です",
+    "USERNAME_TOO_SHORT": "ユーザー名が短すぎます",
+    "USERNAME_INVALID_FORMAT": "ユーザー名の形式が正しくありません"
+  }
+}

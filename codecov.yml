@@ -1,0 +1,67 @@
+# Codecov configuration
+# https://docs.codecov.com/docs/codecovyml-reference
+
+coverage:
+  status:
+    # プロジェクト全体のカバレッジ設定
+    project:
+      default:
+        target: 0% # 目標カバレッジ率
+        threshold: 0% # 許容される低下率（55%まで許容）
+        base: auto # ベースブランチと比較
+        if_ci_failed: error # CI失敗時はエラー
+
+    # パッチ（新規追加コード）のカバレッジ設定
+    patch:
+      default:
+        target: 0% # 新規コードの最小カバレッジ
+        threshold: 0% # パッチの許容低下率
+        base: auto
+
+  # カバレッジ計測から除外するファイル・ディレクトリ
+  ignore:
+    - 'packages/**'
+    - '**/*.spec.**'
+    - '**/coverage/**'
+    - '**/dist/**'
+    - '**/build/**'
+    - '**/.next/**'
+    - '**/node_modules/**'
+    - '**/*.config.**'
+
+  # カバレッジの精度設定
+  precision: 1 # 小数点以下1桁
+  round: down # 切り捨て
+  range: 0..100 # カバレッジ範囲（色分け用）
+
+# プルリクエストへのコメント設定
+comment:
+  layout: 'reach, diff, flags, files' # 表示項目
+  behavior: default # デフォルト動作
+  require_changes: true # カバレッジに変更がある場合のみコメント
+  require_base: false # ベースブランチ不要
+  require_head: true # HEADブランチ必要
+
+# フラグ管理（monorepo用）
+flag_management:
+  default_rules:
+    carryforward: true # 前回結果の引き継ぎ
+
+  individual_flags:
+    # クライアント側の設定
+    - name: client
+      paths:
+        - packages/client/src/
+      target: 100% # クライアント目標
+      carryforward: true
+
+    # サーバー側の設定
+    - name: server
+      paths:
+        - packages/server/src/
+      target: 100% # サーバー目標
+      carryforward: true
+
+# GitHub統合設定
+github_checks:
+  annotations: false # コード注釈を有効

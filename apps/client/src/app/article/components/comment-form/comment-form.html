@@ -1,0 +1,31 @@
+<form
+  [formGroup]="commentForm"
+  [ngxsForm]="'comments.commentForm'"
+  class="rounded-lg border border-gray-200 bg-white"
+  (ngSubmit)="onSubmit()"
+>
+  <div class="p-4">
+    <textarea
+      class="w-full resize-none rounded border border-gray-300 p-3 focus:border-emerald-500 focus:outline-none"
+      rows="3"
+      [placeholder]="'article.writeComment' | translate"
+      formControlName="body"
+    ></textarea>
+  </div>
+  <div class="flex items-center justify-between border-t border-gray-100 bg-gray-50 px-4 py-2">
+    @if (userImage()) {
+    <img [src]="userImage()" alt="User" class="h-8 w-8 rounded-full object-cover" />
+    } @else {
+    <div class="flex h-8 w-8 items-center justify-center rounded-full bg-gray-300">
+      <span class="text-sm font-medium text-gray-600">{{ userName().charAt(0).toUpperCase() }}</span>
+    </div>
+    }
+    <button
+      type="submit"
+      class="rounded bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800 disabled:opacity-50"
+      [disabled]="isFormInvalid$ | push"
+    >
+      {{ 'article.postComment' | translate }}
+    </button>
+  </div>
+</form>

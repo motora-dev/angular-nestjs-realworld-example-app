@@ -1,0 +1,9 @@
+<div class="min-h-screen bg-gray-50 py-8">
+  <div class="container mx-auto max-w-3xl px-4">
+    <h1 class="mb-8 text-3xl font-bold text-gray-900">
+      {{ isEditMode() ? ('editor.editArticle' | translate) : ('editor.newArticle' | translate) }}
+    </h1>
+
+    <app-editor-form [initialTagList]="initialTagList()" (formSubmit)="onFormSubmit($event)" />
+  </div>
+</div>

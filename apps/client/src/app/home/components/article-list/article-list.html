@@ -1,0 +1,47 @@
+@if (articles().length === 0) {
+<div class="rounded-lg border border-gray-200 bg-white p-8 text-center text-gray-600">
+  {{ 'home.noArticles' | translate }}
+</div>
+} @else {
+<div class="space-y-4">
+  @for (article of articles(); track article.slug) {
+  <article class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
+    <div class="mb-4 flex items-center gap-3">
+      <img
+        [src]="article.author.image || 'https://api.realworld.io/images/smiley-cyrus.jpeg'"
+        [alt]="article.author.username"
+        class="h-10 w-10 rounded-full object-cover"
+      />
+      <div class="flex-1">
+        <a [routerLink]="['/profile', article.author.username]" class="font-medium text-emerald-500 hover:underline">
+          {{ article.author.username }}
+        </a>
+        <p class="text-sm text-gray-600">{{ article.createdAt | date: 'mediumDate' }}</p>
+      </div>
+      <button
+        class="flex items-center gap-1 rounded border border-emerald-700 px-2 py-1 text-sm text-emerald-700 transition-colors hover:bg-emerald-700 hover:text-white"
+      >
+        <span>❤</span>
+        <span>{{ article.favoritesCount }}</span>
+      </button>
+    </div>
+
+    <a [routerLink]="['/article', article.slug]" class="block">
+      <h2 class="mb-2 text-xl font-semibold text-gray-900 hover:text-emerald-600">{{ article.title }}</h2>
+      <p class="mb-4 text-gray-600">{{ article.description }}</p>
+    </a>
+
+    <div class="flex items-center justify-between">
+      <a [routerLink]="['/article', article.slug]" class="text-sm text-gray-400 hover:text-emerald-500">
+        {{ 'home.readMore' | translate }}
+      </a>
+      <div class="flex flex-wrap gap-1">
+        @for (tag of article.tagList; track tag) {
+        <span class="rounded-full border border-gray-300 px-2 py-0.5 text-xs text-gray-600"> {{ tag }} </span>
+        }
+      </div>
+    </div>
+  </article>
+  }
+</div>
+}
