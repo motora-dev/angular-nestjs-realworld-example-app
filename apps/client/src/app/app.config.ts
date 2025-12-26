@@ -52,12 +52,7 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(withEventReplay()),
     provideHttpClient(
       withFetch(),
-      withInterceptors([
-        ssrCookieInterceptor,
-        credentialsInterceptor,
-        ...(environment.production === false ? [csrfTokenInterceptor] : []),
-        httpErrorInterceptor,
-      ]),
+      withInterceptors([ssrCookieInterceptor, credentialsInterceptor, csrfTokenInterceptor, httpErrorInterceptor]),
       withXsrfConfiguration({ cookieName: 'XSRF-TOKEN', headerName: 'x-xsrf-token' }),
     ),
     provideRouter(
