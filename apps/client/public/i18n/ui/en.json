@@ -1,0 +1,179 @@
+{
+  "article": {
+    "signIn": "Sign in",
+    "signUp": "Sign up",
+    "or": "or",
+    "toAddComments": "to add comments on this article.",
+    "edit": "Edit Article",
+    "delete": "Delete Article",
+    "favorite": "Favorite Article",
+    "unfavorite": "Unfavorite Article",
+    "writeComment": "Write a comment...",
+    "postComment": "Post Comment",
+    "errors": {
+      "articleIdRequired": "Article ID is required"
+    }
+  },
+  "articleEdit": {
+    "title": "Article Settings",
+    "saveSuccess": "Saved successfully",
+    "form": {
+      "titleLabel": "Article Title",
+      "titlePlaceholder": "Article Title",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "What's this article about?",
+      "tagsLabel": "Tags",
+      "saveButton": "Save"
+    },
+    "pageList": {
+      "title": "Page List",
+      "noPages": "No pages available",
+      "editPage": "Edit page '{{title}}'"
+    },
+    "errors": {
+      "articleIdRequired": "Article ID is required"
+    }
+  },
+  "articleList": {
+    "title": "Article List",
+    "description": "A place to share your Angular knowledge.",
+    "noArticles": "No articles are here... yet.",
+    "noTitle": "(No Title)",
+    "readArticle": "Read more...",
+    "readMore": "Read more..."
+  },
+  "articlePage": {
+    "toc": "Table of Contents",
+    "onThisPage": "On this page",
+    "headingToc": "Headings",
+    "goToHeading": "Go to {{text}}",
+    "prev": "Previous",
+    "next": "Next"
+  },
+  "articlePageEdit": {
+    "title": "Edit Page",
+    "saveSuccess": "Saved successfully",
+    "saveError": "Error occurred while saving",
+    "articleSettings": "Article Settings",
+    "pageListTitle": "Page List",
+    "previewLabel": "Preview",
+    "form": {
+      "titleLabel": "Title",
+      "titlePlaceholder": "Page Title",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Page Description",
+      "contentLabel": "Content (Markdown)",
+      "contentPlaceholder": "Write your article (in markdown)",
+      "saveButton": "Save"
+    },
+    "errors": {
+      "articleIdOrPageIdRequired": "Article ID or Page ID is required"
+    }
+  },
+  "common": {
+    "backToHome": "Back to Home",
+    "close": "Close"
+  },
+  "editor": {
+    "newArticle": "New Article",
+    "editArticle": "Edit Article",
+    "titlePlaceholder": "Article Title",
+    "descriptionPlaceholder": "What's this article about?",
+    "bodyPlaceholder": "Write your article (in markdown)",
+    "tagsPlaceholder": "Enter tags",
+    "publish": "Publish Article"
+  },
+  "error": {
+    "dialogTitle": "An error occurred",
+    "errorCode": "Error Code",
+    "unexpectedError": "An unexpected error occurred",
+    "401": {
+      "title": "Authentication Required",
+      "message": "You need to log in to access this page."
+    },
+    "403": {
+      "title": "Access Denied",
+      "message": "You do not have permission to access this page."
+    },
+    "404": {
+      "title": "Page Not Found",
+      "message": "The page you are looking for does not exist or has been moved."
+    }
+  },
+  "footer": {
+    "privacyPolicy": "Privacy Policy",
+    "cookieSettings": "Cookie Settings",
+    "copyright": "© 2025 Motora's dev"
+  },
+  "header": {
+    "siteName": "conduit",
+    "articles": "Articles",
+    "openMenu": "Open Menu",
+    "loginOrRegister": "Sign in / Sign up",
+    "newArticle": "New Article",
+    "settings": "Settings",
+    "logout": "Log out"
+  },
+  "home": {
+    "tagline": "A place to share your Angular knowledge.",
+    "yourFeed": "Your Feed",
+    "globalFeed": "Global Feed",
+    "popularTags": "Popular Tags",
+    "noArticles": "No articles are here... yet.",
+    "noTags": "No tags available",
+    "readMore": "Read more..."
+  },
+  "login": {
+    "title": "Sign in",
+    "description": "Sign in to your account",
+    "googleButton": "Sign in with Google"
+  },
+  "profile": {
+    "myArticles": "My Articles",
+    "favoritedArticles": "Favorited Articles",
+    "noArticles": "No articles are here... yet.",
+    "editSettings": "Edit Profile Settings",
+    "follow": "Follow",
+    "unfollow": "Unfollow"
+  },
+  "register": {
+    "title": "Sign up",
+    "description": "Welcome to Conduit! Please set your username.",
+    "email": "Email",
+    "username": "Username",
+    "usernamePlaceholder": "Enter username",
+    "usernameHint": "3+ chars, alphanumeric and underscore only",
+    "agreeToTerms": "I agree to the Terms of Service",
+    "submit": "Sign up",
+    "submitting": "Signing up...",
+    "alreadyHaveAccount": "Have an account?",
+    "login": "Sign in",
+    "noPendingRegistration": "No pending registration found. Please restart from login.",
+    "goToLogin": "Go to Login"
+  },
+  "seo": {
+    "siteName": "conduit",
+    "defaultTitle": "conduit - Angular + NestJS RealWorld Example App",
+    "defaultDescription": "full-stack RealWorld example application built with Angular, NestJS, and Turbo. Adheres to the RealWorld spec and API.",
+    "home": {
+      "title": "Home",
+      "description": "A place to share your Angular knowledge."
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "image": "Profile Picture URL",
+    "imagePlaceholder": "URL of profile picture",
+    "username": "Username",
+    "usernamePlaceholder": "Your username",
+    "bio": "Bio",
+    "bioPlaceholder": "Short bio about you",
+    "email": "Email",
+    "emailPlaceholder": "Email",
+    "update": "Update Settings",
+    "logout": "Or click here to logout."
+  },
+  "spinner": {
+    "defaultMessage": "Loading..."
+  }
+}

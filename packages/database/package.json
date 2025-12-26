@@ -1,0 +1,30 @@
+{
+  "name": "@monorepo/database",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./client": "./src/generated/prisma-client/client.ts"
+  },
+  "scripts": {
+    "prepare": "prisma generate || true",
+    "clean": "rimraf .turbo node_modules src/generated",
+    "clean:cache": "rimraf .turbo",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio"
+  },
+  "devDependencies": {
+    "@monorepo/typescript-config": "workspace:*",
+    "@prisma/client": "catalog:",
+    "dotenv": "catalog:",
+    "prisma": "catalog:",
+    "rimraf": "catalog:",
+    "typescript": "catalog:"
+  },
+  "volta": {
+    "extends": "../../package.json"
+  }
+}

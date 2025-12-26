@@ -1,0 +1,18 @@
+<div class="min-h-screen bg-gray-50 py-8">
+  <div class="container mx-auto max-w-xl px-4">
+    <h1 class="mb-8 text-center text-3xl font-bold text-gray-900">{{ 'settings.title' | translate }}</h1>
+
+    <app-settings-form (formSubmit)="onFormSubmit($event)" />
+
+    <hr class="my-8 border-gray-200" />
+
+    <div class="text-center">
+      <button
+        class="rounded-lg border border-red-500 px-6 py-2 text-red-500 hover:bg-red-500 hover:text-white"
+        (click)="logout()"
+      >
+        {{ 'settings.logout' | translate }}
+      </button>
+    </div>
+  </div>
+</div>

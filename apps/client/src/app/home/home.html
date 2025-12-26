@@ -1,0 +1,69 @@
+<div class="min-h-screen bg-gray-50">
+  <!-- Banner for non-authenticated users -->
+  <ng-container *rxLet="isAuthenticated$; let isAuth">
+    @if (!isAuth) {
+    <div class="bg-emerald-700 py-8 text-center text-white shadow-inner">
+      <div class="container mx-auto px-4">
+        <h1 class="mb-2 text-5xl font-bold">conduit</h1>
+        <p class="text-xl">{{ 'home.tagline' | translate }}</p>
+      </div>
+    </div>
+    }
+  </ng-container>
+
+  <div class="container mx-auto px-4 py-8">
+    <div class="flex flex-col gap-8 lg:flex-row">
+      <!-- Main Content -->
+      <div class="flex-1">
+        <!-- Feed Toggle -->
+        <div class="mb-6 border-b border-gray-200">
+          <nav class="-mb-px flex gap-4">
+            <ng-container *rxLet="isAuthenticated$; let isAuth">
+              @if (isAuth) {
+              <button
+                class="border-b-2 px-4 py-2 text-sm font-medium transition-colors"
+                [class.border-emerald-700]="listConfig().type === 'feed'"
+                [class.text-emerald-700]="listConfig().type === 'feed'"
+                [class.border-transparent]="listConfig().type !== 'feed'"
+                [class.text-gray-600]="listConfig().type !== 'feed'"
+                [class.hover:text-gray-700]="listConfig().type !== 'feed'"
+                (click)="setListTo('feed')"
+              >
+                {{ 'home.yourFeed' | translate }}
+              </button>
+              }
+            </ng-container>
+            <button
+              class="border-b-2 px-4 py-2 text-sm font-medium transition-colors"
+              [class.border-emerald-700]="listConfig().type === 'all' && !listConfig().filters.tag"
+              [class.text-emerald-700]="listConfig().type === 'all' && !listConfig().filters.tag"
+              [class.border-transparent]="listConfig().type !== 'all' || listConfig().filters.tag"
+              [class.text-gray-600]="listConfig().type !== 'all' || listConfig().filters.tag"
+              [class.hover:text-gray-700]="listConfig().type !== 'all' || listConfig().filters.tag"
+              (click)="setListTo('all')"
+            >
+              {{ 'home.globalFeed' | translate }}
+            </button>
+            @if (listConfig().filters.tag) {
+            <span class="border-b-2 border-emerald-700 px-4 py-2 text-sm font-medium text-emerald-700">
+              #{{ listConfig().filters.tag }}
+            </span>
+            }
+          </nav>
+        </div>
+
+        <!-- Article List -->
+        <ng-container *rxLet="articles$; let articles">
+          <app-article-list [articles]="articles" />
+        </ng-container>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="w-full lg:w-80">
+        <ng-container *rxLet="tags$; let tags">
+          <app-tag-list [tags]="tags" (tagClick)="setListTo('all', { tag: $event })" />
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,25 @@
+{
+  "extends": "@monorepo/typescript-config",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "noFallthroughCasesInSwitch": false,
+    "noImplicitAny": false,
+    "outDir": "./dist",
+    "removeComments": true,
+    "strictBindCallApply": false,
+    "strictPropertyInitialization": false,
+    "paths": {
+      "$adapters": ["src/shared/adapters"],
+      "$decorators": ["src/shared/decorators"],
+      "$domains/*": ["src/domains/*"],
+      "$errors": ["src/shared/errors"],
+      "$filters": ["src/shared/filters"],
+      "$interceptors": ["src/shared/interceptors"],
+      "$modules/*": ["src/modules/*"],
+      "$shared/*": ["src/shared/*"],
+      "$utils": ["src/shared/utils"]
+    },
+    "target": "ES2023"
+  },
+  "references": [{ "path": "./tsconfig.build.json" }, { "path": "./tsconfig.spec.json" }]
+}

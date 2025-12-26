@@ -1,0 +1,29 @@
+{
+  "name": "@monorepo/eslint-config",
+  "type": "module",
+  "private": true,
+  "exports": "./index.js",
+  "scripts": {
+    "clean": "rimraf .turbo node_modules"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "catalog:",
+    "@eslint/js": "catalog:",
+    "@typescript-eslint/eslint-plugin": "catalog:",
+    "@typescript-eslint/parser": "catalog:",
+    "eslint": "catalog:",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-boundaries": "catalog:",
+    "eslint-plugin-import": "2.32.0",
+    "eslint-plugin-only-warn": "^1.1.0",
+    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-turbo": "catalog:",
+    "prettier": "catalog:",
+    "rimraf": "catalog:",
+    "typescript-eslint": "catalog:"
+  },
+  "volta": {
+    "extends": "../../package.json"
+  }
+}

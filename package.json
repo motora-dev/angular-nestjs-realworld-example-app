@@ -1,0 +1,42 @@
+{
+  "name": "@monorepo/root",
+  "private": true,
+  "scripts": {
+    "prepare": "husky || true",
+    "clean": "turbo run clean && pnpm run clean:root && pnpm store prune",
+    "clean:cache": "turbo run clean:cache && pnpm run clean:cache:root",
+    "clean:root": "rimraf .turbo node_modules",
+    "clean:cache:root": "rimraf .turbo",
+    "build": "turbo run build",
+    "start": "turbo run start",
+    "start:prd": "turbo run start:prd",
+    "format": "turbo run format",
+    "format:fix": "turbo run format:fix",
+    "lint": "turbo run lint",
+    "lint:fix": "turbo run lint:fix",
+    "tsc": "turbo run tsc",
+    "test": "turbo run test",
+    "test:coverage": "turbo run test:coverage",
+    "check-all": "pnpm clean:cache && turbo run format lint build tsc test"
+  },
+  "devDependencies": {
+    "@monorepo/eslint-config": "workspace:*",
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "lint-staged": "catalog:",
+    "prettier": "catalog:",
+    "husky": "catalog:",
+    "rimraf": "catalog:",
+    "turbo": "catalog:",
+    "typescript": "catalog:"
+  },
+  "packageManager": "pnpm@10.24.0",
+  "engines": {
+    "node": "24.11.1",
+    "pnpm": "10.24.0"
+  },
+  "volta": {
+    "node": "24.11.1",
+    "pnpm": "10.24.0"
+  }
+}

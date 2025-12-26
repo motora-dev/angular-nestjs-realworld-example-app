@@ -1,0 +1,10 @@
+{
+  "extends": "@monorepo/typescript-config",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "strict": true
+  },
+  "include": ["src/**/*", "prisma.config.ts"],
+  "exclude": ["node_modules", "dist"]
+}
+
