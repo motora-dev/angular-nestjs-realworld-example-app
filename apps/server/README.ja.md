@@ -112,24 +112,25 @@ pnpm check-all
 
 このセクションでは、プロジェクトで必要な環境変数とその設定方法について説明します。
 
-| 変数名                   | 説明                                      | 例                                        | 必須   |
-| ------------------------ | ----------------------------------------- | ----------------------------------------- | ------ |
-| **Database**             |                                           |                                           |        |
-| `DATABASE_URL`           | PostgreSQLデータベースURL（接続プール用） | `postgresql://postgres:pass@host/db`      | はい   |
-| **Server**               |                                           |                                           |        |
-| `NODE_ENV`               | 実行環境                                  | `development` / `production`              | いいえ |
-| `PORT`                   | サーバーポート番号                        | `4000`                                    | いいえ |
-| **Client / CORS / CSRF** |                                           |                                           |        |
-| `CLIENT_URL`             | クライアントアプリのURL                   | `http://localhost:4200`                   | はい   |
-| `CORS_ORIGINS`           | CORS許可オリジン（カンマ区切り）          | `http://localhost:4200`                   | はい   |
-| `CSRF_SECRET`            | CSRF保護用シークレットキー                | `your-csrf-secret-key`                    | はい   |
-| **Google OAuth**         |                                           |                                           |        |
-| `GOOGLE_CLIENT_ID`       | Google OAuth Client ID                    | `xxx.apps.googleusercontent.com`          | はい   |
-| `GOOGLE_CLIENT_SECRET`   | Google OAuth Secret                       | `GOCSPX-xxx`                              | はい   |
-| `GOOGLE_CALLBACK_URL`    | Google OAuth Callback URL                 | `http://localhost:4000/api/auth/callback` | はい   |
-| **JWT**                  |                                           |                                           |        |
-| `JWT_PRIVATE_KEY`        | JWT署名用RSA秘密鍵（PEM形式）             | `-----BEGIN RSA PRIVATE KEY-----\n...`    | はい   |
-| `JWT_PUBLIC_KEY`         | JWT検証用RSA公開鍵（PEM形式）             | `-----BEGIN PUBLIC KEY-----\n...`         | はい   |
+| 変数名                   | 説明                                                            | 例                                        | 必須   |
+| ------------------------ | --------------------------------------------------------------- | ----------------------------------------- | ------ |
+| **Database**             |                                                                 |                                           |        |
+| `DATABASE_URL`           | PostgreSQLデータベースURL（接続プール用）                       | `postgresql://postgres:pass@host/db`      | はい   |
+| **Server**               |                                                                 |                                           |        |
+| `NODE_ENV`               | 実行環境                                                        | `development` / `production`              | いいえ |
+| `PORT`                   | サーバーポート番号                                              | `4000`                                    | いいえ |
+| **Client / CORS / CSRF** |                                                                 |                                           |        |
+| `CLIENT_URL`             | クライアントアプリのURL                                         | `http://localhost:4200`                   | はい   |
+| `CORS_ORIGINS`           | CORS許可オリジン（カンマ区切り）                                | `http://localhost:4200`                   | はい   |
+| `CSRF_SECRET`            | CSRF保護用シークレットキー                                      | `your-csrf-secret-key`                    | はい   |
+| `COOKIE_DOMAIN`          | CSRF Cookieのドメイン設定（サブドメイン間でCookie共有する場合） | `.realworld.motora-dev.com`               | いいえ |
+| **Google OAuth**         |                                                                 |                                           |        |
+| `GOOGLE_CLIENT_ID`       | Google OAuth Client ID                                          | `xxx.apps.googleusercontent.com`          | はい   |
+| `GOOGLE_CLIENT_SECRET`   | Google OAuth Secret                                             | `GOCSPX-xxx`                              | はい   |
+| `GOOGLE_CALLBACK_URL`    | Google OAuth Callback URL                                       | `http://localhost:4000/api/auth/callback` | はい   |
+| **JWT**                  |                                                                 |                                           |        |
+| `JWT_PRIVATE_KEY`        | JWT署名用RSA秘密鍵（PEM形式）                                   | `-----BEGIN RSA PRIVATE KEY-----\n...`    | はい   |
+| `JWT_PUBLIC_KEY`         | JWT検証用RSA公開鍵（PEM形式）                                   | `-----BEGIN PUBLIC KEY-----\n...`         | はい   |
 
 ### 環境変数の設定
 
@@ -798,6 +799,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
 // main.ts
 import { doubleCsrf } from 'csrf-csrf';
 
+// Cross-subdomain cookie sharing (e.g., '.realworld.motora-dev.com' for api.realworld.motora-dev.com and realworld.motora-dev.com)
+const cookieDomain = config.get('COOKIE_DOMAIN');
+
 const { doubleCsrfProtection, generateCsrfToken } = doubleCsrf({
   getSecret: () => csrfSecret,
   getSessionIdentifier: (req) => req.cookies?.['csrf-session-id'] || '',
@@ -807,6 +811,7 @@ const { doubleCsrfProtection, generateCsrfToken } = doubleCsrf({
     sameSite: 'lax',
     secure: isProd,
     path: '/',
+    ...(cookieDomain && { domain: cookieDomain }),
   },
   ignoredMethods: ['GET', 'HEAD', 'OPTIONS'],
   getCsrfTokenFromRequest: (req) => req.headers['x-xsrf-token'],
@@ -828,11 +833,23 @@ app.use((req, res, next) => {
       secure: isProd,
       path: '/',
       maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year
+      ...(cookieDomain && { domain: cookieDomain }),
     });
   }
   next();
 });
 ```
+
+### サブドメイン間でのCookie共有
+
+APIサーバーとクライアントが異なるサブドメイン（例: `api.realworld.motora-dev.com` と `realworld.motora-dev.com`）で動作する場合、`COOKIE_DOMAIN`環境変数を設定することでCookieを共有できます。
+
+```bash
+# .env
+COOKIE_DOMAIN=.realworld.motora-dev.com
+```
+
+**注意**: ドメインの先頭にドット（`.`）を付けることで、すべてのサブドメインでCookieが共有されます。この設定がない場合、Cookieは各サブドメインに限定されます。
 
 ### クライアント側の実装
 

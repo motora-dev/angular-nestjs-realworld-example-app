@@ -112,24 +112,25 @@ pnpm check-all
 
 This section explains the required environment variables and how to configure them.
 
-| Variable                 | Description                                  | Example                                   | Required |
-| ------------------------ | -------------------------------------------- | ----------------------------------------- | -------- |
-| **Database**             |                                              |                                           |          |
-| `DATABASE_URL`           | PostgreSQL database URL (connection pool)    | `postgresql://postgres:pass@host/db`      | Yes      |
-| **Server**               |                                              |                                           |          |
-| `NODE_ENV`               | Runtime environment                          | `development` / `production`              | No       |
-| `PORT`                   | Server port number                           | `4000`                                    | No       |
-| **Client / CORS / CSRF** |                                              |                                           |          |
-| `CLIENT_URL`             | Client application URL                       | `http://localhost:4200`                   | Yes      |
-| `CORS_ORIGINS`           | CORS allowed origins (comma-separated)       | `http://localhost:4200`                   | Yes      |
-| `CSRF_SECRET`            | CSRF protection secret key                   | `your-csrf-secret-key`                    | Yes      |
-| **Google OAuth**         |                                              |                                           |          |
-| `GOOGLE_CLIENT_ID`       | Google OAuth Client ID                       | `xxx.apps.googleusercontent.com`          | Yes      |
-| `GOOGLE_CLIENT_SECRET`   | Google OAuth Secret                          | `GOCSPX-xxx`                              | Yes      |
-| `GOOGLE_CALLBACK_URL`    | Google OAuth Callback URL                    | `http://localhost:4000/api/auth/callback` | Yes      |
-| **JWT**                  |                                              |                                           |          |
-| `JWT_PRIVATE_KEY`        | JWT signing RSA private key (PEM format)     | `-----BEGIN RSA PRIVATE KEY-----\n...`    | Yes      |
-| `JWT_PUBLIC_KEY`         | JWT verification RSA public key (PEM format) | `-----BEGIN PUBLIC KEY-----\n...`         | Yes      |
+| Variable                 | Description                                                       | Example                                   | Required |
+| ------------------------ | ----------------------------------------------------------------- | ----------------------------------------- | -------- |
+| **Database**             |                                                                   |                                           |          |
+| `DATABASE_URL`           | PostgreSQL database URL (connection pool)                         | `postgresql://postgres:pass@host/db`      | Yes      |
+| **Server**               |                                                                   |                                           |          |
+| `NODE_ENV`               | Runtime environment                                               | `development` / `production`              | No       |
+| `PORT`                   | Server port number                                                | `4000`                                    | No       |
+| **Client / CORS / CSRF** |                                                                   |                                           |          |
+| `CLIENT_URL`             | Client application URL                                            | `http://localhost:4200`                   | Yes      |
+| `CORS_ORIGINS`           | CORS allowed origins (comma-separated)                            | `http://localhost:4200`                   | Yes      |
+| `CSRF_SECRET`            | CSRF protection secret key                                        | `your-csrf-secret-key`                    | Yes      |
+| `COOKIE_DOMAIN`          | CSRF Cookie domain setting (for cookie sharing across subdomains) | `.realworld.motora-dev.com`               | No       |
+| **Google OAuth**         |                                                                   |                                           |          |
+| `GOOGLE_CLIENT_ID`       | Google OAuth Client ID                                            | `xxx.apps.googleusercontent.com`          | Yes      |
+| `GOOGLE_CLIENT_SECRET`   | Google OAuth Secret                                               | `GOCSPX-xxx`                              | Yes      |
+| `GOOGLE_CALLBACK_URL`    | Google OAuth Callback URL                                         | `http://localhost:4000/api/auth/callback` | Yes      |
+| **JWT**                  |                                                                   |                                           |          |
+| `JWT_PRIVATE_KEY`        | JWT signing RSA private key (PEM format)                          | `-----BEGIN RSA PRIVATE KEY-----\n...`    | Yes      |
+| `JWT_PUBLIC_KEY`         | JWT verification RSA public key (PEM format)                      | `-----BEGIN PUBLIC KEY-----\n...`         | Yes      |
 
 ### Setting Up Environment Variables
 
@@ -798,6 +799,9 @@ This project uses the **Double Submit Cookie** pattern with the `csrf-csrf` libr
 // main.ts
 import { doubleCsrf } from 'csrf-csrf';
 
+// Cross-subdomain cookie sharing (e.g., '.realworld.motora-dev.com' for api.realworld.motora-dev.com and realworld.motora-dev.com)
+const cookieDomain = config.get('COOKIE_DOMAIN');
+
 const { doubleCsrfProtection, generateCsrfToken } = doubleCsrf({
   getSecret: () => csrfSecret,
   getSessionIdentifier: (req) => req.cookies?.['csrf-session-id'] || '',
@@ -807,6 +811,7 @@ const { doubleCsrfProtection, generateCsrfToken } = doubleCsrf({
     sameSite: 'lax',
     secure: isProd,
     path: '/',
+    ...(cookieDomain && { domain: cookieDomain }),
   },
   ignoredMethods: ['GET', 'HEAD', 'OPTIONS'],
   getCsrfTokenFromRequest: (req) => req.headers['x-xsrf-token'],
@@ -828,11 +833,23 @@ app.use((req, res, next) => {
       secure: isProd,
       path: '/',
       maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year
+      ...(cookieDomain && { domain: cookieDomain }),
     });
   }
   next();
 });
 ```
+
+### Cross-subdomain Cookie Sharing
+
+When the API server and client run on different subdomains (e.g., `api.realworld.motora-dev.com` and `realworld.motora-dev.com`), cookies can be shared by setting the `COOKIE_DOMAIN` environment variable.
+
+```bash
+# .env
+COOKIE_DOMAIN=.realworld.motora-dev.com
+```
+
+**Note**: Adding a dot (`.`) at the beginning of the domain allows cookies to be shared across all subdomains. Without this setting, cookies are limited to each subdomain.
 
 ### Client-side Implementation
 
