@@ -432,22 +432,31 @@ The CQRS (Command Query Responsibility Segregation) pattern separates read and w
 Only retrieves data without modifying state.
 
 ```typescript
-// Recommended: Queries don't modify state
-// queries/get-article-list/get-article-list.query.ts
-export class GetArticleListQuery {
-  public constructor() {}
+// Recommended: Extend Query<T> for automatic type inference
+// queries/get-articles/get-articles.query.ts
+import { Query } from '@nestjs/cqrs';
+import type { GetArticlesQueryDto, MultipleArticlesDto } from '../../contracts';
+
+export class GetArticlesQuery extends Query<MultipleArticlesDto> {
+  constructor(
+    public readonly params: GetArticlesQueryDto,
+    public readonly currentUserId?: number,
+  ) {
+    super();
+  }
 }
 ```
 
 ```typescript
 // Recommended: QueryHandler only retrieves data
-// queries/get-article-list/get-article-list.handler.ts
-@QueryHandler(GetArticleListQuery)
-export class GetArticleListHandler implements IQueryHandler<GetArticleListQuery> {
+// queries/get-articles/get-articles.handler.ts
+@QueryHandler(GetArticlesQuery)
+export class GetArticlesHandler implements IQueryHandler<GetArticlesQuery> {
   constructor(private readonly articleListService: ArticleListService) {}
 
-  async execute(): Promise<ArticleListDto> {
-    return await this.articleListService.getArticleList();
+  async execute(query: GetArticlesQuery) {
+    // Return type is inferred from Query<MultipleArticlesDto>, so it automatically follows if the type changes
+    return await this.articleListService.getArticles(query.params, query.currentUserId);
   }
 }
 ```
@@ -457,13 +466,18 @@ export class GetArticleListHandler implements IQueryHandler<GetArticleListQuery>
 Performs operations that modify state.
 
 ```typescript
-// Recommended: Commands represent state-modifying operations
+// Recommended: Extend Command<T> for automatic type inference
 // commands/create-article/create-article.command.ts
-export class CreateArticleCommand {
+import { Command } from '@nestjs/cqrs';
+import type { CreateArticleRequestDto, SingleArticleDto } from '../../contracts';
+
+export class CreateArticleCommand extends Command<SingleArticleDto> {
   constructor(
-    public readonly title: string,
-    public readonly content: string,
-  ) {}
+    public readonly request: CreateArticleRequestDto,
+    public readonly currentUserId: number,
+  ) {
+    super();
+  }
 }
 ```
 
@@ -472,13 +486,97 @@ export class CreateArticleCommand {
 // commands/create-article/create-article.handler.ts
 @CommandHandler(CreateArticleCommand)
 export class CreateArticleHandler implements ICommandHandler<CreateArticleCommand> {
-  constructor(private readonly articleService: ArticleService) {}
+  constructor(private readonly articleService: ArticleEditService) {}
 
-  async execute(command: CreateArticleCommand): Promise<void> {
-    await this.articleService.createArticle(command.title, command.content);
+  async execute(command: CreateArticleCommand) {
+    // Return type is inferred from Command<SingleArticleDto>, so it automatically follows if the type changes
+    const article = await this.articleService.createArticle(command.request, command.currentUserId);
+    return { article };
   }
 }
 ```
+
+#### Type Inference
+
+By extending `Query<T>` or `Command<T>`, the return type of `QueryBus.execute()` or `CommandBus.execute()` is automatically inferred. This eliminates the need for type assertions (`as`).
+
+**Query Example:**
+
+```typescript
+// Recommended: Extend Query<T> for automatic type inference
+// queries/get-auth-user-info/get-auth-user-info.query.ts
+import { Query } from '@nestjs/cqrs';
+import type { UserInfo } from '../../contracts';
+
+export class GetAuthUserInfoQuery extends Query<UserInfo> {
+  constructor(public readonly payload: JwtPayload) {
+    super();
+  }
+}
+```
+
+```typescript
+// Usage in Controller (type inference works automatically)
+@Controller('auth')
+export class AuthController {
+  constructor(private readonly queryBus: QueryBus) {}
+
+  @Get('check-session')
+  async checkSession(): Promise<CheckSessionResponse> {
+    // user is automatically inferred as UserInfo type
+    const user = await this.queryBus.execute(new GetAuthUserInfoQuery(payload));
+    return { authenticated: true, user };
+  }
+}
+```
+
+**Handler Implementation:**
+
+In the Handler's `execute` method, you don't need to explicitly write the return type. When extending `Query<T>`, TypeScript's type inference automatically infers the correct type.
+
+```typescript
+// Recommended: Don't explicitly type the Handler's return value (let type inference handle it)
+// queries/get-auth-user-info/get-auth-user-info.handler.ts
+@QueryHandler(GetAuthUserInfoQuery)
+export class GetAuthUserInfoHandler implements IQueryHandler<GetAuthUserInfoQuery> {
+  constructor(private readonly service: AuthService) {}
+
+  async execute(query: GetAuthUserInfoQuery) {
+    // By not explicitly typing the return value, it automatically follows if Query<UserInfo> type changes
+    const user = await this.service.findUserById(query.payload.id);
+    if (!user) {
+      throw new NotFoundError(ERROR_CODE.USER_NOT_FOUND);
+    }
+    return toUserInfo(user);
+  }
+}
+```
+
+**Command Example:**
+
+```typescript
+// Recommended: Extend Command<T> for automatic type inference
+// commands/create-article/create-article.command.ts
+import { Command } from '@nestjs/cqrs';
+import type { SingleArticleDto } from '../../contracts';
+
+export class CreateArticleCommand extends Command<SingleArticleDto> {
+  constructor(
+    public readonly request: CreateArticleRequestDto,
+    public readonly currentUserId: number,
+  ) {
+    super();
+  }
+}
+```
+
+**Benefits:**
+
+- No need for type assertions (`as`)
+- Improved type safety
+- IDE autocomplete works
+- Type errors can be detected at compile time
+- By not explicitly typing the Handler's return value, it automatically follows if the Query type changes (DRY principle)
 
 ### Controller Usage
 

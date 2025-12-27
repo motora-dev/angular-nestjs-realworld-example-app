@@ -432,22 +432,31 @@ CQRS（Command Query Responsibility Segregation）パターンにより、読み
 データの取得のみを行い、状態を変更しません。
 
 ```typescript
-// Recommended: Query does not change state
-// queries/get-article-list/get-article-list.query.ts
-export class GetArticleListQuery {
-  public constructor() {}
+// Recommended: Extend Query<T> for automatic type inference
+// queries/get-articles/get-articles.query.ts
+import { Query } from '@nestjs/cqrs';
+import type { GetArticlesQueryDto, MultipleArticlesDto } from '../../contracts';
+
+export class GetArticlesQuery extends Query<MultipleArticlesDto> {
+  constructor(
+    public readonly params: GetArticlesQueryDto,
+    public readonly currentUserId?: number,
+  ) {
+    super();
+  }
 }
 ```
 
 ```typescript
 // Recommended: QueryHandler only retrieves data
-// queries/get-article-list/get-article-list.handler.ts
-@QueryHandler(GetArticleListQuery)
-export class GetArticleListHandler implements IQueryHandler<GetArticleListQuery> {
+// queries/get-articles/get-articles.handler.ts
+@QueryHandler(GetArticlesQuery)
+export class GetArticlesHandler implements IQueryHandler<GetArticlesQuery> {
   constructor(private readonly articleListService: ArticleListService) {}
 
-  async execute(): Promise<ArticleListDto> {
-    return await this.articleListService.getArticleList();
+  async execute(query: GetArticlesQuery) {
+    // 戻り値型を明示しないことで、Query<MultipleArticlesDto> の型が変われば自動で追従
+    return await this.articleListService.getArticles(query.params, query.currentUserId);
   }
 }
 ```
@@ -457,13 +466,18 @@ export class GetArticleListHandler implements IQueryHandler<GetArticleListQuery>
 状態を変更する操作を行います。
 
 ```typescript
-// Recommended: Command represents an operation that changes state
+// Recommended: Extend Command<T> for automatic type inference
 // commands/create-article/create-article.command.ts
-export class CreateArticleCommand {
+import { Command } from '@nestjs/cqrs';
+import type { CreateArticleRequestDto, SingleArticleDto } from '../../contracts';
+
+export class CreateArticleCommand extends Command<SingleArticleDto> {
   constructor(
-    public readonly title: string,
-    public readonly content: string,
-  ) {}
+    public readonly request: CreateArticleRequestDto,
+    public readonly currentUserId: number,
+  ) {
+    super();
+  }
 }
 ```
 
@@ -472,13 +486,97 @@ export class CreateArticleCommand {
 // commands/create-article/create-article.handler.ts
 @CommandHandler(CreateArticleCommand)
 export class CreateArticleHandler implements ICommandHandler<CreateArticleCommand> {
-  constructor(private readonly articleService: ArticleService) {}
+  constructor(private readonly articleService: ArticleEditService) {}
 
-  async execute(command: CreateArticleCommand): Promise<void> {
-    await this.articleService.createArticle(command.title, command.content);
+  async execute(command: CreateArticleCommand) {
+    // 戻り値型を明示しないことで、Command<SingleArticleDto> の型が変われば自動で追従
+    const article = await this.articleService.createArticle(command.request, command.currentUserId);
+    return { article };
   }
 }
 ```
+
+#### 型推論（Type Inference）
+
+`Query<T>` または `Command<T>` を継承することで、`QueryBus.execute()` や `CommandBus.execute()` の戻り値の型が自動的に推論されます。これにより、型アサーション（`as`）が不要になります。
+
+**Query の例:**
+
+```typescript
+// Recommended: Extend Query<T> for automatic type inference
+// queries/get-auth-user-info/get-auth-user-info.query.ts
+import { Query } from '@nestjs/cqrs';
+import type { UserInfo } from '../../contracts';
+
+export class GetAuthUserInfoQuery extends Query<UserInfo> {
+  constructor(public readonly payload: JwtPayload) {
+    super();
+  }
+}
+```
+
+```typescript
+// Controller での使用（型推論が自動的に効く）
+@Controller('auth')
+export class AuthController {
+  constructor(private readonly queryBus: QueryBus) {}
+
+  @Get('check-session')
+  async checkSession(): Promise<CheckSessionResponse> {
+    // user は自動的に UserInfo 型として推論される
+    const user = await this.queryBus.execute(new GetAuthUserInfoQuery(payload));
+    return { authenticated: true, user };
+  }
+}
+```
+
+**Handler での実装:**
+
+Handler の `execute` メソッドでは、戻り値の型を明示的に書く必要はありません。`Query<T>` を継承している場合、TypeScript の型推論により自動的に正しい型が推論されます。
+
+```typescript
+// Recommended: Handler の戻り値型は明示しない（型推論に任せる）
+// queries/get-auth-user-info/get-auth-user-info.handler.ts
+@QueryHandler(GetAuthUserInfoQuery)
+export class GetAuthUserInfoHandler implements IQueryHandler<GetAuthUserInfoQuery> {
+  constructor(private readonly service: AuthService) {}
+
+  async execute(query: GetAuthUserInfoQuery) {
+    // 戻り値型を明示しないことで、Query<UserInfo> の型が変われば自動で追従
+    const user = await this.service.findUserById(query.payload.id);
+    if (!user) {
+      throw new NotFoundError(ERROR_CODE.USER_NOT_FOUND);
+    }
+    return toUserInfo(user);
+  }
+}
+```
+
+**Command の例:**
+
+```typescript
+// Recommended: Extend Command<T> for automatic type inference
+// commands/create-article/create-article.command.ts
+import { Command } from '@nestjs/cqrs';
+import type { ArticleResponse } from '../../contracts';
+
+export class CreateArticleCommand extends Command<ArticleResponse> {
+  constructor(
+    public readonly title: string,
+    public readonly content: string,
+  ) {
+    super();
+  }
+}
+```
+
+**メリット:**
+
+- 型アサーション（`as`）が不要
+- 型安全性が向上
+- IDE の自動補完が効く
+- コンパイル時に型エラーを検出可能
+- Handler の戻り値型を明示しないことで、Query の型が変われば自動で追従（DRY原則）
 
 ### Controller での使用
 
