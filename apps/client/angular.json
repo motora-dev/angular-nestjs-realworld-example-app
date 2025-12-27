@@ -111,6 +111,12 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "development-ja": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "localize": ["ja"]
             }
           },
           "defaultConfiguration": "production"
@@ -123,6 +129,9 @@
             },
             "development": {
               "buildTarget": "client:build:development"
+            },
+            "development-ja": {
+              "buildTarget": "client:build:development-ja"
             }
           },
           "defaultConfiguration": "development"
