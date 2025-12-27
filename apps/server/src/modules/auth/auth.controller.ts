@@ -105,6 +105,7 @@ export class AuthController {
       secure: this.isProd,
       sameSite: 'lax',
       path: '/',
+      domain: this.configService.get<string>('COOKIE_DOMAIN'),
     });
 
     res.clearCookie('refresh-token', {
@@ -112,6 +113,7 @@ export class AuthController {
       secure: this.isProd,
       sameSite: 'lax',
       path: '/api/auth',
+      domain: this.configService.get<string>('COOKIE_DOMAIN'),
     });
 
     res.clearCookie('pending-registration', {
@@ -119,6 +121,7 @@ export class AuthController {
       secure: this.isProd,
       sameSite: 'lax',
       path: '/',
+      domain: this.configService.get<string>('COOKIE_DOMAIN'),
     });
   }
 
@@ -242,6 +245,7 @@ export class AuthController {
         sameSite: 'lax',
         path: '/',
         maxAge: 60 * 60 * 1000, // 1 hour
+        domain: this.configService.get<string>('COOKIE_DOMAIN'),
       });
       res.redirect(`${clientUrl}/register`);
     }
@@ -276,6 +280,7 @@ export class AuthController {
       secure: this.isProd,
       sameSite: 'lax',
       path: '/',
+      domain: this.configService.get<string>('COOKIE_DOMAIN'),
     });
 
     // Set auth cookies
