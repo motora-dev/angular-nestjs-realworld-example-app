@@ -42,9 +42,10 @@ import {
   UserResponse,
   CheckSessionResponse,
   PendingRegistrationResponse,
+  UserInfo,
 } from './contracts';
 import { GoogleAuthGuard } from './guards';
-import { GetCurrentAuthUserQuery, GetPendingRegistrationQuery } from './queries';
+import { GetAuthUserInfoQuery, GetAuthUserQuery, GetPendingRegistrationQuery } from './queries';
 import { AuthService } from './services';
 
 import type { ProcessOAuthCallbackResult } from './commands/process-oauth-callback/process-oauth-callback.handler';
@@ -144,8 +145,8 @@ export class AuthController {
     if (accessToken) {
       const payload = this.authService.verifyAccessToken(accessToken);
       if (payload) {
-        const user = await this.queryBus.execute(new GetCurrentAuthUserQuery(payload));
-        return { authenticated: true, user: user.user };
+        const userInfo = await this.queryBus.execute<UserInfo>(new GetAuthUserInfoQuery(payload));
+        return { authenticated: true, user: userInfo };
       }
     }
 
@@ -153,14 +154,14 @@ export class AuthController {
     if (refreshToken) {
       const user = await this.authService.validateRefreshToken(refreshToken);
       if (user) {
-        const userResponse = await this.queryBus.execute(
-          new GetCurrentAuthUserQuery({
+        const userInfo = await this.queryBus.execute(
+          new GetAuthUserInfoQuery({
             id: user.id,
             publicId: user.publicId,
             username: user.username,
           }),
         );
-        return { authenticated: true, user: userResponse.user };
+        return { authenticated: true, user: userInfo };
       }
     }
 
@@ -369,6 +370,6 @@ export class AuthController {
   @Get('me')
   @HttpCode(HttpStatus.OK)
   async getCurrentUser(@CurrentUser() user: CurrentUserType): Promise<UserResponse> {
-    return this.queryBus.execute(new GetCurrentAuthUserQuery(user));
+    return this.queryBus.execute(new GetAuthUserQuery(user));
   }
 }

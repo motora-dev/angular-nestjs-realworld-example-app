@@ -183,7 +183,17 @@ app.get('/favicon.ico', (req, res) => {
  * Redirect root path to detected locale
  * e.g., / -> /en or /ja based on Accept-Language header
  */
-app.get('/', (req, res) => {
+app.get('/', (req, res, next) => {
+  // Skip redirect when running via ng serve (Angular CLI dev server)
+  const isNgServe = !isMainModule(import.meta.url) && !environment.production;
+
+  if (isNgServe) {
+    // In ng serve, treat root path as /en and continue to next middleware
+    req.url = '/en' + (req.url === '/' ? '' : req.url);
+    next();
+    return;
+  }
+
   const locale = getLocale(req);
   res.redirect(302, `/${locale}`);
 });
