@@ -19,7 +19,7 @@ export class CookieConsentService {
   private readonly platformId = inject(PLATFORM_ID);
 
   private readonly _consent = signal<ConsentStatus>(null);
-  private readonly _isLoading = signal(true);
+  private readonly _isLoading = signal(false);
 
   readonly consent = this._consent.asReadonly();
   readonly isLoading = this._isLoading.asReadonly();

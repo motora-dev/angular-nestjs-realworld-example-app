@@ -168,6 +168,27 @@ const isr = isrByLocale[defaultLocale] || null;
 app.use(express.json());
 
 /**
+ * Serve favicon.ico from the default locale folder
+ */
+app.get('/favicon.ico', (req, res) => {
+  const faviconPath = join(browserDistFolder, defaultLocale, 'favicon.ico');
+  if (existsSync(faviconPath)) {
+    res.sendFile(faviconPath);
+  } else {
+    res.status(404).send('Not Found');
+  }
+});
+
+/**
+ * Redirect root path to detected locale
+ * e.g., / -> /en or /ja based on Accept-Language header
+ */
+app.get('/', (req, res) => {
+  const locale = getLocale(req);
+  res.redirect(302, `/${locale}`);
+});
+
+/**
  * robots.txt endpoint
  */
 app.get('/robots.txt', (req, res) => {

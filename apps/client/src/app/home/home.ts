@@ -1,6 +1,6 @@
+import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { RxLet } from '@rx-angular/template/let';
 import { filter, take } from 'rxjs';
 
 import { ArticleListConfig } from '$domains/article';
@@ -13,7 +13,7 @@ import { TagListComponent } from './components/tag-list/tag-list';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RxLet, ArticleListComponent, TagListComponent],
+  imports: [AsyncPipe, ArticleListComponent, TagListComponent],
   providers: [HomeFacade],
   templateUrl: './home.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

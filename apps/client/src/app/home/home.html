@@ -1,15 +1,13 @@
 <div class="min-h-screen bg-gray-50">
   <!-- Banner for non-authenticated users -->
-  <ng-container *rxLet="isAuthenticated$; let isAuth">
-    @if (!isAuth) {
-    <div class="bg-emerald-700 py-8 text-center text-white shadow-inner">
-      <div class="container mx-auto px-4">
-        <h1 class="mb-2 text-5xl font-bold">conduit</h1>
-        <p class="text-xl" i18n="@@home.tagline">A place to share your Angular knowledge.</p>
-      </div>
+  @if ((isAuthenticated$ | async) !== true) {
+  <div class="bg-emerald-700 py-8 text-center text-white shadow-inner">
+    <div class="container mx-auto px-4">
+      <h1 class="mb-2 text-5xl font-bold">conduit</h1>
+      <p class="text-xl" i18n="@@home.tagline">A place to share your Angular knowledge.</p>
     </div>
-    }
-  </ng-container>
+  </div>
+  }
 
   <div class="container mx-auto px-4 py-8">
     <div class="flex flex-col gap-8 lg:flex-row">
@@ -18,21 +16,19 @@
         <!-- Feed Toggle -->
         <div class="mb-6 border-b border-gray-200">
           <nav class="-mb-px flex gap-4">
-            <ng-container *rxLet="isAuthenticated$; let isAuth">
-              @if (isAuth) {
-              <button
-                class="border-b-2 px-4 py-2 text-sm font-medium transition-colors"
-                [class.border-emerald-700]="listConfig().type === 'feed'"
-                [class.text-emerald-700]="listConfig().type === 'feed'"
-                [class.border-transparent]="listConfig().type !== 'feed'"
-                [class.text-gray-600]="listConfig().type !== 'feed'"
-                [class.hover:text-gray-700]="listConfig().type !== 'feed'"
-                (click)="setListTo('feed')"
-              >
-                <ng-container i18n="@@home.yourFeed">Your Feed</ng-container>
-              </button>
-              }
-            </ng-container>
+            @if ((isAuthenticated$ | async) === true) {
+            <button
+              class="border-b-2 px-4 py-2 text-sm font-medium transition-colors"
+              [class.border-emerald-700]="listConfig().type === 'feed'"
+              [class.text-emerald-700]="listConfig().type === 'feed'"
+              [class.border-transparent]="listConfig().type !== 'feed'"
+              [class.text-gray-600]="listConfig().type !== 'feed'"
+              [class.hover:text-gray-700]="listConfig().type !== 'feed'"
+              (click)="setListTo('feed')"
+            >
+              <ng-container i18n="@@home.yourFeed">Your Feed</ng-container>
+            </button>
+            }
             <button
               class="border-b-2 px-4 py-2 text-sm font-medium transition-colors"
               [class.border-emerald-700]="listConfig().type === 'all' && !listConfig().filters.tag"
@@ -53,16 +49,12 @@
         </div>
 
         <!-- Article List -->
-        <ng-container *rxLet="articles$; let articles">
-          <app-article-list [articles]="articles" />
-        </ng-container>
+        <app-article-list [articles]="(articles$ | async) ?? []" />
       </div>
 
       <!-- Sidebar -->
       <div class="w-full lg:w-80">
-        <ng-container *rxLet="tags$; let tags">
-          <app-tag-list [tags]="tags" (tagClick)="setListTo('all', { tag: $event })" />
-        </ng-container>
+        <app-tag-list [tags]="(tags$ | async) ?? []" (tagClick)="setListTo('all', { tag: $event })" />
       </div>
     </div>
   </div>
