@@ -16,6 +16,8 @@
     "lint:fix": "turbo run lint:fix",
     "tsc": "turbo run tsc",
     "test": "turbo run test",
+    "test:unit": "turbo run test:unit",
+    "test:e2e": "turbo run test:e2e",
     "test:coverage": "turbo run test:coverage",
     "check-all": "pnpm clean:cache && turbo run format lint build tsc test"
   },

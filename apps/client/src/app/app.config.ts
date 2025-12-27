@@ -1,20 +1,12 @@
-import {
-  HttpClient,
-  provideHttpClient,
-  withFetch,
-  withInterceptors,
-  withXsrfConfiguration,
-} from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors, withXsrfConfiguration } from '@angular/common/http';
 import {
   ApplicationConfig,
   ErrorHandler,
-  importProvidersFrom,
   provideBrowserGlobalErrorListeners,
   provideZonelessChangeDetection,
 } from '@angular/core';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { PreloadAllModules, provideRouter, withPreloading } from '@angular/router';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { withNgxsFormPlugin } from '@ngxs/form-plugin';
 import { provideStore } from '@ngxs/store';
 
@@ -30,7 +22,6 @@ import { AuthState } from '$modules/auth/store';
 import { ErrorState } from '$modules/error/store';
 import { SnackbarState } from '$modules/snackbar/store';
 import { SpinnerState } from '$modules/spinner/store';
-import { MultiTranslateHttpLoader } from '$shared/i18n';
 import { API_URL } from '$shared/lib';
 import { routes } from './app.routes';
 
@@ -38,16 +29,6 @@ export const appConfig: ApplicationConfig = {
   providers: [
     { provide: API_URL, useValue: environment.apiUrl },
     { provide: ErrorHandler, useClass: ClientErrorHandler },
-    importProvidersFrom(
-      TranslateModule.forRoot({
-        fallbackLang: 'en',
-        loader: {
-          provide: TranslateLoader,
-          useFactory: (http: HttpClient) => new MultiTranslateHttpLoader(http),
-          deps: [HttpClient],
-        },
-      }),
-    ),
     provideBrowserGlobalErrorListeners(),
     provideClientHydration(withEventReplay()),
     provideHttpClient(

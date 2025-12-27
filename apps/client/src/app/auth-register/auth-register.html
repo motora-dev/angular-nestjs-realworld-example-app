@@ -2,8 +2,10 @@
   <div class="w-full max-w-md rounded-xl border border-border bg-background p-8 shadow-lg">
     <!-- Header -->
     <div class="mb-8 text-center">
-      <h1 class="text-2xl font-bold text-foreground">{{ 'register.title' | translate }}</h1>
-      <p class="mt-2 text-muted-foreground">{{ 'register.description' | translate }}</p>
+      <h1 class="text-2xl font-bold text-foreground" i18n="@@register.title">Sign up</h1>
+      <p class="mt-2 text-muted-foreground" i18n="@@register.description">
+        Welcome to Conduit! Please set your username.
+      </p>
     </div>
 
     <!-- Email Display (read-only) -->
@@ -11,30 +13,40 @@
       @if (email) {
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
         <div class="mb-6">
-          <span class="mb-2 block text-sm font-medium text-foreground"> {{ 'register.email' | translate }} </span>
+          <span class="mb-2 block text-sm font-medium text-foreground" i18n="@@register.email">Email</span>
           <div class="rounded-lg border border-border bg-muted px-4 py-3 text-muted-foreground">{{ email }}</div>
         </div>
 
         <!-- Username Input -->
         <div class="mb-6">
-          <label for="username" class="mb-2 block text-sm font-medium text-foreground">
-            {{ 'register.username' | translate }}
+          <label for="username" class="mb-2 block text-sm font-medium text-foreground" i18n="@@register.username">
+            Username
           </label>
           <input
             id="username"
             type="text"
             formControlName="username"
-            placeholder="{{ 'register.usernamePlaceholder' | translate }}"
+            i18n-placeholder="@@register.usernamePlaceholder"
+            placeholder="Enter username"
             class="w-full rounded-lg border border-border bg-background px-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring"
             [class.border-destructive]="registerForm.controls.username.touched && registerForm.controls.username.invalid"
           />
-          <p class="mt-1 text-sm text-muted-foreground">{{ 'register.usernameHint' | translate }}</p>
+          <p class="mt-1 text-sm text-muted-foreground" i18n="@@register.usernameHint">
+            3+ chars, alphanumeric and underscore only
+          </p>
           @if (registerForm.controls.username.touched && registerForm.controls.username.errors) {
           <p class="mt-1 text-sm text-destructive">
-            @if (registerForm.controls.username.errors['required']) { {{ 'register.errors.usernameRequired' | translate
-            }} } @else if (registerForm.controls.username.errors['minlength']) { {{ 'register.errors.usernameMinLength'
-            | translate }} } @else if (registerForm.controls.username.errors['pattern']) { {{
-            'register.errors.usernamePattern' | translate }} }
+            @if (registerForm.controls.username.errors['required']) {
+            <ng-container i18n="@@register.errors.usernameRequired">Username is required</ng-container>
+            } @else if (registerForm.controls.username.errors['minlength']) {
+            <ng-container i18n="@@register.errors.usernameMinLength"
+              >Username must be at least 3 characters</ng-container
+            >
+            } @else if (registerForm.controls.username.errors['pattern']) {
+            <ng-container i18n="@@register.errors.usernamePattern"
+              >Username can only contain letters, numbers, and underscores</ng-container
+            >
+            }
           </p>
           }
         </div>
@@ -47,10 +59,12 @@
               formControlName="agreeToTerms"
               class="h-4 w-4 rounded border-border text-primary focus:ring-ring"
             />
-            <span class="text-sm text-foreground">{{ 'register.agreeToTerms' | translate }}</span>
+            <span class="text-sm text-foreground" i18n="@@register.agreeToTerms">I agree to the Terms of Service</span>
           </label>
           @if (registerForm.controls.agreeToTerms.touched && registerForm.controls.agreeToTerms.errors) {
-          <p class="mt-1 text-sm text-destructive">{{ 'register.errors.termsRequired' | translate }}</p>
+          <p class="mt-1 text-sm text-destructive" i18n="@@register.errors.termsRequired">
+            You must agree to the Terms of Service
+          </p>
           }
         </div>
 
@@ -60,22 +74,27 @@
           [disabled]="isLoading$ | push"
           class="w-full rounded-lg bg-primary px-4 py-3 font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          @if (isLoading$ | push) { {{ 'register.submitting' | translate }} } @else { {{ 'register.submit' | translate
-          }} }
+          @if (isLoading$ | push) {
+          <ng-container i18n="@@register.submitting">Signing up...</ng-container>
+          } @else {
+          <ng-container i18n="@@register.submit">Sign up</ng-container>
+          }
         </button>
       </form>
 
       <!-- Link to Login -->
       <p class="mt-6 text-center text-sm text-muted-foreground">
-        {{ 'register.alreadyHaveAccount' | translate }}
-        <a routerLink="/login" class="font-medium text-primary hover:underline"> {{ 'register.login' | translate }} </a>
+        <ng-container i18n="@@register.alreadyHaveAccount">Have an account?</ng-container>
+        <a routerLink="/login" class="font-medium text-primary hover:underline" i18n="@@register.login">Sign in</a>
       </p>
       } @else {
       <!-- No pending registration -->
       <div class="text-center">
-        <p class="mb-4 text-muted-foreground">{{ 'register.noPendingRegistration' | translate }}</p>
-        <a routerLink="/login" class="font-medium text-primary hover:underline">
-          {{ 'register.goToLogin' | translate }}
+        <p class="mb-4 text-muted-foreground" i18n="@@register.noPendingRegistration">
+          No pending registration found. Please restart from login.
+        </p>
+        <a routerLink="/login" class="font-medium text-primary hover:underline" i18n="@@register.goToLogin">
+          Go to Login
         </a>
       </div>
       }

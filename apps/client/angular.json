@@ -13,6 +13,12 @@
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
+      "i18n": {
+        "sourceLocale": "en",
+        "locales": {
+          "ja": "locale/messages.ja.xlf"
+        }
+      },
       "architect": {
         "build": {
           "builder": "@angular/build:application",
@@ -31,10 +37,12 @@
             "ssr": {
               "entry": "src/server.ts"
             },
-            "allowedCommonJsDependencies": ["markdown-it-texmath"]
+            "allowedCommonJsDependencies": ["markdown-it-texmath"],
+            "polyfills": ["@angular/localize/init"]
           },
           "configurations": {
             "production": {
+              "localize": true,
               "fileReplacements": [
                 {
                   "replace": "environments/environment.ts",
@@ -56,6 +64,7 @@
               "outputHashing": "all"
             },
             "develop": {
+              "localize": true,
               "fileReplacements": [
                 {
                   "replace": "environments/environment.ts",
@@ -77,6 +86,7 @@
               "outputHashing": "all"
             },
             "preview": {
+              "localize": true,
               "fileReplacements": [
                 {
                   "replace": "environments/environment.ts",
@@ -101,6 +111,12 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "development-ja": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "localize": ["ja"]
             }
           },
           "defaultConfiguration": "production"
@@ -113,6 +129,9 @@
             },
             "development": {
               "buildTarget": "client:build:development"
+            },
+            "development-ja": {
+              "buildTarget": "client:build:development-ja"
             }
           },
           "defaultConfiguration": "development"
@@ -120,19 +139,15 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "coverageInclude": ["src/**/*.ts"],
-            "coverageExclude": [
-              "src/**/*.config.server.ts",
-              "src/**/*.config.ts",
-              "src/**/*.routes.server.ts",
-              "src/**/*.routes.ts",
-              "src/**/*.spec.ts",
-              "src/**/*.stories.ts",
-              "src/**/index.ts",
-              "src/main.server.ts",
-              "src/main.ts",
-              "src/server.ts"
-            ]
+            "runnerConfig": "vitest.config.ts"
+          },
+          "configurations": {
+            "unit": {
+              "include": ["src/**/*.test.ts"]
+            },
+            "e2e": {
+              "include": ["src/test/**/*.spec.ts"]
+            }
           }
         },
         "storybook": {

@@ -70,6 +70,7 @@ export class GoogleAuthGuard implements CanActivate {
           sameSite: 'lax',
           path: '/',
           maxAge: this.authService.getAccessTokenExpiryMs(),
+          domain: this.configService.get<string>('COOKIE_DOMAIN'),
         });
 
         // Attach user to request

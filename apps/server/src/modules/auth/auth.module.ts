@@ -11,7 +11,7 @@ import {
   RevokeRefreshTokenHandler,
 } from './commands';
 import { GoogleAuthGuard } from './guards';
-import { GetCurrentAuthUserHandler, GetPendingRegistrationHandler } from './queries';
+import { GetAuthUserHandler, GetAuthUserInfoHandler, GetPendingRegistrationHandler } from './queries';
 import { AuthRepository } from './repositories';
 import { AuthService } from './services';
 
@@ -22,7 +22,7 @@ const CommandHandlers = [
   RevokeRefreshTokenHandler,
 ];
 
-const QueryHandlers = [GetCurrentAuthUserHandler, GetPendingRegistrationHandler];
+const QueryHandlers = [GetAuthUserHandler, GetAuthUserInfoHandler, GetPendingRegistrationHandler];
 
 @Global()
 @Module({

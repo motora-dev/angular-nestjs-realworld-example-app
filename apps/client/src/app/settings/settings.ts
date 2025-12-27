@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { TranslatePipe } from '@ngx-translate/core';
 
 import { SettingsFacade, SettingsFormModel } from '$domains/settings';
 import { AuthFacade } from '$modules/auth';
@@ -9,7 +8,7 @@ import { SettingsFormComponent } from './components/settings-form';
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [TranslatePipe, SettingsFormComponent],
+  imports: [SettingsFormComponent],
   templateUrl: './settings.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

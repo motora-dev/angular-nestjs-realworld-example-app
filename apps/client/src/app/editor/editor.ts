@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TranslatePipe } from '@ngx-translate/core';
 
 import { EditorArticle, EditorFacade } from '$domains/editor';
 import { EditorFormComponent, EditorFormSubmitEvent } from './components/editor-form';
@@ -8,7 +7,7 @@ import { EditorFormComponent, EditorFormSubmitEvent } from './components/editor-
 @Component({
   selector: 'app-editor',
   standalone: true,
-  imports: [TranslatePipe, EditorFormComponent],
+  imports: [EditorFormComponent],
   templateUrl: './editor.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { TranslatePipe } from '@ngx-translate/core';
 import { RxLet } from '@rx-angular/template/let';
 import { take } from 'rxjs';
 
@@ -13,7 +12,7 @@ import { UserInfoComponent } from './components/user-info/user-info';
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [RxLet, RouterLink, TranslatePipe, UserInfoComponent],
+  imports: [RxLet, RouterLink, UserInfoComponent],
   providers: [ProfileFacade, HomeFacade],
   templateUrl: './profile.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

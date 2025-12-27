@@ -45,6 +45,9 @@ async function bootstrap() {
   // 32文字の秘密鍵を生成（元のシークレットをパディング）
   const csrfSecret = csrfSecretRaw.padEnd(32, '0').substring(0, 32);
 
+  // Cross-subdomain cookie sharing (e.g., '.motora-dev.com' for api.motora-dev.com and realworld.motora-dev.com)
+  const cookieDomain = config.get('COOKIE_DOMAIN');
+
   const { doubleCsrfProtection, generateCsrfToken } = doubleCsrf({
     getSecret: () => csrfSecret,
     // Use csrf-session-id cookie as session identifier (set below if not present)
@@ -55,6 +58,7 @@ async function bootstrap() {
       sameSite: 'lax',
       secure: isProd,
       path: '/',
+      ...(cookieDomain && { domain: cookieDomain }),
     },
     ignoredMethods: ['GET', 'HEAD', 'OPTIONS'],
     getCsrfTokenFromRequest: (req) => {
@@ -74,6 +78,7 @@ async function bootstrap() {
         secure: isProd,
         path: '/',
         maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year
+        ...(cookieDomain && { domain: cookieDomain }),
       });
       req.cookies = req.cookies || {};
       req.cookies['csrf-session-id'] = csrfSessionId;

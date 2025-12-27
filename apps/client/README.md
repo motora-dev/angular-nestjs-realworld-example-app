@@ -417,7 +417,8 @@ import { InputFieldComponent } from '$components/fields';
 - Component: `{name}.ts` (single-file component)
 - Template: `{name}.html` (separate only when necessary)
 - Style: `{name}.css` (separate only when necessary)
-- Test: `{name}.spec.ts` or `{name}.test.ts`
+- Test (Unit): `{name}.test.ts` (under `src/`)
+- Test (E2E): `{name}.spec.ts` (under `src/test/`)
 
 ---
 
@@ -636,19 +637,29 @@ setArticle(ctx: StateContext<ArticleEditStateModel>, action: SetArticle) {
 
 This section explains the usage of reactive patterns like Signal, Observable, NGXS, and Reactive Forms.
 
-| Scope        | Technology                       | Purpose                          | Example                    |
-| ------------ | -------------------------------- | -------------------------------- | -------------------------- |
-| Local state  | **Signal**                       | Component internal               | `signal()`, `computed()`   |
-| Global state | **NGXS + `*rxLet`**              | Domain binding, large-scale data | `facade.data$` + `*rxLet`  |
-| Forms        | **Reactive Forms + form-plugin** | Validation + Store sync          | `ngxsForm`                 |
-| Templates    | **RxLet** (Don't use AsyncPipe)  | Observable rendering             | `*rxLet="data$; let data"` |
+| Scope        | Technology                       | Purpose                          | Example                       |
+| ------------ | -------------------------------- | -------------------------------- | ----------------------------- |
+| Local state  | **Signal**                       | Component internal               | `signal()`, `computed()`      |
+| Global state | **NGXS + AsyncPipe**             | Domain binding, large-scale data | `facade.data$` + `async` pipe |
+| Forms        | **Reactive Forms + form-plugin** | Validation + Store sync          | `ngxsForm`                    |
+| Templates    | **AsyncPipe**                    | Observable rendering             | `(data$ \| async)`            |
+
+### AsyncPipe vs RxLet Selection Criteria
+
+| Scenario                           | Recommended   | Reason                                                      |
+| ---------------------------------- | ------------- | ----------------------------------------------------------- |
+| SSR + Hydration (Page components)  | **AsyncPipe** | RxLet may cause CLS in SSR environments                     |
+| CSR only (Dialogs, Modals)         | **RxLet**     | No hydration needed, benefits from performance improvements |
+| Zone.js bypass for specific events | **RxUnpatch** | Bypass Zone.js for specific events only                     |
+
+> **Note**: RxLet automatically adds `ngSkipHydration` in SSR environments, which may cause SSR-rendered HTML to be completely re-rendered on the client, potentially resulting in layout shifts (CLS). Use `async` pipe for SSR page components.
 
 ### Usage Guidelines
 
 - **shared/ui/, components/**: Use Signal for internal implementation
-- **Domain integration**: NGXS Store + `*rxLet` to render Observables (refer to [State Management (NGXS)](#state-management-ngxs) section)
+- **Domain integration**: NGXS Store + `async` pipe to render Observables (refer to [State Management (NGXS)](#state-management-ngxs) section)
 - **Forms**: Validation with Reactive Forms, Store sync with @ngxs/form-plugin (refer to [Form Management](#form-management) section)
-- **Observables in templates**: Don't use `AsyncPipe`; always use `RxLet`
+- **Observables in templates**: Use `AsyncPipe` for SSR pages; `RxLet` is acceptable for CSR-only components
 
 ## Form Management
 
@@ -762,95 +773,172 @@ interface ArticleResponse {
 
 ## Internationalization (i18n)
 
-**Keywords**: `i18n`, `internationalization`, `TranslateModule`, `MultiTranslateHttpLoader`, `translation`
+**Keywords**: `i18n`, `internationalization`, `@angular/localize`, `$localize`, `XLIFF`, `build-time translation`
 
-This section explains internationalization implementation using `@ngx-translate/core`.
+This section explains build-time i18n implementation using `@angular/localize`.
 
 **Related Files**:
 
-- `apps/client/public/i18n/ui/*.json` - UI translation files
-- `apps/client/public/i18n/error/*.json` - Error translation files
-- `apps/client/src/shared/i18n/multi-translate-http-loader.ts` - Custom Loader implementation
+- `apps/client/public/i18n/ui/*.json` - UI translation source files
+- `apps/client/public/i18n/error/*.json` - Error translation source files
+- `apps/client/locale/messages.xlf` - Extracted messages (auto-generated)
+- `apps/client/locale/messages.ja.xlf` - Japanese translations (auto-generated)
+- `apps/client/scripts/merge-translations.ts` - JSON → XLF conversion script
 
-### Translation File Structure
+### Why @angular/localize?
 
-Translation files are split into `ui` (for screen display) and `error` (for error messages), merged during application load.
+| Comparison         | @angular/localize              | ngx-translate                        |
+| ------------------ | ------------------------------ | ------------------------------------ |
+| Translation timing | Build-time (compile-time)      | Runtime                              |
+| Bundle size        | Optimized per language         | Includes loaders for all languages   |
+| SSR performance    | ✅ Returns pre-translated HTML | ❌ Loads translations on client      |
+| Layout Shift       | ✅ None                        | ⚠️ May occur during translation load |
+
+**We adopted `@angular/localize` for SSR performance optimization.**
+
+### Translation Source File Structure
+
+Translations are managed in JSON files and converted to XLIFF format at build time.
 
 ```
-apps/client/public/i18n/
-├── error/
-│   ├── en.json
-│   └── ja.json
-└── ui/
-    ├── en.json
-    └── ja.json
+apps/client/
+├── public/i18n/           # Translation sources (manually edited)
+│   ├── error/
+│   │   ├── en.json
+│   │   └── ja.json
+│   └── ui/
+│       ├── en.json
+│       └── ja.json
+└── locale/                # Generated XLIFF (in .gitignore)
+    ├── messages.xlf       # Generated by ng extract-i18n
+    └── messages.ja.xlf    # Generated by merge-translations.ts
 ```
 
-### MultiTranslateHttpLoader
+### Template Usage
 
-`MultiTranslateHttpLoader` is a custom loader that fetches multiple translation files in parallel and merges them into a single translation object.
+#### i18n Attribute (Recommended)
+
+```html
+<!-- Static text -->
+<h1 i18n="@@home.title">Welcome to Conduit</h1>
+
+<!-- Attribute translation -->
+<input placeholder="Search..." i18n-placeholder="@@search.placeholder" />
+
+<!-- Button -->
+<button i18n="@@common.save">Save</button>
+```
+
+#### $localize Tag (In TypeScript)
 
 ```typescript
-// apps/client/src/shared/i18n/multi-translate-http-loader.ts
-export class MultiTranslateHttpLoader implements TranslateLoader {
-  constructor(private http: HttpClient) {}
+// In component
+const message = $localize`:@@error.unexpectedError:An unexpected error occurred`;
 
-  getTranslation(lang: string): Observable<TranslationObject> {
-    return forkJoin({
-      error: this.http.get<TranslationObject>(`/i18n/error/${lang}.json`),
-      ui: this.http.get<TranslationObject>(`/i18n/ui/${lang}.json`),
-    }).pipe(map(({ error, ui }) => ({ ...ui, ...error })));
+// In SEO service
+this.seoService.setPageMeta({
+  title: $localize`:@@seo.home.title:Home`,
+  description: $localize`:@@seo.home.description:A place to share your Angular knowledge.`,
+});
+```
+
+### i18n Workflow
+
+#### 1. Add Translation Key
+
+Add `i18n` attribute or `$localize` tag in template or TypeScript:
+
+```html
+<p i18n="@@article.readMore">Read more</p>
+```
+
+#### 2. Add Translation to JSON Files
+
+```json
+// public/i18n/ui/en.json
+{
+  "article": {
+    "readMore": "Read more"
+  }
+}
+
+// public/i18n/ui/ja.json
+{
+  "article": {
+    "readMore": "続きを読む"
   }
 }
 ```
 
-### Configuration and Initialization
+#### 3. Auto-Conversion at Build Time
 
-#### Application Configuration
-
-Configure `TranslateModule` in `app.config.ts` and apply the custom loader.
-
-```typescript
-// apps/client/src/app/app.config.ts
-export const appConfig: ApplicationConfig = {
-  providers: [
-    // ...
-    importProvidersFrom(
-      TranslateModule.forRoot({
-        fallbackLang: 'en',
-        loader: {
-          provide: TranslateLoader,
-          useFactory: (http: HttpClient) => new MultiTranslateHttpLoader(http),
-          deps: [HttpClient],
-        },
-      }),
-    ),
-    // ...
-  ],
-};
+```bash
+# Automatically runs on prebuild / prestart:ssr
+pnpm i18n
+# ↓ Internal processes
+# 1. ng extract-i18n → generates locale/messages.xlf
+# 2. scripts/merge-translations.ts → generates locale/messages.ja.xlf
 ```
 
-#### Language Initialization
+### Locale Selection in SSR
 
-In `app.ts`, detect browser language settings and apply appropriate language (Japanese or English).
-Since browser APIs aren't accessible during Server-Side Rendering (SSR), execute only on client side.
+Serves appropriate locale build based on `Accept-Language` header.
 
 ```typescript
-// apps/client/src/app/app.ts
-export class App {
-  private readonly translateService = inject(TranslateService);
+// apps/client/src/server.ts
+import acceptLanguage from 'accept-language';
 
-  constructor() {
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
+acceptLanguage.languages(['en', 'ja']);
+
+app.use((req, res, next) => {
+  const lang = acceptLanguage.get(req.headers['accept-language']) || 'en';
+  const localeBrowserDistFolder = join(browserDistFolder, lang);
+  // Serve pre-built HTML for the detected language
+});
+```
+
+**Result**: Pre-translated HTML is immediately returned based on user's browser language setting, preventing Layout Shift.
+
+### angular.json Configuration
+
+```json
+{
+  "i18n": {
+    "sourceLocale": "en",
+    "locales": {
+      "ja": "locale/messages.ja.xlf"
     }
-
-    // Load translation based on browser language setting
-    const browserLang = this.translateService.getBrowserLang();
-    const langToUse = browserLang === 'ja' ? 'ja' : 'en';
-    this.translateService.use(langToUse).subscribe();
+  },
+  "architect": {
+    "build": {
+      "options": {
+        "polyfills": ["@angular/localize/init"]
+      },
+      "configurations": {
+        "production": {
+          "localize": true
+        }
+      }
+    }
   }
 }
+```
+
+### Missing Translation Detection
+
+Tests verify translation key synchronization:
+
+```bash
+pnpm test
+# translation-sync.spec.ts checks all keys have translations
+```
+
+```typescript
+// apps/client/src/test/shared/i18n/translation-sync.spec.ts
+it('should have all i18n keys defined in ja.json', () => {
+  const missingKeys = xlfIds.filter((id) => !getTranslation(id, jaTranslations));
+  expect(missingKeys).toEqual([]);
+});
 ```
 
 ## UI Architecture
@@ -1215,15 +1303,26 @@ export class ConsentService {
 
 ## Testing Strategy
 
-**Keywords**: `testing`, `Vitest`, `@testing-library/angular`, `coverage`
+**Keywords**: `testing`, `Vitest`, `@testing-library/angular`, `coverage`, `Unit`, `E2E`
 
-This section explains component testing execution methods and role division with Storybook.
+This section explains test execution methods and configuration.
 
-Component tests run with **Vitest + @testing-library/angular**.
+### Test Types and Placement
+
+Tests are separated into **Unit tests** and **E2E tests**.
+
+| Type       | Location                | Filename    | Purpose                       |
+| ---------- | ----------------------- | ----------- | ----------------------------- |
+| Unit tests | `src/**/*.test.ts`      | `*.test.ts` | Components, services          |
+| E2E tests  | `src/test/**/*.spec.ts` | `*.spec.ts` | Integration, translation sync |
+
+### Commands
 
 ```bash
-pnpm test           # CI/development common
-pnpm test:coverage  # With coverage
+pnpm test           # Unit + E2E tests
+pnpm test:unit      # Unit tests only
+pnpm test:e2e       # E2E tests only
+pnpm test:coverage  # Unit test coverage
 pnpm test:watch     # Watch mode
 ```
 
@@ -1232,7 +1331,7 @@ pnpm test:watch     # Watch mode
 | Tool      | Role                      |
 | --------- | ------------------------- |
 | Storybook | UI catalog, documentation |
-| Vitest    | Component, unit tests     |
+| Vitest    | Unit tests, E2E tests     |
 
 > **Note**: `@storybook/addon-vitest` doesn't support Angular, so tests run with Vitest.
 
@@ -1282,23 +1381,62 @@ export const Default: Story = {
 
 ## Performance Optimization
 
-**Keywords**: `Zoneless`, `change detection`, `@rx-angular/template`, `RxLet`, `RxIf`, `ISR`
+**Keywords**: `Zoneless`, `change detection`, `AsyncPipe`, `@rx-angular/template`, `RxUnpatch`, `ISR`
 
-This section explains performance optimization using Zoneless change detection and @rx-angular/template.
+This section explains performance optimization considering Zoneless change detection and SSR hydration.
 
 ### Zoneless Change Detection
 
 `provideZonelessChangeDetection()` enables efficient change detection without using Zone.js.
 
-### @rx-angular/template
+### Observable Template Binding
 
-When using Observables in templates, use `@rx-angular/template` instead of `AsyncPipe`.
+For pages using SSR + hydration, use `async` pipe.
 
-**Why use rx-angular:**
+**Why use AsyncPipe:**
 
-- Mandatory in Zoneless environment (`AsyncPipe` depends on Zone.js)
-- Optimizes change detection (calls `markForCheck()` at optimal timing)
-- Good compatibility with SSR
+- SSR-rendered HTML is hydrated as-is
+- No layout shifts (CLS)
+- Angular standard, no additional library needed
+
+```typescript
+// Recommended pattern for SSR pages
+@Component({
+  imports: [AsyncPipe, ArticleListContentComponent],
+})
+export class ArticleListComponent {
+  readonly articleList$ = this.facade.articleList$;
+}
+```
+
+```html
+<!-- AsyncPipe + null coalescing for default values -->
+<app-article-list-content [articles]="(articleList$ | async) ?? []" />
+
+<!-- Conditional branching also with async pipe -->
+@if ((isAuthenticated$ | async) === true) {
+<app-user-menu />
+}
+```
+
+### Angular 17+ Zoneless Environment and AsyncPipe
+
+In Angular 17+ Zoneless environments using `provideZonelessChangeDetection()`, `AsyncPipe` performs equivalently to RxLet. This is because unnecessary change detection from Zone.js does not occur.
+
+**Recommendation for Zoneless environments:**
+
+| Scenario                 | Recommended          | Reason                                    |
+| ------------------------ | -------------------- | ----------------------------------------- |
+| SSR + Hydration          | `AsyncPipe`          | Hydration compatible + fast with Zoneless |
+| CSR only (Dialogs, etc.) | `AsyncPipe` or RxLet | Both perform equivalently                 |
+
+> **Conclusion**: In Zoneless environments, `AsyncPipe` is SSR-compatible and high-performance, making it the recommended standard. RxLet can be used for CSR-only components, but unifying the project with `AsyncPipe` maintains code consistency.
+
+### @rx-angular/template Use Cases
+
+RxLet / RxIf and other rx-angular directives can be used in **components that don't use SSR** (dialogs, modals, overlays, etc.).
+
+> **⚠️ Note**: RxLet / RxIf automatically add `ngSkipHydration`, so using them on SSR pages may skip hydration and cause CLS.
 
 #### Directive & Pipe Usage
 
@@ -1413,7 +1551,7 @@ This section explains tests that verify synchronization between server-side erro
 
 **Related Files**:
 
-- `apps/client/src/shared/i18n/error-code-sync.spec.ts` - Sync test
+- `apps/client/src/test/shared/i18n/error-code-sync.spec.ts` - Sync test
 - `packages/error-code/src/error-code.ts` - Error code definitions
 
 ### Purpose of Sync Tests
@@ -1429,7 +1567,7 @@ Automatically verify that `ERROR_CODE` defined on server side is synchronized wi
 ### Test Implementation
 
 ```typescript
-// apps/client/src/shared/i18n/error-code-sync.spec.ts
+// apps/client/src/test/shared/i18n/error-code-sync.spec.ts
 import { ERROR_CODE } from '@monorepo/error-code';
 import jaErrors from '../../../public/i18n/error/ja.json';
 import enErrors from '../../../public/i18n/error/en.json';

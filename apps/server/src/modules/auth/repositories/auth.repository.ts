@@ -14,6 +14,7 @@ export class AuthRepository {
       where: { id: id },
     });
   }
+
   async getUserByProvider(provider: string, sub: string): Promise<User | null> {
     const account = await this.prisma.account.findUnique({
       where: {

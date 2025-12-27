@@ -12,15 +12,15 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test-packages:
-    name: Test Packages
+  test-coverage-packages:
+    name: Test Coverage Packages
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # 変更検知: packages/** が変更されたかチェック
+      # Check if packages/** changed
       - name: Check file changes
         id: changed-files
         uses: tj-actions/changed-files@v45
@@ -51,15 +51,25 @@ jobs:
         if: steps.changed-files.outputs.any_changed == 'true'
         run: pnpm test:coverage --filter "@monorepo/error-code"
 
-  test-client:
-    name: Test Client
+      - name: Upload coverage reports to Codecov
+        if: steps.changed-files.outputs.any_changed == 'true'
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          codecov_yml_path: ./codecov.yml
+          files: ./packages/error-code/coverage/coverage-final.json
+          flags: packages
+          verbose: true
+
+  test-coverage-client:
+    name: Test Coverage Client
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # clientまたはpackagesの変更で実行
+      # Run on client or packages changes
       - name: Check file changes
         id: changed-files
         uses: tj-actions/changed-files@v45
@@ -87,7 +97,7 @@ jobs:
           export NODE_ENV=development
           pnpm install --frozen-lockfile
 
-      - name: Run client coverage
+      - name: Run client unit test coverage
         if: steps.changed-files.outputs.any_changed == 'true'
         run: pnpm test:coverage --filter "@monorepo/client"
 
@@ -96,13 +106,53 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          codecov_yml_path: ./apps/server/codecov.yml
-          files: ./apps/client/coverage/jest/coverage-final.json,./apps/client/coverage/storybook/coverage-final.json
+          codecov_yml_path: ./codecov.yml
+          files: ./apps/client/coverage/client/coverage-final.json
           flags: client
           verbose: true
 
-  test-server:
-    name: Test Server
+  test-e2e-client:
+    name: Test E2E Client
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Run on client or packages changes
+      - name: Check file changes
+        id: changed-files
+        uses: tj-actions/changed-files@v45
+        with:
+          files: |
+            apps/client/**
+            packages/**
+
+      - name: Setup pnpm
+        if: steps.changed-files.outputs.any_changed == 'true'
+        uses: pnpm/action-setup@v3
+        with:
+          version: 10.24.0
+
+      - name: Setup Node.js
+        if: steps.changed-files.outputs.any_changed == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.11.1
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: |
+          export NODE_ENV=development
+          pnpm install --frozen-lockfile
+
+      - name: Run client e2e tests
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: pnpm test:e2e --filter "@monorepo/client"
+
+  test-coverage-server:
+    name: Test Coverage Server
     runs-on: ubuntu-latest
     env:
       DATABASE_URL: 'postgresql://postgres:postgres@localhost:5432/test_db'
@@ -128,7 +178,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      # server, packages, prismaの変更で実行
+      # Run on server or packages changes
       - name: Check file changes
         id: changed-files
         uses: tj-actions/changed-files@v45
@@ -163,7 +213,7 @@ jobs:
           echo "DATABASE_URL=$DATABASE_URL" >> .env.test
           echo "NODE_ENV=$NODE_ENV" >> .env.test
 
-      - name: Run test coverage
+      - name: Run server unit test coverage
         if: steps.changed-files.outputs.any_changed == 'true'
         run: pnpm test:coverage --filter "@monorepo/server"
 
@@ -172,7 +222,73 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          codecov_yml_path: ./apps/server/codecov.yml
+          codecov_yml_path: ./codecov.yml
           files: ./apps/server/coverage/coverage-final.json
           flags: server
           verbose: true
+
+  test-e2e-server:
+    name: Test E2E Server
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: 'postgresql://postgres:postgres@localhost:5432/test_db'
+      NODE_ENV: test
+
+    services:
+      postgres:
+        image: postgres:15.8
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Run on server or packages changes
+      - name: Check file changes
+        id: changed-files
+        uses: tj-actions/changed-files@v45
+        with:
+          files: |
+            apps/server/**
+            packages/**
+
+      - name: Setup pnpm
+        if: steps.changed-files.outputs.any_changed == 'true'
+        uses: pnpm/action-setup@v3
+        with:
+          version: 10.24.0
+
+      - name: Setup Node.js
+        if: steps.changed-files.outputs.any_changed == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.11.1
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: |
+          export NODE_ENV=development
+          pnpm install --frozen-lockfile
+
+      - name: Setup test environment
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: |
+          cd apps/server
+          echo "DATABASE_URL=$DATABASE_URL" >> .env.test
+          echo "NODE_ENV=$NODE_ENV" >> .env.test
+
+      - name: Run server e2e tests
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: pnpm test:e2e --filter "@monorepo/server"
