@@ -130,19 +130,15 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "coverageInclude": ["src/**/*.ts"],
-            "coverageExclude": [
-              "src/**/*.config.server.ts",
-              "src/**/*.config.ts",
-              "src/**/*.routes.server.ts",
-              "src/**/*.routes.ts",
-              "src/**/*.spec.ts",
-              "src/**/*.stories.ts",
-              "src/**/index.ts",
-              "src/main.server.ts",
-              "src/main.ts",
-              "src/server.ts"
-            ]
+            "runnerConfig": "vitest.config.ts"
+          },
+          "configurations": {
+            "unit": {
+              "include": ["src/**/*.test.ts"]
+            },
+            "e2e": {
+              "include": ["src/test/**/*.spec.ts"]
+            }
           }
         },
         "storybook": {

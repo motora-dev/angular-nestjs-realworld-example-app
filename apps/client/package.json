@@ -22,8 +22,10 @@
     "tsc:build": "tsc --noEmit --project tsconfig.build.json",
     "tsc:test": "tsc --noEmit --project tsconfig.spec.json",
     "test": "CI=true ng test",
-    "test:coverage": "CI=true ng test --coverage",
-    "test:watch": "ng test",
+    "test:unit": "CI=true ng test --configuration=unit",
+    "test:e2e": "CI=true ng test --configuration=e2e",
+    "test:coverage": "CI=true ng test --coverage --configuration=unit",
+    "test:watch": "vitest",
     "storybook": "ng run client:storybook",
     "build-storybook": "ng run client:build-storybook"
   },
