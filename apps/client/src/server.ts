@@ -199,6 +199,46 @@ app.get('/', (req, res, next) => {
 });
 
 /**
+ * Redirect paths without locale prefix to locale-prefixed paths
+ * e.g., /register -> /en/register or /ja/register based on Accept-Language header
+ */
+app.use((req, res, next) => {
+  // Skip redirect when running via ng serve (Angular CLI dev server)
+  const isNgServe = !isMainModule(import.meta.url) && !environment.production;
+
+  if (isNgServe) {
+    next();
+    return;
+  }
+
+  const path = req.path;
+
+  // Skip if path already has locale prefix
+  const firstSegment = path.split('/')[1];
+  if (supportedLocales.includes(firstSegment)) {
+    next();
+    return;
+  }
+
+  // Skip static files and API endpoints
+  const staticPaths = ['/favicon.ico', '/robots.txt', '/sitemap.xml', '/api'];
+  if (staticPaths.some((staticPath) => path.startsWith(staticPath))) {
+    next();
+    return;
+  }
+
+  // Skip if path is root (already handled above)
+  if (path === '/') {
+    next();
+    return;
+  }
+
+  // Redirect to locale-prefixed path
+  const locale = getLocale(req);
+  res.redirect(302, `/${locale}${path}`);
+});
+
+/**
  * robots.txt endpoint
  */
 app.get('/robots.txt', (req, res) => {
