@@ -82,6 +82,7 @@ export class AuthController {
       sameSite: 'lax',
       path: '/',
       maxAge: this.authService.getAccessTokenExpiryMs(),
+      domain: this.configService.get<string>('COOKIE_DOMAIN'),
     });
 
     res.cookie('refresh-token', refreshToken, {
@@ -90,6 +91,7 @@ export class AuthController {
       sameSite: 'lax',
       path: '/api/auth', // Only sent to auth endpoints
       maxAge: this.authService.getRefreshTokenExpiryMs(),
+      domain: this.configService.get<string>('COOKIE_DOMAIN'),
     });
   }
 
