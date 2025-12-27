@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { TranslatePipe } from '@ngx-translate/core';
 import { RxLet } from '@rx-angular/template/let';
 import { RxPush } from '@rx-angular/template/push';
 
@@ -19,7 +18,6 @@ import { CommentFormComponent } from './components/comment-form/comment-form';
     RxLet,
     RxPush,
     RouterLink,
-    TranslatePipe,
     MarkdownPipe,
     ArticleMetaComponent,
     ArticleCommentComponent,

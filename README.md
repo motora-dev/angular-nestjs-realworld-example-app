@@ -465,6 +465,20 @@ Automated pipelines built with GitHub Actions.
 | **Check** (`ci-check.yml`) | PR/Push (develop/main) | Format, Lint, Build, Type check        |
 | **Test** (`ci-test.yml`)   | PR/Push (develop/main) | Tests with change detection + Coverage |
 
+#### Test Workflow Details
+
+`ci-test.yml` consists of 5 jobs:
+
+| Job                      | Target        | Contents                           |
+| ------------------------ | ------------- | ---------------------------------- |
+| `test-coverage-packages` | `packages/`   | Unit tests + Coverage              |
+| `test-coverage-client`   | `apps/client` | Unit tests + Coverage              |
+| `test-e2e-client`        | `apps/client` | E2E tests (translation sync, etc.) |
+| `test-coverage-server`   | `apps/server` | Unit tests + Coverage              |
+| `test-e2e-server`        | `apps/server` | E2E tests                          |
+
+Each job includes change detection via `tj-actions/changed-files` and only runs when the relevant package has changes.
+
 ### CD (Continuous Delivery)
 
 | Workflow                         | Trigger             | Contents                           |

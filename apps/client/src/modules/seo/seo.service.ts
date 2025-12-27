@@ -1,6 +1,5 @@
 import { Injectable, inject } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
-import { TranslateService } from '@ngx-translate/core';
 
 import { environment } from '$environments';
 
@@ -19,7 +18,6 @@ export interface SeoMetaOptions {
 export class SeoService {
   private readonly titleService = inject(Title);
   private readonly metaService = inject(Meta);
-  private readonly translateService = inject(TranslateService);
 
   private readonly baseUrl = environment.baseUrl;
   private readonly apiUrl = environment.apiUrl;
@@ -28,14 +26,14 @@ export class SeoService {
    * Get site name from translation
    */
   private get siteName(): string {
-    return this.translateService.instant('seo.siteName') || 'conduit';
+    return $localize`:@@seo.siteName:conduit`;
   }
 
   /**
    * Get default description from translation
    */
   private get defaultDescription(): string {
-    return this.translateService.instant('seo.defaultDescription') || 'A place to share your Angular knowledge.';
+    return $localize`:@@seo.defaultDescription:A place to share your Angular knowledge.`;
   }
 
   /**
@@ -73,7 +71,7 @@ export class SeoService {
    * デフォルトのメタデータをリセットします
    */
   resetToDefault(): void {
-    const defaultTitle = this.translateService.instant('seo.defaultTitle') || this.siteName;
+    const defaultTitle = $localize`:@@seo.defaultTitle:conduit - Angular + NestJS RealWorld Example App`;
     this.setPageMeta({
       title: defaultTitle,
       description: this.defaultDescription,

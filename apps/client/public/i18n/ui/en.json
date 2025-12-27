@@ -86,6 +86,7 @@
   "error": {
     "dialogTitle": "An error occurred",
     "errorCode": "Error Code",
+    "status": "Status",
     "unexpectedError": "An unexpected error occurred",
     "401": {
       "title": "Authentication Required",
@@ -149,7 +150,13 @@
     "alreadyHaveAccount": "Have an account?",
     "login": "Sign in",
     "noPendingRegistration": "No pending registration found. Please restart from login.",
-    "goToLogin": "Go to Login"
+    "goToLogin": "Go to Login",
+    "errors": {
+      "usernameRequired": "Username is required",
+      "usernameMinLength": "Username must be at least 3 characters",
+      "usernamePattern": "Username can only contain letters, numbers, and underscores",
+      "termsRequired": "You must agree to the Terms of Service"
+    }
   },
   "seo": {
     "siteName": "conduit",
@@ -158,6 +165,9 @@
     "home": {
       "title": "Home",
       "description": "A place to share your Angular knowledge."
+    },
+    "privacyPolicy": {
+      "description": "Angular NestJS Example App respects the privacy of our users and strives to protect personal information."
     }
   },
   "settings": {

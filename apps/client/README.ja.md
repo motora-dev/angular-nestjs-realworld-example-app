@@ -294,7 +294,7 @@ src/
 
 ```
 app/{page}/
-├── {page}.ts              # 親（Facade提供、RxLet、Input/Output連携）
+├── {page}.ts              # 親（Facade提供、AsyncPipe、Input/Output連携）
 ├── {page}.html            # レイアウト + サブコンポーネント呼び出し
 ├── {page}.routes.ts       # ルーティング定義
 ├── index.ts
@@ -308,7 +308,7 @@ app/{page}/
 
 **責務分離:**
 
-- **親コンポーネント**: Facade の提供、Observable の購読（`*rxLet`）、サブコンポーネントへの Input/Output 連携
+- **親コンポーネント**: Facade の提供、Observable の購読（`async` パイプ）、サブコンポーネントへの Input/Output 連携
 - **サブコンポーネント**: Input で受け取ったデータの表示のみ（Presentational）
 
 **例:**
@@ -317,7 +317,7 @@ app/{page}/
 // ファイル: apps/client/src/app/article-list/article-list.ts
 // 親コンポーネントの実装例
 @Component({
-  imports: [RxLet, ArticleListContentComponent],
+  imports: [AsyncPipe, ArticleListContentComponent],
   providers: [ArticleListFacade],
 })
 export class ArticleListComponent {
@@ -329,9 +329,7 @@ export class ArticleListComponent {
 ```html
 <!-- ファイル: apps/client/src/app/article-list/article-list.html -->
 <!-- 親テンプレートの実装例 -->
-<ng-container *rxLet="articleList$; let articles">
-  <app-article-list-content [articles]="articles" />
-</ng-container>
+<app-article-list-content [articles]="(articleList$ | async) ?? []" />
 ```
 
 ```typescript
@@ -417,7 +415,8 @@ import { InputFieldComponent } from '$components/fields';
 - コンポーネント: `{name}.ts`（単一ファイルコンポーネント）
 - テンプレート: `{name}.html`（必要な場合のみ分離）
 - スタイル: `{name}.css`（必要な場合のみ分離）
-- テスト: `{name}.spec.ts` または `{name}.test.ts`
+- テスト（Unit）: `{name}.test.ts`（`src/` 配下）
+- テスト（E2E）: `{name}.spec.ts`（`src/test/` 配下）
 
 ---
 
@@ -632,23 +631,33 @@ setArticle(ctx: StateContext<ArticleEditStateModel>, action: SetArticle) {
 
 ## リアクティブパターンの使い分け
 
-**キーワード**: `Signal`, `Observable`, `NGXS`, `RxLet`, `Reactive Forms`, `@ngxs/form-plugin`
+**キーワード**: `Signal`, `Observable`, `NGXS`, `AsyncPipe`, `RxLet`, `Reactive Forms`, `@ngxs/form-plugin`
 
 このセクションでは、Signal、Observable、NGXS、Reactive Formsなどのリアクティブパターンの使い分けを説明します。
 
-| スコープ       | 技術                              | 用途                       | 例                         |
-| -------------- | --------------------------------- | -------------------------- | -------------------------- |
-| ローカル状態   | **Signal**                        | コンポーネント内部         | `signal()`, `computed()`   |
-| グローバル状態 | **NGXS + `*rxLet`**               | domains連携、大規模データ  | `facade.data$` + `*rxLet`  |
-| フォーム       | **Reactive Forms + form-plugin**  | バリデーション + Store同期 | `ngxsForm`                 |
-| テンプレート   | **RxLet**（AsyncPipe は使わない） | Observable の描画          | `*rxLet="data$; let data"` |
+| スコープ       | 技術                             | 用途                       | 例                                 |
+| -------------- | -------------------------------- | -------------------------- | ---------------------------------- |
+| ローカル状態   | **Signal**                       | コンポーネント内部         | `signal()`, `computed()`           |
+| グローバル状態 | **NGXS + `async` パイプ**        | domains連携、大規模データ  | `facade.data$` + `async`           |
+| フォーム       | **Reactive Forms + form-plugin** | バリデーション + Store同期 | `ngxsForm`                         |
+| テンプレート   | **AsyncPipe**（SSR対応）         | Observable の描画          | `(data$ \| async) ?? defaultValue` |
 
 ### 使い分けの指針
 
 - **shared/ui/, components/**: 内部実装は Signal を使用
-- **domains との連携**: NGXS Store + `*rxLet` で Observable を描画（詳細は[状態管理（NGXS）](#状態管理ngxs)セクションを参照）
+- **domains との連携**: NGXS Store + `async` パイプで Observable を描画（詳細は[状態管理（NGXS）](#状態管理ngxs)セクションを参照）
 - **フォーム**: Reactive Forms でバリデーション、@ngxs/form-plugin で Store 同期（詳細は[フォーム管理](#フォーム管理)セクションを参照）
-- **テンプレートでの Observable**: `AsyncPipe` は使わず、必ず `RxLet` を使用
+- **テンプレートでの Observable**: SSRハイドレーション対応のため `async` パイプを使用
+
+### AsyncPipe vs RxLet の選択基準
+
+| シナリオ                          | 推奨          | 理由                                                         |
+| --------------------------------- | ------------- | ------------------------------------------------------------ |
+| SSR + ハイドレーション（ページ）  | **AsyncPipe** | RxLet は SSR 環境で CLS が発生する可能性がある               |
+| CSRのみ（ダイアログ、モーダル内） | **RxLet**     | ハイドレーション不要で、パフォーマンス向上の恩恵を受けられる |
+| Zone.js 除外が必要なイベント      | **RxUnpatch** | 特定イベントのみ Zone.js をバイパス                          |
+
+> **注意**: RxLet は SSR 環境で `ngSkipHydration` を自動的に追加するため、SSR でレンダリングされた HTML がクライアントで完全に再レンダリングされ、レイアウトシフト（CLS）が発生する可能性があります。SSR を使用するページコンポーネントでは `async` パイプを使用してください。
 
 ## フォーム管理
 
@@ -762,95 +771,172 @@ interface ArticleResponse {
 
 ## 国際化（i18n）
 
-**キーワード**: `i18n`, `国際化`, `TranslateModule`, `MultiTranslateHttpLoader`, `翻訳`
+**キーワード**: `i18n`, `国際化`, `@angular/localize`, `$localize`, `XLIFF`, `ビルド時翻訳`
 
-このセクションでは、`@ngx-translate/core` を使用した国際化の実装方法について説明します。
+このセクションでは、`@angular/localize` を使用したビルド時 i18n の実装方法について説明します。
 
 **関連ファイル**:
 
-- `apps/client/public/i18n/ui/*.json` - UI用翻訳ファイル
-- `apps/client/public/i18n/error/*.json` - エラー用翻訳ファイル
-- `apps/client/src/shared/i18n/multi-translate-http-loader.ts` - カスタムLoader実装
+- `apps/client/public/i18n/ui/*.json` - UI用翻訳ソースファイル
+- `apps/client/public/i18n/error/*.json` - エラー用翻訳ソースファイル
+- `apps/client/locale/messages.xlf` - 抽出されたメッセージ（自動生成）
+- `apps/client/locale/messages.ja.xlf` - 日本語翻訳（自動生成）
+- `apps/client/scripts/merge-translations.ts` - JSON → XLF 変換スクリプト
 
-### 翻訳ファイルの構成
+### なぜ @angular/localize か
 
-翻訳ファイルは `ui`（画面表示用）と `error`（エラーメッセージ用）に分割して管理し、アプリケーション読み込み時にマージされます。
+| 比較項目          | @angular/localize           | ngx-translate               |
+| ----------------- | --------------------------- | --------------------------- |
+| 翻訳タイミング    | ビルド時（コンパイル時）    | ランタイム                  |
+| バンドルサイズ    | 言語ごとに最適化            | 全言語分のローダー含む      |
+| SSRパフォーマンス | ✅ 翻訳済みHTMLを即座に返却 | ❌ クライアントで翻訳ロード |
+| Layout Shift      | ✅ なし                     | ⚠️ 翻訳ロード時に発生しうる |
+
+**SSR環境でのパフォーマンス最適化のため `@angular/localize` を採用しています。**
+
+### 翻訳ソースファイルの構成
+
+翻訳は JSON ファイルで管理し、ビルド時に XLIFF 形式に変換されます。
 
 ```
-apps/client/public/i18n/
-├── error/
-│   ├── en.json
-│   └── ja.json
-└── ui/
-    ├── en.json
-    └── ja.json
+apps/client/
+├── public/i18n/           # 翻訳ソース（手動編集）
+│   ├── error/
+│   │   ├── en.json
+│   │   └── ja.json
+│   └── ui/
+│       ├── en.json
+│       └── ja.json
+└── locale/                # 生成されるXLIFF（.gitignore対象）
+    ├── messages.xlf       # ng extract-i18n で生成
+    └── messages.ja.xlf    # merge-translations.ts で生成
 ```
 
-### MultiTranslateHttpLoader
+### テンプレートでの使用方法
 
-`MultiTranslateHttpLoader` は、複数の翻訳ファイルを並列で取得し、1つの翻訳オブジェクトにマージするカスタムローダーです。
+#### i18n 属性（推奨）
+
+```html
+<!-- 静的テキスト -->
+<h1 i18n="@@home.title">Welcome to Conduit</h1>
+
+<!-- 属性の翻訳 -->
+<input placeholder="Search..." i18n-placeholder="@@search.placeholder" />
+
+<!-- ボタン -->
+<button i18n="@@common.save">Save</button>
+```
+
+#### $localize タグ（TypeScript内）
 
 ```typescript
-// apps/client/src/shared/i18n/multi-translate-http-loader.ts
-export class MultiTranslateHttpLoader implements TranslateLoader {
-  constructor(private http: HttpClient) {}
+// コンポーネント内
+const message = $localize`:@@error.unexpectedError:An unexpected error occurred`;
 
-  getTranslation(lang: string): Observable<TranslationObject> {
-    return forkJoin({
-      error: this.http.get<TranslationObject>(`/i18n/error/${lang}.json`),
-      ui: this.http.get<TranslationObject>(`/i18n/ui/${lang}.json`),
-    }).pipe(map(({ error, ui }) => ({ ...ui, ...error })));
+// SEOサービス内
+this.seoService.setPageMeta({
+  title: $localize`:@@seo.home.title:Home`,
+  description: $localize`:@@seo.home.description:A place to share your Angular knowledge.`,
+});
+```
+
+### i18n ワークフロー
+
+#### 1. 翻訳キーの追加
+
+テンプレートまたは TypeScript に `i18n` 属性や `$localize` タグを追加：
+
+```html
+<p i18n="@@article.readMore">Read more</p>
+```
+
+#### 2. JSON ファイルに翻訳を追加
+
+```json
+// public/i18n/ui/en.json
+{
+  "article": {
+    "readMore": "Read more"
+  }
+}
+
+// public/i18n/ui/ja.json
+{
+  "article": {
+    "readMore": "続きを読む"
   }
 }
 ```
 
-### 設定と初期化
+#### 3. ビルド時に自動変換
 
-#### アプリケーション設定
-
-`app.config.ts` で `TranslateModule` を設定し、カスタムローダーを適用します。
-
-```typescript
-// apps/client/src/app/app.config.ts
-export const appConfig: ApplicationConfig = {
-  providers: [
-    // ...
-    importProvidersFrom(
-      TranslateModule.forRoot({
-        fallbackLang: 'en',
-        loader: {
-          provide: TranslateLoader,
-          useFactory: (http: HttpClient) => new MultiTranslateHttpLoader(http),
-          deps: [HttpClient],
-        },
-      }),
-    ),
-    // ...
-  ],
-};
+```bash
+# prebuild / prestart:ssr で自動実行
+pnpm i18n
+# ↓ 内部で実行される処理
+# 1. ng extract-i18n → locale/messages.xlf を生成
+# 2. scripts/merge-translations.ts → locale/messages.ja.xlf を生成
 ```
 
-#### 言語の初期化
+### SSR でのロケール選択
 
-`app.ts` でブラウザの言語設定を検出し、適切な言語（日本語または英語）を適用します。
-サーバーサイドレンダリング（SSR）時はブラウザAPIにアクセスできないため、クライアントサイドでのみ実行します。
+`Accept-Language` ヘッダーに基づいて適切なロケールビルドを配信します。
 
 ```typescript
-// apps/client/src/app/app.ts
-export class App {
-  private readonly translateService = inject(TranslateService);
+// apps/client/src/server.ts
+import acceptLanguage from 'accept-language';
 
-  constructor() {
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
+acceptLanguage.languages(['en', 'ja']);
+
+app.use((req, res, next) => {
+  const lang = acceptLanguage.get(req.headers['accept-language']) || 'en';
+  const localeBrowserDistFolder = join(browserDistFolder, lang);
+  // lang に応じたビルド済み HTML を配信
+});
+```
+
+**結果**: ユーザーのブラウザ言語設定に応じて、翻訳済みの HTML が即座に返却され、Layout Shift が発生しません。
+
+### angular.json の設定
+
+```json
+{
+  "i18n": {
+    "sourceLocale": "en",
+    "locales": {
+      "ja": "locale/messages.ja.xlf"
     }
-
-    // ブラウザの言語設定に基づいて翻訳をロード
-    const browserLang = this.translateService.getBrowserLang();
-    const langToUse = browserLang === 'ja' ? 'ja' : 'en';
-    this.translateService.use(langToUse).subscribe();
+  },
+  "architect": {
+    "build": {
+      "options": {
+        "polyfills": ["@angular/localize/init"]
+      },
+      "configurations": {
+        "production": {
+          "localize": true
+        }
+      }
+    }
   }
 }
+```
+
+### 翻訳漏れの検出
+
+テストで翻訳キーの同期を検証します：
+
+```bash
+pnpm test
+# translation-sync.spec.ts が全キーの翻訳存在をチェック
+```
+
+```typescript
+// apps/client/src/test/shared/i18n/translation-sync.spec.ts
+it('should have all i18n keys defined in ja.json', () => {
+  const missingKeys = xlfIds.filter((id) => !getTranslation(id, jaTranslations));
+  expect(missingKeys).toEqual([]);
+});
 ```
 
 ## UI アーキテクチャ
@@ -1215,24 +1301,35 @@ export class ConsentService {
 
 ## テスト戦略
 
-**キーワード**: `テスト`, `Vitest`, `@testing-library/angular`, `カバレッジ`
+**キーワード**: `テスト`, `Vitest`, `@testing-library/angular`, `カバレッジ`, `Unit`, `E2E`
 
-このセクションでは、コンポーネントテストの実行方法と、Storybookとの役割分担について説明します。
+このセクションでは、テストの実行方法と構成について説明します。
 
-コンポーネントテストは **Vitest + @testing-library/angular** で実行します。
+### テストの種類と配置
+
+テストは **Unit テスト** と **E2E テスト** に分離されています。
+
+| 種類        | 配置先                  | ファイル名  | 用途                       |
+| ----------- | ----------------------- | ----------- | -------------------------- |
+| Unit テスト | `src/**/*.test.ts`      | `*.test.ts` | コンポーネント・サービス   |
+| E2E テスト  | `src/test/**/*.spec.ts` | `*.spec.ts` | 統合テスト・翻訳同期テスト |
+
+### コマンド
 
 ```bash
-pnpm test           # CI・開発共通
-pnpm test:coverage  # カバレッジ付き
+pnpm test           # Unit + E2E テスト実行
+pnpm test:unit      # Unit テストのみ
+pnpm test:e2e       # E2E テストのみ
+pnpm test:coverage  # Unit テストのカバレッジ
 pnpm test:watch     # ウォッチモード
 ```
 
 ### 役割分担
 
-| ツール    | 役割                           |
-| --------- | ------------------------------ |
-| Storybook | UIカタログ・ドキュメント       |
-| Vitest    | コンポーネント・ユニットテスト |
+| ツール    | 役割                     |
+| --------- | ------------------------ |
+| Storybook | UIカタログ・ドキュメント |
+| Vitest    | Unit テスト・E2E テスト  |
 
 > **Note**: `@storybook/addon-vitest` は Angular では未対応のため、テストは Vitest で行います。
 
@@ -1282,60 +1379,69 @@ export const Default: Story = {
 
 ## パフォーマンス最適化
 
-**キーワード**: `Zoneless`, `変更検知`, `@rx-angular/template`, `RxLet`, `RxIf`, `ISR`
+**キーワード**: `Zoneless`, `変更検知`, `AsyncPipe`, `@rx-angular/template`, `RxUnpatch`, `ISR`
 
-このセクションでは、Zoneless変更検知と@rx-angular/templateを使用したパフォーマンス最適化について説明します。
+このセクションでは、Zoneless変更検知とSSRハイドレーションを考慮したパフォーマンス最適化について説明します。
 
 ### Zoneless 変更検知
 
 `provideZonelessChangeDetection()` により Zone.js を使用せず、効率的な変更検知を実現。
 
-### @rx-angular/template
+### Observable のテンプレートバインディング
 
-Observable をテンプレートで使用する際は `AsyncPipe` ではなく `@rx-angular/template` を使用します。
+SSR + ハイドレーションを使用するページでは、`async` パイプを使用します。
 
-**なぜ rx-angular を使うか:**
+**なぜ AsyncPipe を使うか:**
 
-- Zoneless 環境で必須（`AsyncPipe` は Zone.js に依存）
-- 変更検知の効率化（最適なタイミングで `markForCheck()` を呼び出し）
-- SSR との相性が良い
-
-#### ディレクティブ・パイプの使い分け
-
-| 機能        | 用途                                         | 例                                           |
-| ----------- | -------------------------------------------- | -------------------------------------------- |
-| `RxLet`     | Observable を変数として展開                  | `*rxLet="data$; let data"`                   |
-| `RxIf`      | Observable の値で条件分岐 + suspense 対応    | `*rxIf="page$; let page; suspense: loading"` |
-| `RxFor`     | Observable 配列のループ（将来用）            | `*rxFor="let item of items$; trackBy: 'id'"` |
-| `RxPush`    | プロパティバインディングで Observable を使用 | `[data]="data$ \| push"`                     |
-| `RxUnpatch` | イベントを Zone.js から除外                  | `<div [unpatch]="['click']" (click)="...">`  |
-
-#### RxIf + RxPush の使用例
+- SSR でレンダリングされた HTML がそのままハイドレーションされる
+- レイアウトシフト（CLS）が発生しない
+- Angular 標準のため、追加のライブラリ不要
 
 ```typescript
-import { RxIf } from '@rx-angular/template/if';
-import { RxPush } from '@rx-angular/template/push';
-
+// SSR対応ページでの推奨パターン
 @Component({
-  imports: [RxIf, RxPush],
+  imports: [AsyncPipe, ArticleListContentComponent],
 })
-export class MyComponent {
-  readonly page$ = this.facade.page$;
-  readonly items$ = this.facade.items$;
+export class ArticleListComponent {
+  readonly articleList$ = this.facade.articleList$;
 }
 ```
 
 ```html
-<!-- RxIf: 条件分岐 + suspense -->
-<ng-container *rxIf="page$; let page; suspense: loading">
-  <!-- RxPush: 子コンポーネントへのバインディング -->
-  <app-content [page]="page" [items]="items$ | push" />
-</ng-container>
+<!-- AsyncPipe + null coalescing でデフォルト値を指定 -->
+<app-article-list-content [articles]="(articleList$ | async) ?? []" />
 
-<ng-template #loading>
-  <p>読み込み中...</p>
-</ng-template>
+<!-- 条件分岐も async パイプで対応 -->
+@if ((isAuthenticated$ | async) === true) {
+<app-user-menu />
+}
 ```
+
+### Angular 17+ Zoneless 環境での AsyncPipe
+
+Angular 17+ の `provideZonelessChangeDetection()` を使用する Zoneless 環境では、`AsyncPipe` が RxLet と同等のパフォーマンスを発揮します。これは、Zone.js による不要な変更検知が発生しないためです。
+
+**Zoneless 環境での推奨:**
+
+| シナリオ                 | 推奨                     | 理由                                   |
+| ------------------------ | ------------------------ | -------------------------------------- |
+| SSR + ハイドレーション   | `AsyncPipe`              | ハイドレーション対応 + Zoneless で高速 |
+| CSR のみ（ダイアログ等） | `AsyncPipe` または RxLet | どちらも同等のパフォーマンス           |
+
+> **結論**: Zoneless 環境では `AsyncPipe` が SSR 対応かつ高パフォーマンスなため、標準として使用することを推奨します。RxLet は CSR のみのコンポーネントで使用できますが、プロジェクト全体で `AsyncPipe` に統一することでコードの一貫性が保たれます。
+
+### @rx-angular/template の使いどころ
+
+RxLet / RxIf などの rx-angular ディレクティブは、**SSR を使用しないコンポーネント**（ダイアログ、モーダル、オーバーレイなど）で使用できます。
+
+> **⚠️ 注意**: RxLet / RxIf は `ngSkipHydration` を自動追加するため、SSR ページで使用するとハイドレーションがスキップされ、CLS が発生する可能性があります。
+
+| ディレクティブ | 用途                            | SSR対応 |
+| -------------- | ------------------------------- | ------- |
+| `AsyncPipe`    | Observable をテンプレートで使用 | ✅      |
+| `RxLet`        | Observable を変数として展開     | ❌      |
+| `RxIf`         | Observable の値で条件分岐       | ❌      |
+| `RxUnpatch`    | イベントを Zone.js から除外     | ✅      |
 
 #### RxUnpatch の使用例
 
@@ -1358,19 +1464,17 @@ import { RxUnpatch } from '@rx-angular/template/unpatch';
 export class SidebarComponent { ... }
 ```
 
-#### Signal vs Observable の使い分け
+### Signal vs Observable の使い分け
 
 | データソース   | 推奨技術                | 理由                                            |
 | -------------- | ----------------------- | ----------------------------------------------- |
 | **Signal**     | 組み込み `@if` / `@for` | Signal はすでに効率的な Change Detection を持つ |
-| **Observable** | RxIf / RxFor / RxPush   | Zone.js を介さず Observable をサブスクライブ    |
+| **Observable** | `async` パイプ          | SSR ハイドレーション対応                        |
 
-**Signal を rx-angular に置き換えない理由:**
+**Signal を使う場面:**
 
 1. **Signal はすでに効率的**: Angular Signal は Zone.js に依存しないリアクティブプリミティブ
-2. **rx-angular は Observable 向け**: RxIf/RxFor/RxPush は非同期ストリーム（Observable）を効率的にテンプレートにバインドするために設計
-3. **変換オーバーヘッドを避ける**: Signal を Observable に変換（`toObservable()`）するのは不要な複雑さ
-4. **Angular 17+ の `@if`/`@for` は Signal と最適化**: 組み込みコントロールフローは Signal を意識して設計されている
+2. **Angular 17+ の `@if`/`@for` は Signal と最適化**: 組み込みコントロールフローは Signal を意識して設計されている
 
 ```typescript
 // 推奨: Signal には組み込み @if/@for を使用
@@ -1388,9 +1492,9 @@ export class ArticleListContentComponent {
 ```
 
 ```typescript
-// 推奨: Observable には rx-angular を使用
+// 推奨: Observable には async パイプを使用（SSR対応）
 @Component({
-  imports: [RxIf, RxPush],
+  imports: [AsyncPipe],
 })
 export class ArticlePageComponent {
   readonly page$ = this.facade.page$;
@@ -1399,10 +1503,10 @@ export class ArticlePageComponent {
 ```
 
 ```html
-<!-- Observable ベース: RxIf + RxPush -->
-<ng-container *rxIf="page$; let page">
-  <app-content [items]="items$ | push" />
-</ng-container>
+<!-- Observable ベース: async パイプ -->
+@if ((page$ | async); as page) {
+<app-content [items]="(items$ | async) ?? []" />
+}
 ```
 
 ## エラーコード同期テスト
@@ -1413,7 +1517,7 @@ export class ArticlePageComponent {
 
 **関連ファイル**:
 
-- `apps/client/src/shared/i18n/error-code-sync.spec.ts` - 同期テスト
+- `apps/client/src/test/shared/i18n/error-code-sync.spec.ts` - 同期テスト
 - `packages/error-code/src/error-code.ts` - エラーコード定義
 
 ### 同期テストの目的
@@ -1429,7 +1533,7 @@ export class ArticlePageComponent {
 ### テスト実装
 
 ```typescript
-// apps/client/src/shared/i18n/error-code-sync.spec.ts
+// apps/client/src/test/shared/i18n/error-code-sync.spec.ts
 import { ERROR_CODE } from '@monorepo/error-code';
 import jaErrors from '../../../public/i18n/error/ja.json';
 import enErrors from '../../../public/i18n/error/en.json';

@@ -1,13 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { TranslatePipe } from '@ngx-translate/core';
 
 import { SpinnerFacade } from '$modules/spinner';
 
 @Component({
   selector: 'app-spinner',
   standalone: true,
-  imports: [TranslatePipe],
+  imports: [],
   templateUrl: './spinner.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

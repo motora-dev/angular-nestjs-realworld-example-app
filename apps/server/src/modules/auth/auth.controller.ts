@@ -42,9 +42,10 @@ import {
   UserResponse,
   CheckSessionResponse,
   PendingRegistrationResponse,
+  UserInfo,
 } from './contracts';
 import { GoogleAuthGuard } from './guards';
-import { GetCurrentAuthUserQuery, GetPendingRegistrationQuery } from './queries';
+import { GetAuthUserInfoQuery, GetAuthUserQuery, GetPendingRegistrationQuery } from './queries';
 import { AuthService } from './services';
 
 import type { ProcessOAuthCallbackResult } from './commands/process-oauth-callback/process-oauth-callback.handler';
@@ -82,6 +83,7 @@ export class AuthController {
       sameSite: 'lax',
       path: '/',
       maxAge: this.authService.getAccessTokenExpiryMs(),
+      domain: this.configService.get<string>('COOKIE_DOMAIN'),
     });
 
     res.cookie('refresh-token', refreshToken, {
@@ -90,6 +92,7 @@ export class AuthController {
       sameSite: 'lax',
       path: '/api/auth', // Only sent to auth endpoints
       maxAge: this.authService.getRefreshTokenExpiryMs(),
+      domain: this.configService.get<string>('COOKIE_DOMAIN'),
     });
   }
 
@@ -102,6 +105,7 @@ export class AuthController {
       secure: this.isProd,
       sameSite: 'lax',
       path: '/',
+      domain: this.configService.get<string>('COOKIE_DOMAIN'),
     });
 
     res.clearCookie('refresh-token', {
@@ -109,6 +113,7 @@ export class AuthController {
       secure: this.isProd,
       sameSite: 'lax',
       path: '/api/auth',
+      domain: this.configService.get<string>('COOKIE_DOMAIN'),
     });
 
     res.clearCookie('pending-registration', {
@@ -116,6 +121,7 @@ export class AuthController {
       secure: this.isProd,
       sameSite: 'lax',
       path: '/',
+      domain: this.configService.get<string>('COOKIE_DOMAIN'),
     });
   }
 
@@ -142,8 +148,8 @@ export class AuthController {
     if (accessToken) {
       const payload = this.authService.verifyAccessToken(accessToken);
       if (payload) {
-        const user = await this.queryBus.execute(new GetCurrentAuthUserQuery(payload));
-        return { authenticated: true, user: user.user };
+        const userInfo = await this.queryBus.execute<UserInfo>(new GetAuthUserInfoQuery(payload));
+        return { authenticated: true, user: userInfo };
       }
     }
 
@@ -151,14 +157,14 @@ export class AuthController {
     if (refreshToken) {
       const user = await this.authService.validateRefreshToken(refreshToken);
       if (user) {
-        const userResponse = await this.queryBus.execute(
-          new GetCurrentAuthUserQuery({
+        const userInfo = await this.queryBus.execute(
+          new GetAuthUserInfoQuery({
             id: user.id,
             publicId: user.publicId,
             username: user.username,
           }),
         );
-        return { authenticated: true, user: userResponse.user };
+        return { authenticated: true, user: userInfo };
       }
     }
 
@@ -239,6 +245,7 @@ export class AuthController {
         sameSite: 'lax',
         path: '/',
         maxAge: 60 * 60 * 1000, // 1 hour
+        domain: this.configService.get<string>('COOKIE_DOMAIN'),
       });
       res.redirect(`${clientUrl}/register`);
     }
@@ -273,6 +280,7 @@ export class AuthController {
       secure: this.isProd,
       sameSite: 'lax',
       path: '/',
+      domain: this.configService.get<string>('COOKIE_DOMAIN'),
     });
 
     // Set auth cookies
@@ -367,6 +375,6 @@ export class AuthController {
   @Get('me')
   @HttpCode(HttpStatus.OK)
   async getCurrentUser(@CurrentUser() user: CurrentUserType): Promise<UserResponse> {
-    return this.queryBus.execute(new GetCurrentAuthUserQuery(user));
+    return this.queryBus.execute(new GetAuthUserQuery(user));
   }
 }

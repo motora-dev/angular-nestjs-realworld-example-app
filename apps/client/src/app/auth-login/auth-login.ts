@@ -2,7 +2,6 @@ import { isPlatformBrowser } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
-import { TranslatePipe } from '@ngx-translate/core';
 import { filter, take } from 'rxjs';
 
 import { AuthFacade } from '$modules/auth';
@@ -10,7 +9,7 @@ import { AuthFacade } from '$modules/auth';
 @Component({
   selector: 'app-auth-login',
   standalone: true,
-  imports: [TranslatePipe],
+  imports: [],
   templateUrl: './auth-login.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

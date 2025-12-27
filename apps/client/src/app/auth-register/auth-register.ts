@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { TranslatePipe } from '@ngx-translate/core';
 import { RxLet } from '@rx-angular/template/let';
 import { RxPush } from '@rx-angular/template/push';
 
@@ -11,7 +10,7 @@ import { SpinnerFacade } from '$modules/spinner';
 @Component({
   selector: 'app-auth-register',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, TranslatePipe, RxLet, RxPush],
+  imports: [ReactiveFormsModule, RouterLink, RxLet, RxPush],
   templateUrl: './auth-register.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

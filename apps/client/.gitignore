@@ -34,3 +34,6 @@ e2e/*.map
 .DS_Store/
 
 # End of https://www.toptal.com/developers/gitignore/api/angular
+
+# Generated i18n files (built from JSON at build time)
+locale/

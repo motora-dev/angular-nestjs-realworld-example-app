@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TranslatePipe } from '@ngx-translate/core';
 import { NgxsFormDirective } from '@ngxs/form-plugin';
 import { RxPush } from '@rx-angular/template/push';
 
@@ -23,7 +22,7 @@ export interface EditorFormSubmitEvent {
 @Component({
   selector: 'app-editor-form',
   standalone: true,
-  imports: [ReactiveFormsModule, NgxsFormDirective, RxPush, TranslatePipe],
+  imports: [ReactiveFormsModule, NgxsFormDirective, RxPush],
   templateUrl: './editor-form.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

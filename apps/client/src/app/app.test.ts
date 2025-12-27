@@ -2,7 +2,6 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
 import { provideStore } from '@ngxs/store';
 import { vi } from 'vitest';
 
@@ -43,7 +42,7 @@ describe('App', () => {
     });
 
     await TestBed.configureTestingModule({
-      imports: [App, TranslateModule.forRoot()],
+      imports: [App],
       providers: [
         provideRouter([]),
         provideHttpClient(),

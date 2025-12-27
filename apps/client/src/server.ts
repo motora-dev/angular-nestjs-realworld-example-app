@@ -7,17 +7,64 @@ import {
   writeResponseToNodeResponse,
 } from '@angular/ssr/node';
 import { ISRHandler } from '@rx-angular/isr/server';
+import acceptLanguage from 'accept-language';
 import compression from 'compression';
 import express from 'express';
 import basicAuth from 'express-basic-auth';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 import { environment } from '$environments';
 
-const browserDistFolder = join(import.meta.dirname, '../browser');
-const indexHtmlPath = join(browserDistFolder, 'index.csr.html');
-let indexHtml = existsSync(indexHtmlPath) ? readFileSync(indexHtmlPath, 'utf-8') : '';
+// Supported locales - detected from dist output
+const distFolder = join(import.meta.dirname, '..');
+const browserDistFolder = join(distFolder, 'browser');
+const supportedLocales = existsSync(browserDistFolder)
+  ? readdirSync(browserDistFolder, { withFileTypes: true })
+      .filter((dirent) => dirent.isDirectory())
+      .map((dirent) => dirent.name)
+      .filter((name) => name === 'en' || name === 'ja')
+  : ['en'];
+const defaultLocale = 'en';
+
+// Setup accept-language parser
+acceptLanguage.languages(supportedLocales);
+
+// Get locale from request (Accept-Language header or URL path)
+function getLocale(req: express.Request): string {
+  // First, check URL path for locale (e.g., /ja/, /en/)
+  const urlLocale = req.path.split('/')[1];
+  if (supportedLocales.includes(urlLocale)) {
+    return urlLocale;
+  }
+
+  // Otherwise, use Accept-Language header
+  const acceptLang = req.headers['accept-language'];
+  if (acceptLang) {
+    const detected = acceptLanguage.get(acceptLang);
+    if (detected && supportedLocales.includes(detected)) {
+      return detected;
+    }
+  }
+
+  return defaultLocale;
+}
+
+// Load index.html for each locale (for ISR)
+const indexHtmlByLocale: Record<string, string> = {};
+for (const locale of supportedLocales) {
+  const indexHtmlPath = join(browserDistFolder, locale, 'index.csr.html');
+  if (existsSync(indexHtmlPath)) {
+    indexHtmlByLocale[locale] = readFileSync(indexHtmlPath, 'utf-8');
+  }
+}
+
+// Fallback to non-localized structure if no locale folders exist
+const legacyIndexHtmlPath = join(browserDistFolder, 'index.csr.html');
+if (Object.keys(indexHtmlByLocale).length === 0 && existsSync(legacyIndexHtmlPath)) {
+  indexHtmlByLocale[defaultLocale] = readFileSync(legacyIndexHtmlPath, 'utf-8');
+}
+
 const baseUrl = environment.baseUrl;
 const apiUrl = environment.apiUrl;
 const gaId = environment.gaId;
@@ -63,9 +110,15 @@ if (gaId) {
       gtag('config', '${gaId}');
     </script>`;
 
-  indexHtml = indexHtml.replace('<!-- __GA_SCRIPTS__ -->', gaScripts);
+  // Inject GA scripts into all locale index.html files
+  for (const locale of Object.keys(indexHtmlByLocale)) {
+    indexHtmlByLocale[locale] = indexHtmlByLocale[locale].replace('<!-- __GA_SCRIPTS__ -->', gaScripts);
+  }
 } else {
-  indexHtml = indexHtml.replace('<!-- __GA_SCRIPTS__ -->', '');
+  // Remove placeholder from all locale index.html files
+  for (const locale of Object.keys(indexHtmlByLocale)) {
+    indexHtmlByLocale[locale] = indexHtmlByLocale[locale].replace('<!-- __GA_SCRIPTS__ -->', '');
+  }
 }
 
 const app = express();
@@ -97,18 +150,53 @@ if (process.env['BASIC_AUTH_ENABLED'] === 'true') {
   }
 }
 
-// ISRHandler for caching (only initialize if index.html exists)
-const isr = indexHtml
-  ? new ISRHandler({
-      indexHtml,
-      invalidateSecretToken: process.env['ISR_SECRET'] || 'MY_SECRET_TOKEN',
-      enableLogging: process.env['NODE_ENV'] !== 'production',
-      angularAppEngine: angularApp, // Use AngularNodeAppEngine for rendering
-    })
-  : null;
+// ISRHandler for caching per locale (only initialize if index.html exists)
+const isrByLocale: Record<string, ISRHandler> = {};
+for (const locale of Object.keys(indexHtmlByLocale)) {
+  isrByLocale[locale] = new ISRHandler({
+    indexHtml: indexHtmlByLocale[locale],
+    invalidateSecretToken: process.env['ISR_SECRET'] || 'MY_SECRET_TOKEN',
+    enableLogging: process.env['NODE_ENV'] !== 'production',
+    angularAppEngine: angularApp, // Use AngularNodeAppEngine for rendering
+  });
+}
+
+// Default ISR for backwards compatibility
+const isr = isrByLocale[defaultLocale] || null;
 
 // Parse JSON for invalidation endpoint
 app.use(express.json());
+
+/**
+ * Serve favicon.ico from the default locale folder
+ */
+app.get('/favicon.ico', (req, res) => {
+  const faviconPath = join(browserDistFolder, defaultLocale, 'favicon.ico');
+  if (existsSync(faviconPath)) {
+    res.sendFile(faviconPath);
+  } else {
+    res.status(404).send('Not Found');
+  }
+});
+
+/**
+ * Redirect root path to detected locale
+ * e.g., / -> /en or /ja based on Accept-Language header
+ */
+app.get('/', (req, res, next) => {
+  // Skip redirect when running via ng serve (Angular CLI dev server)
+  const isNgServe = !isMainModule(import.meta.url) && !environment.production;
+
+  if (isNgServe) {
+    // In ng serve, treat root path as /en and continue to next middleware
+    req.url = '/en' + (req.url === '/' ? '' : req.url);
+    next();
+    return;
+  }
+
+  const locale = getLocale(req);
+  res.redirect(302, `/${locale}`);
+});
 
 /**
  * robots.txt endpoint
@@ -218,8 +306,24 @@ app.post('/api/invalidate-cache', async (req, res) => {
 });
 
 /**
- * Serve static files from /browser
+ * Serve static files from /browser/{locale}
+ * Static files are served without locale detection since they have hashed names
  */
+for (const locale of supportedLocales) {
+  const localeDistFolder = join(browserDistFolder, locale);
+  if (existsSync(localeDistFolder)) {
+    app.use(
+      `/${locale}`,
+      express.static(localeDistFolder, {
+        maxAge: '1y',
+        index: false,
+        redirect: false,
+      }),
+    );
+  }
+}
+
+// Also serve from root for backwards compatibility (if no locale folders)
 app.use(
   express.static(browserDistFolder, {
     maxAge: '1y',
@@ -230,29 +334,38 @@ app.use(
 
 /**
  * Handle all other requests:
+ * - Detect locale from Accept-Language header or URL path
  * - If ISR is available: try cache first, then render with ISR
  * - If ISR is not available: fallback to AngularNodeAppEngine
  */
-if (isr) {
-  app.use(
-    // First, try to serve from cache
-    async (req, res, next) => {
-      await isr.serveFromCache(req, res, next);
-    },
-    // If not in cache, render and cache
-    async (req, res, next) => {
-      await isr.render(req, res, next);
-    },
-  );
-} else {
-  // Fallback: Standard Angular SSR without ISR
-  app.use((req, res, next) => {
-    angularApp
-      .handle(req)
-      .then((response) => (response ? writeResponseToNodeResponse(response, res) : next()))
-      .catch(next);
-  });
-}
+app.use(
+  async (req, res, next) => {
+    const locale = getLocale(req);
+    const localeIsr = isrByLocale[locale] || isr;
+
+    if (localeIsr) {
+      // First, try to serve from cache
+      await localeIsr.serveFromCache(req, res, next);
+    } else {
+      next();
+    }
+  },
+  async (req, res, next) => {
+    const locale = getLocale(req);
+    const localeIsr = isrByLocale[locale] || isr;
+
+    if (localeIsr) {
+      // If not in cache, render and cache
+      await localeIsr.render(req, res, next);
+    } else {
+      // Fallback: Standard Angular SSR without ISR
+      angularApp
+        .handle(req)
+        .then((response) => (response ? writeResponseToNodeResponse(response, res) : next()))
+        .catch(next);
+    }
+  },
+);
 
 /**
  * Start the server if this module is the main entry point, or it is ran via PM2.

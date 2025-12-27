@@ -48,10 +48,10 @@
             </ng-container>
             } @else {
             <p class="text-center text-gray-500">
-              <a routerLink="/login" class="text-emerald-500 hover:underline">{{ 'article.signIn' | translate }}</a>
-              {{ 'article.or' | translate }}
-              <a routerLink="/register" class="text-emerald-500 hover:underline">{{ 'article.signUp' | translate }}</a>
-              {{ 'article.toAddComments' | translate }}
+              <a routerLink="/login" class="text-emerald-500 hover:underline" i18n="@@article.signIn">Sign in</a>
+              <ng-container i18n="@@article.or"> or </ng-container>
+              <a routerLink="/register" class="text-emerald-500 hover:underline" i18n="@@article.signUp">sign up</a>
+              <ng-container i18n="@@article.toAddComments"> to add comments on this article.</ng-container>
             </p>
             }
           </ng-container>

@@ -1,6 +1,6 @@
 import type { CurrentUserType } from '$decorators';
 
-import type { RegisterResponse, UserResponse } from '../contracts';
+import type { RegisterResponse, UserInfo, UserResponse } from '../contracts';
 import type { User } from '@monorepo/database/client';
 
 /**
@@ -21,5 +21,17 @@ export function toRegisterResponse(user: User): RegisterResponse {
     id: user.publicId,
     username: user.username,
     email: user.email,
+  };
+}
+
+/**
+ * Convert User to UserInfo (for GET /auth/check-session)
+ */
+export function toUserInfo(user: User): UserInfo {
+  return {
+    username: user.username,
+    email: user.email,
+    bio: user.bio ?? '',
+    image: user.image ?? '',
   };
 }

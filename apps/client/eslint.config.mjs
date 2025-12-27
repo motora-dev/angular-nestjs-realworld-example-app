@@ -20,7 +20,7 @@ export default [
   },
   // Angular ESLint TypeScript files configuration
   {
-    files: ['src/**/*.ts'],
+    files: ['src/**/*.ts', 'scripts/**/*.ts', 'test/**/*.ts'],
     plugins: {
       '@angular-eslint': angularEslintPlugin,
     },
