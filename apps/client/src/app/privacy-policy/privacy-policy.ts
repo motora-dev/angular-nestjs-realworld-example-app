@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { SeoService } from '$modules/seo';
 import { CookieSettingsButtonComponent } from './components';
@@ -7,20 +6,17 @@ import { CookieSettingsButtonComponent } from './components';
 @Component({
   selector: 'app-privacy-policy',
   standalone: true,
-  imports: [CookieSettingsButtonComponent, TranslateModule],
+  imports: [CookieSettingsButtonComponent],
   templateUrl: './privacy-policy.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PrivacyPolicyComponent {
   private readonly seoService = inject(SeoService);
-  private readonly translateService = inject(TranslateService);
 
   constructor() {
-    const title = this.translateService.instant('privacyPolicy.title');
-    const description = this.translateService.instant('privacyPolicy.sections.introduction.content');
     this.seoService.setPageMeta({
-      title,
-      description,
+      title: $localize`:@@privacyPolicy.title:Privacy Policy`,
+      description: $localize`:@@seo.privacyPolicy.description:Angular NestJS Example App respects the privacy of our users and strives to protect personal information.`,
       url: '/privacy-policy',
     });
   }

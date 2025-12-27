@@ -13,7 +13,7 @@
         routerLink="/settings"
         class="inline-flex items-center gap-2 rounded border border-gray-400 px-4 py-2 text-sm text-gray-600 hover:bg-gray-200"
       >
-        ⚙ {{ 'profile.editSettings' | translate }}
+        ⚙ <ng-container i18n="@@profile.editSettings">Edit Profile Settings</ng-container>
       </a>
     } @else {
       <button
@@ -26,10 +26,13 @@
         [class.hover:bg-gray-200]="!profile().following"
         (click)="onToggleFollow()"
       >
-        {{ profile().following ? ('profile.unfollow' | translate) : ('profile.follow' | translate) }}
+        @if (profile().following) {
+        <ng-container i18n="@@profile.unfollow">Unfollow</ng-container>
+        } @else {
+        <ng-container i18n="@@profile.follow">Follow</ng-container>
+        }
         {{ profile().username }}
       </button>
     }
   </div>
 </div>
-

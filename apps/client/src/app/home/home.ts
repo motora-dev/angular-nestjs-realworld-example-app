@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { RxLet } from '@rx-angular/template/let';
 import { filter, take } from 'rxjs';
 
@@ -14,7 +13,7 @@ import { TagListComponent } from './components/tag-list/tag-list';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RxLet, TranslatePipe, ArticleListComponent, TagListComponent],
+  imports: [RxLet, ArticleListComponent, TagListComponent],
   providers: [HomeFacade],
   templateUrl: './home.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -24,7 +23,6 @@ export class HomeComponent {
   private readonly facade = inject(HomeFacade);
   private readonly authFacade = inject(AuthFacade);
   private readonly seoService = inject(SeoService);
-  private readonly translateService = inject(TranslateService);
 
   readonly tags$ = this.facade.tags$;
   readonly articles$ = this.facade.articles$;
@@ -38,8 +36,8 @@ export class HomeComponent {
 
     // Set SEO metadata
     this.seoService.setPageMeta({
-      title: this.translateService.instant('seo.home.title') || 'conduit',
-      description: this.translateService.instant('seo.home.description') || 'A place to share your Angular knowledge.',
+      title: $localize`:@@seo.home.title:Home`,
+      description: $localize`:@@seo.home.description:A place to share your Angular knowledge.`,
       type: 'website',
       url: '/',
     });

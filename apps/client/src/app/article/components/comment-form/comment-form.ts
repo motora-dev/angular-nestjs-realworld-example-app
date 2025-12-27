@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TranslatePipe } from '@ngx-translate/core';
 import { NgxsFormDirective } from '@ngxs/form-plugin';
 import { RxPush } from '@rx-angular/template/push';
 
@@ -13,7 +12,7 @@ interface CommentForm {
 @Component({
   selector: 'app-comment-form',
   standalone: true,
-  imports: [ReactiveFormsModule, NgxsFormDirective, RxPush, TranslatePipe],
+  imports: [ReactiveFormsModule, NgxsFormDirective, RxPush],
   templateUrl: './comment-form.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

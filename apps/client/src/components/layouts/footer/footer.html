@@ -3,15 +3,16 @@
     <div class="flex flex-col gap-4 items-center">
       <!-- Links -->
       <nav class="flex gap-6 flex-wrap justify-center">
-        <a routerLink="/privacy-policy" class="text-gray-600 text-sm no-underline hover:text-gray-900">
-          {{ 'footer.privacyPolicy' | translate }}
+        <a routerLink="/privacy-policy" class="text-gray-600 text-sm no-underline hover:text-gray-900" i18n="@@footer.privacyPolicy">
+          Privacy Policy
         </a>
         <a
           routerLink="/privacy-policy"
           fragment="cookie-settings"
           class="text-gray-600 text-sm no-underline hover:text-gray-900"
+          i18n="@@footer.cookieSettings"
         >
-          {{ 'footer.cookieSettings' | translate }}
+          Cookie Settings
         </a>
         <a
           href="https://github.com/motora-dev/angular-nestjs-realworld-example-app"
@@ -29,7 +30,7 @@
       </nav>
 
       <!-- Copyright -->
-      <p class="text-gray-500 text-sm m-0 text-center">{{ 'footer.copyright' | translate }}</p>
+      <p class="text-gray-500 text-sm m-0 text-center" i18n="@@footer.copyright">© 2025 Angular NestJS RealWorld Example App</p>
     </div>
   </div>
 </footer>

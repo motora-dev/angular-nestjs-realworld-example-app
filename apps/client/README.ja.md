@@ -762,95 +762,172 @@ interface ArticleResponse {
 
 ## 国際化（i18n）
 
-**キーワード**: `i18n`, `国際化`, `TranslateModule`, `MultiTranslateHttpLoader`, `翻訳`
+**キーワード**: `i18n`, `国際化`, `@angular/localize`, `$localize`, `XLIFF`, `ビルド時翻訳`
 
-このセクションでは、`@ngx-translate/core` を使用した国際化の実装方法について説明します。
+このセクションでは、`@angular/localize` を使用したビルド時 i18n の実装方法について説明します。
 
 **関連ファイル**:
 
-- `apps/client/public/i18n/ui/*.json` - UI用翻訳ファイル
-- `apps/client/public/i18n/error/*.json` - エラー用翻訳ファイル
-- `apps/client/src/shared/i18n/multi-translate-http-loader.ts` - カスタムLoader実装
+- `apps/client/public/i18n/ui/*.json` - UI用翻訳ソースファイル
+- `apps/client/public/i18n/error/*.json` - エラー用翻訳ソースファイル
+- `apps/client/locale/messages.xlf` - 抽出されたメッセージ（自動生成）
+- `apps/client/locale/messages.ja.xlf` - 日本語翻訳（自動生成）
+- `apps/client/scripts/merge-translations.ts` - JSON → XLF 変換スクリプト
 
-### 翻訳ファイルの構成
+### なぜ @angular/localize か
 
-翻訳ファイルは `ui`（画面表示用）と `error`（エラーメッセージ用）に分割して管理し、アプリケーション読み込み時にマージされます。
+| 比較項目          | @angular/localize           | ngx-translate               |
+| ----------------- | --------------------------- | --------------------------- |
+| 翻訳タイミング    | ビルド時（コンパイル時）    | ランタイム                  |
+| バンドルサイズ    | 言語ごとに最適化            | 全言語分のローダー含む      |
+| SSRパフォーマンス | ✅ 翻訳済みHTMLを即座に返却 | ❌ クライアントで翻訳ロード |
+| Layout Shift      | ✅ なし                     | ⚠️ 翻訳ロード時に発生しうる |
+
+**SSR環境でのパフォーマンス最適化のため `@angular/localize` を採用しています。**
+
+### 翻訳ソースファイルの構成
+
+翻訳は JSON ファイルで管理し、ビルド時に XLIFF 形式に変換されます。
 
 ```
-apps/client/public/i18n/
-├── error/
-│   ├── en.json
-│   └── ja.json
-└── ui/
-    ├── en.json
-    └── ja.json
+apps/client/
+├── public/i18n/           # 翻訳ソース（手動編集）
+│   ├── error/
+│   │   ├── en.json
+│   │   └── ja.json
+│   └── ui/
+│       ├── en.json
+│       └── ja.json
+└── locale/                # 生成されるXLIFF（.gitignore対象）
+    ├── messages.xlf       # ng extract-i18n で生成
+    └── messages.ja.xlf    # merge-translations.ts で生成
 ```
 
-### MultiTranslateHttpLoader
+### テンプレートでの使用方法
 
-`MultiTranslateHttpLoader` は、複数の翻訳ファイルを並列で取得し、1つの翻訳オブジェクトにマージするカスタムローダーです。
+#### i18n 属性（推奨）
+
+```html
+<!-- 静的テキスト -->
+<h1 i18n="@@home.title">Welcome to Conduit</h1>
+
+<!-- 属性の翻訳 -->
+<input placeholder="Search..." i18n-placeholder="@@search.placeholder" />
+
+<!-- ボタン -->
+<button i18n="@@common.save">Save</button>
+```
+
+#### $localize タグ（TypeScript内）
 
 ```typescript
-// apps/client/src/shared/i18n/multi-translate-http-loader.ts
-export class MultiTranslateHttpLoader implements TranslateLoader {
-  constructor(private http: HttpClient) {}
+// コンポーネント内
+const message = $localize`:@@error.unexpectedError:An unexpected error occurred`;
 
-  getTranslation(lang: string): Observable<TranslationObject> {
-    return forkJoin({
-      error: this.http.get<TranslationObject>(`/i18n/error/${lang}.json`),
-      ui: this.http.get<TranslationObject>(`/i18n/ui/${lang}.json`),
-    }).pipe(map(({ error, ui }) => ({ ...ui, ...error })));
+// SEOサービス内
+this.seoService.setPageMeta({
+  title: $localize`:@@seo.home.title:Home`,
+  description: $localize`:@@seo.home.description:A place to share your Angular knowledge.`,
+});
+```
+
+### i18n ワークフロー
+
+#### 1. 翻訳キーの追加
+
+テンプレートまたは TypeScript に `i18n` 属性や `$localize` タグを追加：
+
+```html
+<p i18n="@@article.readMore">Read more</p>
+```
+
+#### 2. JSON ファイルに翻訳を追加
+
+```json
+// public/i18n/ui/en.json
+{
+  "article": {
+    "readMore": "Read more"
+  }
+}
+
+// public/i18n/ui/ja.json
+{
+  "article": {
+    "readMore": "続きを読む"
   }
 }
 ```
 
-### 設定と初期化
+#### 3. ビルド時に自動変換
 
-#### アプリケーション設定
-
-`app.config.ts` で `TranslateModule` を設定し、カスタムローダーを適用します。
-
-```typescript
-// apps/client/src/app/app.config.ts
-export const appConfig: ApplicationConfig = {
-  providers: [
-    // ...
-    importProvidersFrom(
-      TranslateModule.forRoot({
-        fallbackLang: 'en',
-        loader: {
-          provide: TranslateLoader,
-          useFactory: (http: HttpClient) => new MultiTranslateHttpLoader(http),
-          deps: [HttpClient],
-        },
-      }),
-    ),
-    // ...
-  ],
-};
+```bash
+# prebuild / prestart:ssr で自動実行
+pnpm i18n
+# ↓ 内部で実行される処理
+# 1. ng extract-i18n → locale/messages.xlf を生成
+# 2. scripts/merge-translations.ts → locale/messages.ja.xlf を生成
 ```
 
-#### 言語の初期化
+### SSR でのロケール選択
 
-`app.ts` でブラウザの言語設定を検出し、適切な言語（日本語または英語）を適用します。
-サーバーサイドレンダリング（SSR）時はブラウザAPIにアクセスできないため、クライアントサイドでのみ実行します。
+`Accept-Language` ヘッダーに基づいて適切なロケールビルドを配信します。
 
 ```typescript
-// apps/client/src/app/app.ts
-export class App {
-  private readonly translateService = inject(TranslateService);
+// apps/client/src/server.ts
+import acceptLanguage from 'accept-language';
 
-  constructor() {
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
+acceptLanguage.languages(['en', 'ja']);
+
+app.use((req, res, next) => {
+  const lang = acceptLanguage.get(req.headers['accept-language']) || 'en';
+  const localeBrowserDistFolder = join(browserDistFolder, lang);
+  // lang に応じたビルド済み HTML を配信
+});
+```
+
+**結果**: ユーザーのブラウザ言語設定に応じて、翻訳済みの HTML が即座に返却され、Layout Shift が発生しません。
+
+### angular.json の設定
+
+```json
+{
+  "i18n": {
+    "sourceLocale": "en",
+    "locales": {
+      "ja": "locale/messages.ja.xlf"
     }
-
-    // ブラウザの言語設定に基づいて翻訳をロード
-    const browserLang = this.translateService.getBrowserLang();
-    const langToUse = browserLang === 'ja' ? 'ja' : 'en';
-    this.translateService.use(langToUse).subscribe();
+  },
+  "architect": {
+    "build": {
+      "options": {
+        "polyfills": ["@angular/localize/init"]
+      },
+      "configurations": {
+        "production": {
+          "localize": true
+        }
+      }
+    }
   }
 }
+```
+
+### 翻訳漏れの検出
+
+テストで翻訳キーの同期を検証します：
+
+```bash
+pnpm test
+# translation-sync.spec.ts が全キーの翻訳存在をチェック
+```
+
+```typescript
+// apps/client/src/shared/i18n/translation-sync.spec.ts
+it('should have all i18n keys defined in ja.json', () => {
+  const missingKeys = xlfIds.filter((id) => !getTranslation(id, jaTranslations));
+  expect(missingKeys).toEqual([]);
+});
 ```
 
 ## UI アーキテクチャ

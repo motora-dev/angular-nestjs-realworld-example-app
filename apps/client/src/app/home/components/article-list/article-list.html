@@ -1,6 +1,6 @@
 @if (articles().length === 0) {
-<div class="rounded-lg border border-gray-200 bg-white p-8 text-center text-gray-600">
-  {{ 'home.noArticles' | translate }}
+<div class="rounded-lg border border-gray-200 bg-white p-8 text-center text-gray-600" i18n="@@home.noArticles">
+  No articles are here... yet.
 </div>
 } @else {
 <div class="space-y-4">
@@ -32,8 +32,12 @@
     </a>
 
     <div class="flex items-center justify-between">
-      <a [routerLink]="['/article', article.slug]" class="text-sm text-gray-400 hover:text-emerald-500">
-        {{ 'home.readMore' | translate }}
+      <a
+        [routerLink]="['/article', article.slug]"
+        class="text-sm text-gray-400 hover:text-emerald-500"
+        i18n="@@home.readMore"
+      >
+        Read more...
       </a>
       <div class="flex flex-wrap gap-1">
         @for (tag of article.tagList; track tag) {

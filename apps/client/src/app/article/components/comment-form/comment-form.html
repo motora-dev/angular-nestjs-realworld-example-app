@@ -8,7 +8,8 @@
     <textarea
       class="w-full resize-none rounded border border-gray-300 p-3 focus:border-emerald-500 focus:outline-none"
       rows="3"
-      [placeholder]="'article.writeComment' | translate"
+      i18n-placeholder="@@article.writeComment"
+      placeholder="Write a comment..."
       formControlName="body"
     ></textarea>
   </div>
@@ -24,8 +25,9 @@
       type="submit"
       class="rounded bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800 disabled:opacity-50"
       [disabled]="isFormInvalid$ | push"
+      i18n="@@article.postComment"
     >
-      {{ 'article.postComment' | translate }}
+      Post Comment
     </button>
   </div>
 </form>

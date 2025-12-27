@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TranslatePipe } from '@ngx-translate/core';
 import { NgxsFormDirective } from '@ngxs/form-plugin';
 import { RxPush } from '@rx-angular/template/push';
 
@@ -17,7 +16,7 @@ interface SettingsForm {
 @Component({
   selector: 'app-settings-form',
   standalone: true,
-  imports: [ReactiveFormsModule, NgxsFormDirective, RxPush, TranslatePipe],
+  imports: [ReactiveFormsModule, NgxsFormDirective, RxPush],
   templateUrl: './settings-form.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

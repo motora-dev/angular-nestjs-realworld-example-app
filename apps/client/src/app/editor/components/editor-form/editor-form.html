@@ -6,7 +6,8 @@
           class="w-full rounded-lg border border-gray-300 px-4 py-3 text-lg focus:border-emerald-500 focus:outline-none"
           formControlName="title"
           type="text"
-          [placeholder]="'editor.titlePlaceholder' | translate"
+          i18n-placeholder="@@editor.titlePlaceholder"
+          placeholder="Article Title"
         />
       </div>
 
@@ -15,7 +16,8 @@
           class="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-emerald-500 focus:outline-none"
           formControlName="description"
           type="text"
-          [placeholder]="'editor.descriptionPlaceholder' | translate"
+          i18n-placeholder="@@editor.descriptionPlaceholder"
+          placeholder="What's this article about?"
         />
       </div>
 
@@ -24,7 +26,8 @@
           class="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-emerald-500 focus:outline-none"
           formControlName="body"
           rows="8"
-          [placeholder]="'editor.bodyPlaceholder' | translate"
+          i18n-placeholder="@@editor.bodyPlaceholder"
+          placeholder="Write your article (in markdown)"
         ></textarea>
       </div>
 
@@ -32,7 +35,8 @@
         <input
           class="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-emerald-500 focus:outline-none"
           type="text"
-          [placeholder]="'editor.tagsPlaceholder' | translate"
+          i18n-placeholder="@@editor.tagsPlaceholder"
+          placeholder="Enter tags"
           [formControl]="tagField"
           (keyup.enter)="addTag(); $event.preventDefault()"
         />
@@ -51,8 +55,9 @@
           class="rounded-lg bg-emerald-700 px-6 py-3 font-medium text-white hover:bg-emerald-800 disabled:opacity-50"
           type="submit"
           [disabled]="(isLoading$ | push) || (isFormInvalid$ | push)"
+          i18n="@@editor.publish"
         >
-          {{ 'editor.publish' | translate }}
+          Publish Article
         </button>
       </div>
     </div>

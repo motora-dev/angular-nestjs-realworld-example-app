@@ -1,14 +1,13 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { TranslatePipe } from '@ngx-translate/core';
 
 import { Article } from '$domains/article';
 
 @Component({
   selector: 'app-article-meta',
   standalone: true,
-  imports: [DatePipe, RouterLink, TranslatePipe],
+  imports: [DatePipe, RouterLink],
   templateUrl: './article-meta.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

@@ -5,7 +5,7 @@
     <div class="bg-emerald-700 py-8 text-center text-white shadow-inner">
       <div class="container mx-auto px-4">
         <h1 class="mb-2 text-5xl font-bold">conduit</h1>
-        <p class="text-xl">{{ 'home.tagline' | translate }}</p>
+        <p class="text-xl" i18n="@@home.tagline">A place to share your Angular knowledge.</p>
       </div>
     </div>
     }
@@ -29,7 +29,7 @@
                 [class.hover:text-gray-700]="listConfig().type !== 'feed'"
                 (click)="setListTo('feed')"
               >
-                {{ 'home.yourFeed' | translate }}
+                <ng-container i18n="@@home.yourFeed">Your Feed</ng-container>
               </button>
               }
             </ng-container>
@@ -42,7 +42,7 @@
               [class.hover:text-gray-700]="listConfig().type !== 'all' || listConfig().filters.tag"
               (click)="setListTo('all')"
             >
-              {{ 'home.globalFeed' | translate }}
+              <ng-container i18n="@@home.globalFeed">Global Feed</ng-container>
             </button>
             @if (listConfig().filters.tag) {
             <span class="border-b-2 border-emerald-700 px-4 py-2 text-sm font-medium text-emerald-700">
