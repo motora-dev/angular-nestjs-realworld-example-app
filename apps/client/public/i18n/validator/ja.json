@@ -1,0 +1,12 @@
+{
+  "validation": {
+    "required": "このフィールドは必須です",
+    "minlength": "文字数が不足しています",
+    "minlength.withValue": "少なくとも",
+    "maxlength": "文字数が多すぎます",
+    "maxlength.withValue": "以下の文字数を入力してください",
+    "email": "有効なメールアドレスを入力してください",
+    "pattern": "無効な形式です",
+    "unknown": "エラー"
+  }
+}

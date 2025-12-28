@@ -11,6 +11,7 @@ import {
   SpinnerComponent,
 } from '$components/layouts';
 import { AuthFacade } from '$modules/auth';
+import { ValidatorMessagesComponent } from '$shared/ui/validator';
 
 /** Material Symbols Outlined font URL */
 const MATERIAL_SYMBOLS_URL =
@@ -27,6 +28,7 @@ const MATERIAL_SYMBOLS_URL =
     SnackbarComponent,
     ErrorDialogComponent,
     CookieConsentComponent,
+    ValidatorMessagesComponent,
   ],
   templateUrl: './app.html',
   styleUrl: './app.css',

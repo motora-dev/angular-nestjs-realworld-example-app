@@ -13,14 +13,16 @@ import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { AbstractControl, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { filter, merge, switchMap } from 'rxjs';
 
-/** Default error messages for common validators using @angular/localize */
-const DEFAULT_ERROR_MESSAGES: Record<string, string> = {
-  required: $localize`:@@validation.required:This field is required`,
-  minlength: $localize`:@@validation.minlength:Insufficient characters`,
-  maxlength: $localize`:@@validation.maxlength:Too many characters`,
-  email: $localize`:@@validation.email:Please enter a valid email address`,
-  pattern: $localize`:@@validation.pattern:Invalid format`,
-};
+import {
+  VALIDATION_MESSAGE_EMAIL,
+  VALIDATION_MESSAGE_MAXLENGTH,
+  VALIDATION_MESSAGE_MINLENGTH,
+  VALIDATION_MESSAGE_PATTERN,
+  VALIDATION_MESSAGE_REQUIRED,
+  formatMaxLengthMessage,
+  formatMinLengthMessage,
+  formatUnknownErrorMessage,
+} from '$shared/ui/validator';
 
 /**
  * TagsFieldComponent - Composed component for tags input with chip UI
@@ -80,9 +82,18 @@ export class TagsFieldComponent implements ControlValueAccessor {
   /** Input element reference */
   private readonly inputElement = viewChild.required<ElementRef<HTMLInputElement>>('inputRef');
 
+  /** Default error messages mapping */
+  private readonly defaultMessages: Record<string, string> = {
+    required: VALIDATION_MESSAGE_REQUIRED,
+    minlength: VALIDATION_MESSAGE_MINLENGTH,
+    maxlength: VALIDATION_MESSAGE_MAXLENGTH,
+    email: VALIDATION_MESSAGE_EMAIL,
+    pattern: VALIDATION_MESSAGE_PATTERN,
+  };
+
   /** Merged error messages (custom + defaults) */
   private readonly mergedMessages = computed(() => ({
-    ...DEFAULT_ERROR_MESSAGES,
+    ...this.defaultMessages,
     ...this.messages(),
   }));
 
@@ -107,13 +118,13 @@ export class TagsFieldComponent implements ControlValueAccessor {
       // Handle minlength/maxlength with actual values
       if (key === 'minlength') {
         const error = ctrl.errors?.['minlength'];
-        return $localize`:@@validation.minlength.withValue:Please enter at least ${error.requiredLength}:INTERPOLATION: characters`;
+        return formatMinLengthMessage(error.requiredLength);
       }
       if (key === 'maxlength') {
         const error = ctrl.errors?.['maxlength'];
-        return $localize`:@@validation.maxlength.withValue:Please enter no more than ${error.requiredLength}:INTERPOLATION: characters`;
+        return formatMaxLengthMessage(error.requiredLength);
       }
-      return msgs[key] ?? $localize`:@@validation.unknown:${key}:INTERPOLATION: error`;
+      return msgs[key] ?? formatUnknownErrorMessage(key);
     });
   });
 

@@ -1,0 +1,12 @@
+{
+  "validation": {
+    "required": "This field is required",
+    "minlength": "Insufficient characters",
+    "minlength.withValue": "Please enter at least",
+    "maxlength": "Too many characters",
+    "maxlength.withValue": "Please enter no more than",
+    "email": "Please enter a valid email address",
+    "pattern": "Invalid format",
+    "unknown": "error"
+  }
+}
