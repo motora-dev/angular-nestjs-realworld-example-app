@@ -4,8 +4,8 @@ import { ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiTags } f
 
 import type { CurrentUserType } from '$decorators';
 import { CurrentUser } from '$decorators';
-import { MultipleCommentsDto, SingleArticleDto } from './contracts';
-import { GetArticleQuery, GetCommentsQuery } from './queries';
+import { MultipleCommentsDto, SingleArticleDto } from '$domains/article/contracts';
+import { GetArticleQuery, GetCommentsQuery } from '$domains/article/queries';
 
 @ApiTags('Article')
 @Controller('articles')

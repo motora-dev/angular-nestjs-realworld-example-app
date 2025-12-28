@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 
 import { PrismaAdapterModule } from '$adapters';
-import { ArticleController } from './article.controller';
-import { GetArticleHandler, GetCommentsHandler } from './queries';
-import { ArticleRepository } from './repositories';
-import { ArticleService } from './services';
+import { ArticleController } from '$domains/article/article.controller';
+import { GetArticleHandler, GetCommentsHandler } from '$domains/article/queries';
+import { ArticleRepository } from '$domains/article/repositories';
+import { ArticleService } from '$domains/article/services';
 
 const QueryHandlers = [GetArticleHandler, GetCommentsHandler];
 
