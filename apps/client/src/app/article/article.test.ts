@@ -386,6 +386,22 @@ describe('ArticleComponent', () => {
       const result = component.canModify(mockArticle, null);
       expect(result).toBe(false);
     });
+
+    it('should return false when currentUser is undefined (optional chaining)', async () => {
+      // 初期化時のHTTPリクエストをモック
+      const articleReq = httpMock.expectOne('http://localhost:3000/articles/test-slug');
+      articleReq.flush({
+        article: mockArticle,
+      });
+      const commentsReq = httpMock.expectOne('http://localhost:3000/articles/test-slug/comments');
+      commentsReq.flush({ comments: [] });
+
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      // undefinedを明示的に渡してオプショナルチェーンのブランチをカバー
+      const result = component.canModify(mockArticle, undefined as any);
+      expect(result).toBe(false);
+    });
   });
 
   describe('onToggleFavorite', () => {
@@ -458,6 +474,38 @@ describe('ArticleComponent', () => {
       const deleteReq = httpMock.expectOne('http://localhost:3000/articles/test-slug');
       expect(deleteReq.request.method).toBe('DELETE');
       deleteReq.flush(null);
+    });
+
+    it('should handle setting isDeleting with same value (signal equality check branch)', async () => {
+      // 初期の記事読み込みをモック
+      const articleReq = httpMock.expectOne('http://localhost:3000/articles/test-slug');
+      articleReq.flush({
+        article: mockArticle,
+      });
+      const commentsReq = httpMock.expectOne('http://localhost:3000/articles/test-slug/comments');
+      commentsReq.flush({ comments: [] });
+
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      // 初期値を確認
+      expect(component.isDeleting()).toBe(false);
+
+      // 1回目のdeleteArticle呼び出しでisDeletingがtrueになる
+      component.deleteArticle('test-slug');
+      const deleteReq1 = httpMock.expectOne('http://localhost:3000/articles/test-slug');
+      expect(deleteReq1.request.method).toBe('DELETE');
+      deleteReq1.flush(null);
+
+      expect(component.isDeleting()).toBe(true);
+
+      // 2回目のdeleteArticle呼び出しで同じ値(true)で再度設定される
+      // これによりsignalの等価性チェックブランチがカバーされる
+      component.deleteArticle('test-slug');
+      const deleteReq2 = httpMock.expectOne('http://localhost:3000/articles/test-slug');
+      expect(deleteReq2.request.method).toBe('DELETE');
+      deleteReq2.flush(null);
+
+      expect(component.isDeleting()).toBe(true);
     });
   });
 
