@@ -70,7 +70,7 @@ describe('ArticleComponent', () => {
       navigate: vi.fn(),
       createUrlTree: vi.fn((_commands: any[]) => ({})),
       serializeUrl: vi.fn((_urlTree: any) => '/'),
-      events: EMPTY, // RouterLinkがsubscribeするためのObservable
+      events: EMPTY, // Observable for RouterLink to subscribe to
     };
 
     const mockActivatedRoute = {
@@ -117,7 +117,7 @@ describe('ArticleComponent', () => {
   });
 
   it('should create', () => {
-    // 初期化時のHTTPリクエストをモック
+    // Mock HTTP requests on initialization
     const articleReq = httpMock.expectOne('http://localhost:3000/articles/test-slug');
     articleReq.flush({
       article: {
@@ -145,7 +145,7 @@ describe('ArticleComponent', () => {
   });
 
   it('should load article and comments on initialization', () => {
-    // HTTPリクエストが送信されることを確認
+    // Verify HTTP requests are sent
     const articleReq = httpMock.expectOne('http://localhost:3000/articles/test-slug');
     expect(articleReq.request.method).toBe('GET');
     articleReq.flush({
@@ -213,7 +213,7 @@ describe('ArticleComponent', () => {
     const commentsReq = httpMock.expectOne('http://localhost:3000/articles/test-slug/comments');
     commentsReq.flush({ comments: [] });
 
-    // 非同期処理を待つ
+    // Wait for async operations
     await new Promise((resolve) => setTimeout(resolve, 100));
 
     const article = await new Promise<Article | null>((resolve) => {
@@ -263,7 +263,7 @@ describe('ArticleComponent', () => {
       ],
     });
 
-    // 非同期処理を待つ
+    // Wait for async operations
     await new Promise((resolve) => setTimeout(resolve, 100));
 
     const comments = await new Promise<Comment[]>((resolve) => {
@@ -337,7 +337,7 @@ describe('ArticleComponent', () => {
 
   describe('canModify', () => {
     it('should return true when current user is the article author', async () => {
-      // 初期化時のHTTPリクエストをモック
+      // Mock HTTP requests on initialization
       const articleReq = httpMock.expectOne('http://localhost:3000/articles/test-slug');
       articleReq.flush({
         article: mockArticle,
@@ -352,7 +352,7 @@ describe('ArticleComponent', () => {
     });
 
     it('should return false when current user is not the article author', async () => {
-      // 初期化時のHTTPリクエストをモック
+      // Mock HTTP requests on initialization
       const articleReq = httpMock.expectOne('http://localhost:3000/articles/test-slug');
       articleReq.flush({
         article: mockArticle,
@@ -373,7 +373,7 @@ describe('ArticleComponent', () => {
     });
 
     it('should return false when current user is null', async () => {
-      // 初期化時のHTTPリクエストをモック
+      // Mock HTTP requests on initialization
       const articleReq = httpMock.expectOne('http://localhost:3000/articles/test-slug');
       articleReq.flush({
         article: mockArticle,
@@ -388,7 +388,7 @@ describe('ArticleComponent', () => {
     });
 
     it('should return false when currentUser is undefined (optional chaining)', async () => {
-      // 初期化時のHTTPリクエストをモック
+      // Mock HTTP requests on initialization
       const articleReq = httpMock.expectOne('http://localhost:3000/articles/test-slug');
       articleReq.flush({
         article: mockArticle,
@@ -398,7 +398,7 @@ describe('ArticleComponent', () => {
 
       await new Promise((resolve) => setTimeout(resolve, 100));
 
-      // undefinedを明示的に渡してオプショナルチェーンのブランチをカバー
+      // Explicitly pass undefined to cover optional chaining branch
       const result = component.canModify(mockArticle, undefined as any);
       expect(result).toBe(false);
     });
@@ -406,7 +406,7 @@ describe('ArticleComponent', () => {
 
   describe('onToggleFavorite', () => {
     it('should call unfavoriteArticle when article is favorited', async () => {
-      // 初期の記事読み込みをモック
+      // Mock initial article loading
       const articleReq = httpMock.expectOne('http://localhost:3000/articles/test-slug');
       articleReq.flush({
         article: {
@@ -431,7 +431,7 @@ describe('ArticleComponent', () => {
     });
 
     it('should call favoriteArticle when article is not favorited', async () => {
-      // 初期の記事読み込みをモック
+      // Mock initial article loading
       const articleReq = httpMock.expectOne('http://localhost:3000/articles/test-slug');
       articleReq.flush({
         article: mockArticle,
@@ -457,7 +457,7 @@ describe('ArticleComponent', () => {
 
   describe('deleteArticle', () => {
     it('should set isDeleting to true and call facade deleteArticle', async () => {
-      // 初期の記事読み込みをモック
+      // Mock initial article loading
       const articleReq = httpMock.expectOne('http://localhost:3000/articles/test-slug');
       articleReq.flush({
         article: mockArticle,
@@ -477,7 +477,7 @@ describe('ArticleComponent', () => {
     });
 
     it('should handle setting isDeleting with same value (signal equality check branch)', async () => {
-      // 初期の記事読み込みをモック
+      // Mock initial article loading
       const articleReq = httpMock.expectOne('http://localhost:3000/articles/test-slug');
       articleReq.flush({
         article: mockArticle,
@@ -487,10 +487,10 @@ describe('ArticleComponent', () => {
 
       await new Promise((resolve) => setTimeout(resolve, 100));
 
-      // 初期値を確認
+      // Check initial value
       expect(component.isDeleting()).toBe(false);
 
-      // 1回目のdeleteArticle呼び出しでisDeletingがtrueになる
+      // First deleteArticle call sets isDeleting to true
       component.deleteArticle('test-slug');
       const deleteReq1 = httpMock.expectOne('http://localhost:3000/articles/test-slug');
       expect(deleteReq1.request.method).toBe('DELETE');
@@ -498,8 +498,8 @@ describe('ArticleComponent', () => {
 
       expect(component.isDeleting()).toBe(true);
 
-      // 2回目のdeleteArticle呼び出しで同じ値(true)で再度設定される
-      // これによりsignalの等価性チェックブランチがカバーされる
+      // Second deleteArticle call sets the same value (true) again
+      // This covers the signal equality check branch
       component.deleteArticle('test-slug');
       const deleteReq2 = httpMock.expectOne('http://localhost:3000/articles/test-slug');
       expect(deleteReq2.request.method).toBe('DELETE');
@@ -511,7 +511,7 @@ describe('ArticleComponent', () => {
 
   describe('addComment', () => {
     it('should call facade addComment with slug and body', async () => {
-      // 初期の記事読み込みをモック
+      // Mock initial article loading
       const articleReq = httpMock.expectOne('http://localhost:3000/articles/test-slug');
       articleReq.flush({
         article: mockArticle,
@@ -544,7 +544,7 @@ describe('ArticleComponent', () => {
 
   describe('deleteComment', () => {
     it('should call facade deleteComment with comment id and slug', async () => {
-      // 初期の記事読み込みをモック
+      // Mock initial article loading
       const articleReq = httpMock.expectOne('http://localhost:3000/articles/test-slug');
       articleReq.flush({
         article: mockArticle,
@@ -566,7 +566,7 @@ describe('ArticleComponent', () => {
 
   describe('toggleFollowing', () => {
     it('should be a no-op method', async () => {
-      // 初期化時のHTTPリクエストをモック
+      // Mock HTTP requests on initialization
       const articleReq = httpMock.expectOne('http://localhost:3000/articles/test-slug');
       articleReq.flush({
         article: mockArticle,

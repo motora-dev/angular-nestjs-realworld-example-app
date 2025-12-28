@@ -74,7 +74,7 @@ describe('EditorFormComponent', () => {
     // from a parent component via template binding. However, in TestBed, when we create
     // a component directly, the input defaults are used in the constructor.
     //
-    // To test 53行目, we need to create the component as a child of a parent component
+    // To test line 53, we need to create the component as a child of a parent component
     // where the input is set via template binding. When Angular creates the child component,
     // it sets the input value before the constructor runs.
     //
@@ -126,15 +126,15 @@ describe('EditorFormComponent', () => {
     // In a real application, when a component is created as a child, Angular sets inputs
     // before the constructor, but TestBed's createComponent doesn't work the same way.
     //
-    // To test 53行目, we would need to manually trigger the constructor logic with
+    // To test line 53, we would need to manually trigger the constructor logic with
     // a non-empty initialTagList, but that's not possible without modifying the component.
     //
     // However, we can verify that the input is correctly set and accessible:
     expect(editorFormComponent.tagList()).toEqual([]); // Constructor ran with empty array (default)
 
-    // To actually test 53行目, we would need to ensure the input is set before constructor runs.
+    // To actually test line 53, we would need to ensure the input is set before constructor runs.
     // This is typically only possible in a real application scenario, not in unit tests.
-    // The line 53 is only reachable if the input has a value at constructor time,
+    // Line 53 is only reachable if the input has a value at constructor time,
     // which requires the component to be created with the input already set.
   });
 

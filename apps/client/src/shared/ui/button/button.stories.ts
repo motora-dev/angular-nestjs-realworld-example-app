@@ -10,16 +10,16 @@ const meta: Meta<ButtonDirective> = {
     variant: {
       control: 'select',
       options: ['default', 'destructive', 'outline', 'secondary', 'ghost', 'link'],
-      description: 'ボタンのスタイルバリアント',
+      description: 'Button style variant',
     },
     size: {
       control: 'select',
       options: ['default', 'sm', 'lg', 'icon'],
-      description: 'ボタンのサイズ',
+      description: 'Button size',
     },
     class: {
       control: 'text',
-      description: '追加のCSSクラス',
+      description: 'Additional CSS classes',
     },
   },
   render: (args) => ({
@@ -31,7 +31,7 @@ const meta: Meta<ButtonDirective> = {
 export default meta;
 type Story = StoryObj<ButtonDirective>;
 
-/** デフォルトのボタンスタイル */
+/** Default button style */
 export const Default: Story = {
   args: {
     variant: 'default',
@@ -39,7 +39,7 @@ export const Default: Story = {
   },
 };
 
-/** 破壊的なアクション用のボタン */
+/** Button for destructive actions */
 export const Destructive: Story = {
   args: {
     variant: 'destructive',
@@ -47,11 +47,11 @@ export const Destructive: Story = {
   },
   render: (args) => ({
     props: args,
-    template: `<button appButton [variant]="variant" [size]="size">削除</button>`,
+    template: `<button appButton [variant]="variant" [size]="size">Delete</button>`,
   }),
 };
 
-/** アウトラインスタイルのボタン */
+/** Outline style button */
 export const Outline: Story = {
   args: {
     variant: 'outline',
@@ -59,11 +59,11 @@ export const Outline: Story = {
   },
   render: (args) => ({
     props: args,
-    template: `<button appButton [variant]="variant" [size]="size">キャンセル</button>`,
+    template: `<button appButton [variant]="variant" [size]="size">Cancel</button>`,
   }),
 };
 
-/** セカンダリスタイルのボタン */
+/** Secondary style button */
 export const Secondary: Story = {
   args: {
     variant: 'secondary',
@@ -71,11 +71,11 @@ export const Secondary: Story = {
   },
   render: (args) => ({
     props: args,
-    template: `<button appButton [variant]="variant" [size]="size">セカンダリ</button>`,
+    template: `<button appButton [variant]="variant" [size]="size">Secondary</button>`,
   }),
 };
 
-/** ゴーストスタイルのボタン */
+/** Ghost style button */
 export const Ghost: Story = {
   args: {
     variant: 'ghost',
@@ -83,11 +83,11 @@ export const Ghost: Story = {
   },
   render: (args) => ({
     props: args,
-    template: `<button appButton [variant]="variant" [size]="size">ゴースト</button>`,
+    template: `<button appButton [variant]="variant" [size]="size">Ghost</button>`,
   }),
 };
 
-/** リンクスタイルのボタン */
+/** Link style button */
 export const Link: Story = {
   args: {
     variant: 'link',
@@ -95,11 +95,11 @@ export const Link: Story = {
   },
   render: (args) => ({
     props: args,
-    template: `<button appButton [variant]="variant" [size]="size">リンク</button>`,
+    template: `<button appButton [variant]="variant" [size]="size">Link</button>`,
   }),
 };
 
-/** 小さいサイズのボタン */
+/** Small size button */
 export const Small: Story = {
   args: {
     variant: 'default',
@@ -111,7 +111,7 @@ export const Small: Story = {
   }),
 };
 
-/** 大きいサイズのボタン */
+/** Large size button */
 export const Large: Story = {
   args: {
     variant: 'default',
@@ -123,7 +123,7 @@ export const Large: Story = {
   }),
 };
 
-/** アイコンボタン */
+/** Icon button */
 export const Icon: Story = {
   args: {
     variant: 'outline',
@@ -142,7 +142,7 @@ export const Icon: Story = {
   }),
 };
 
-/** 無効化されたボタン */
+/** Disabled button */
 export const Disabled: Story = {
   args: {
     variant: 'default',
@@ -150,11 +150,11 @@ export const Disabled: Story = {
   },
   render: (args) => ({
     props: args,
-    template: `<button appButton [variant]="variant" [size]="size" disabled>無効</button>`,
+    template: `<button appButton [variant]="variant" [size]="size" disabled>Disabled</button>`,
   }),
 };
 
-/** 全バリアント一覧 */
+/** All variants overview */
 export const AllVariants: Story = {
   render: () => ({
     template: `
@@ -170,7 +170,7 @@ export const AllVariants: Story = {
   }),
 };
 
-/** 全サイズ一覧 */
+/** All sizes overview */
 export const AllSizes: Story = {
   render: () => ({
     template: `

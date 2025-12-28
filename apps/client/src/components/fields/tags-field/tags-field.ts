@@ -33,7 +33,7 @@ import {
  * @example
  * ```html
  * <app-tags-field
- *   label="タグ"
+ *   label="Tags"
  *   [control]="form.controls.tags"
  * >
  * </app-tags-field>

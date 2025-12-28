@@ -25,9 +25,9 @@ import {
  * @example
  * ```html
  * <app-input-field
- *   label="ユーザー名"
+ *   label="Username"
  *   [control]="form.controls.username"
- *   [messages]="{ required: '必須項目です' }"
+ *   [messages]="{ required: 'This field is required' }"
  * >
  *   <input appInput formControlName="username" />
  * </app-input-field>

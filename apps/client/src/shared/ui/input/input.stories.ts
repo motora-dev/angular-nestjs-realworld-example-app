@@ -9,52 +9,52 @@ const meta: Meta<InputDirective> = {
   argTypes: {
     error: {
       control: 'boolean',
-      description: 'エラー状態を表示',
+      description: 'Show error state',
     },
     class: {
       control: 'text',
-      description: '追加のCSSクラス',
+      description: 'Additional CSS classes',
     },
   },
   render: (args) => ({
     props: args,
-    template: `<input appInput [error]="error" [class]="class" placeholder="テキストを入力..." />`,
+    template: `<input appInput [error]="error" [class]="class" placeholder="Enter text..." />`,
   }),
 };
 
 export default meta;
 type Story = StoryObj<InputDirective>;
 
-/** デフォルトの入力フィールド */
+/** Default input field */
 export const Default: Story = {
   args: {
     error: false,
   },
 };
 
-/** エラー状態の入力フィールド */
+/** Input field with error state */
 export const Error: Story = {
   args: {
     error: true,
   },
   render: (args) => ({
     props: args,
-    template: `<input appInput [error]="error" placeholder="エラーがあります" />`,
+    template: `<input appInput [error]="error" placeholder="Error occurred" />`,
   }),
 };
 
-/** 無効化された入力フィールド */
+/** Disabled input field */
 export const Disabled: Story = {
   args: {
     error: false,
   },
   render: (args) => ({
     props: args,
-    template: `<input appInput [error]="error" placeholder="無効化されています" disabled />`,
+    template: `<input appInput [error]="error" placeholder="Disabled" />`,
   }),
 };
 
-/** メールアドレス入力 */
+/** Email input */
 export const Email: Story = {
   args: {
     error: false,
@@ -65,18 +65,18 @@ export const Email: Story = {
   }),
 };
 
-/** パスワード入力 */
+/** Password input */
 export const Password: Story = {
   args: {
     error: false,
   },
   render: (args) => ({
     props: args,
-    template: `<input appInput [error]="error" type="password" placeholder="パスワード" />`,
+    template: `<input appInput [error]="error" type="password" placeholder="Password" />`,
   }),
 };
 
-/** 数値入力 */
+/** Number input */
 export const Number: Story = {
   args: {
     error: false,
@@ -87,29 +87,29 @@ export const Number: Story = {
   }),
 };
 
-/** テキストエリア */
+/** Textarea */
 export const Textarea: Story = {
   args: {
     error: false,
   },
   render: (args) => ({
     props: args,
-    template: `<textarea appInput [error]="error" placeholder="複数行のテキスト..." rows="4"></textarea>`,
+    template: `<textarea appInput [error]="error" placeholder="Multi-line text..." rows="4"></textarea>`,
   }),
 };
 
-/** 値が入力済み */
+/** Input with value */
 export const WithValue: Story = {
   args: {
     error: false,
   },
   render: (args) => ({
     props: args,
-    template: `<input appInput [error]="error" value="入力済みの値" />`,
+    template: `<input appInput [error]="error" value="Entered value" />`,
   }),
 };
 
-/** ファイル選択 */
+/** File selection */
 export const File: Story = {
   args: {
     error: false,
@@ -120,15 +120,15 @@ export const File: Story = {
   }),
 };
 
-/** 全状態一覧 */
+/** All states overview */
 export const AllStates: Story = {
   render: () => ({
     template: `
       <div class="flex flex-col gap-4 max-w-sm">
-        <input appInput placeholder="通常状態" />
-        <input appInput [error]="true" placeholder="エラー状態" />
-        <input appInput placeholder="無効化" disabled />
-        <input appInput value="入力済み" />
+        <input appInput placeholder="Normal state" />
+        <input appInput [error]="true" placeholder="Error state" />
+        <input appInput placeholder="Disabled" disabled />
+        <input appInput value="Entered value" />
       </div>
     `,
   }),

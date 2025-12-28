@@ -7,7 +7,7 @@ describe('NotFoundError', () => {
     const error = new NotFoundError();
     expect(error).toBeInstanceOf(Error);
     expect(error).toBeInstanceOf(NotFoundError);
-    expect(error.message).toBe('ページが見つかりませんでした');
+    expect(error.message).toBe('Page not found');
     expect(error.statusCode).toBe(404);
     expect(error.name).toBe('NotFoundError');
   });

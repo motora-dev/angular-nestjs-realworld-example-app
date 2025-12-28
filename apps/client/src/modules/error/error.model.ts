@@ -1,22 +1,22 @@
-/** APIエラー（HTTPレスポンスエラー） */
+/** API error (HTTP response error) */
 export interface ApiError {
   type: 'api';
   errorCode: string;
   message: string;
 }
 
-/** サーバーエラー（HTTPレスポンスエラー） */
+/** Server error (HTTP response error) */
 export interface ServerError {
   type: 'server';
   status: number;
   message: string;
 }
 
-/** クライアントエラー（ランタイムエラー） */
+/** Client error (runtime error) */
 export interface ClientError {
   type: 'client';
   message: string;
 }
 
-/** アプリケーションエラー（APIエラー | クライアントエラー） */
+/** Application error (API error | Client error) */
 export type AppError = ApiError | ServerError | ClientError;

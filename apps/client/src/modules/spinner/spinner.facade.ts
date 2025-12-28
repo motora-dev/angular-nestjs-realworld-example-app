@@ -5,7 +5,7 @@ import { defer, finalize, forkJoin, map, MonoTypeOperatorFunction, timer } from 
 
 import { HideSpinner, ShowSpinner, SpinnerState } from './store';
 
-/** スピナーの最小表示時間（ミリ秒） */
+/** Minimum display time for spinner (milliseconds) */
 const MIN_DISPLAY_TIME = 300;
 
 @Injectable({ providedIn: 'root' })
@@ -29,10 +29,10 @@ export class SpinnerFacade {
   }
 
   /**
-   * Observableをラップして自動的にスピナーを制御するオペレーター
-   * subscribe時にスピナーを表示し、complete/error時に非表示にする
-   * 最小表示時間を保証し、ちらつきを防止する
-   * サーバー側ではスピナー制御をスキップ
+   * Operator that wraps an Observable to automatically control the spinner
+   * Shows spinner on subscribe, hides on complete/error
+   * Guarantees minimum display time to prevent flickering
+   * Skips spinner control on server side
    */
   withSpinner<T>(message?: string): MonoTypeOperatorFunction<T> {
     return (source) =>
