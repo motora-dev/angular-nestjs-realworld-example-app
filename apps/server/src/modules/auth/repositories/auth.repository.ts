@@ -24,7 +24,7 @@ export class AuthRepository {
         },
       },
       include: {
-        user: true, // 関連するUser情報も一緒に取得
+        user: true, // Also fetch related User information
       },
     });
 

@@ -13,11 +13,49 @@
 [![Build](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/ci-check.yml/badge.svg)](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/ci-check.yml)
 [![Test](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/ci-test.yml/badge.svg)](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/ci-test.yml)
 [![Deploy](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/cd-gcp.yml/badge.svg)](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/cd-gcp.yml)
-[![codecov](https://codecov.io/github/motora-dev/angular-nestjs-realworld-example-app/badge.svg?branch=main)](https://codecov.io/github/motora-dev/angular-nestjs-realworld-example-app)
+[![codecov client](https://codecov.io/github/motora-dev/angular-nestjs-realworld-example-app/badge.svg?branch=main&flag=client)](https://codecov.io/github/motora-dev/angular-nestjs-realworld-example-app?flags=client) [![codecov server](https://codecov.io/github/motora-dev/angular-nestjs-realworld-example-app/badge.svg?branch=main&flag=server)](https://codecov.io/github/motora-dev/angular-nestjs-realworld-example-app?flags=server)
+
+## Performance
+
+![Lighthouse Performance Report](docs/images/lighthouse-performance-report.jpeg)
+
+Achieved perfect scores (100) across all categories (Performance, Accessibility, Best Practices, SEO) in Google Lighthouse performance evaluation.
 
 This codebase was created to demonstrate a production-ready fullstack application built with **Angular** and **NestJS**, including CRUD operations, authentication, routing, pagination, and more.
 
 For information on how to integrate with other frontends/backends, check out the [RealWorld](https://github.com/gothinkster/realworld) repository.
+
+---
+
+## Table of Contents
+
+### Overview
+
+- [Target Audience](#target-audience)
+- [Project Structure](#-project-structure)
+- [Architecture](#-architecture)
+- [Technology Stack](#-technology-stack)
+
+### Development
+
+- [Development Environment Setup](#-development-environment-setup)
+- [Available Commands](#-available-commands)
+- [Testing](#-testing)
+- [Development Flow](#-development-flow)
+
+### Operations
+
+- [CI/CD Pipeline](#-cicd-pipeline)
+- [Environment Configuration](#-environment-configuration)
+- [Infrastructure (Terraform)](#%EF%B8%8F-infrastructure-terraform)
+- [Logging & Monitoring](#-logging--monitoring)
+
+### Reference
+
+- [Main Dependencies](#-main-dependencies)
+- [API Specification](#-api-specification)
+
+---
 
 ## Target Audience
 
@@ -82,36 +120,6 @@ This implementation is a "Conduit" blog platform that conforms to the [RealWorld
 
 - **Authentication method**: Implements only OAuth authentication instead of standard username/password authentication
 - **Some API endpoints**: Some endpoint paths differ from the standard to conform to directory structure (Vertical Slice Architecture)
-
----
-
-## Table of Contents
-
-### Overview
-
-- [Target Audience](#target-audience)
-- [Project Structure](#-project-structure)
-- [Architecture](#-architecture)
-- [Technology Stack](#-technology-stack)
-
-### Development
-
-- [Development Environment Setup](#-development-environment-setup)
-- [Available Commands](#-available-commands)
-- [Testing](#-testing)
-- [Development Flow](#-development-flow)
-
-### Operations
-
-- [CI/CD Pipeline](#-cicd-pipeline)
-- [Environment Configuration](#-environment-configuration)
-- [Infrastructure (Terraform)](#%EF%B8%8F-infrastructure-terraform)
-- [Logging & Monitoring](#-logging--monitoring)
-
-### Reference
-
-- [Main Dependencies](#-main-dependencies)
-- [API Specification](#-api-specification)
 
 ---
 

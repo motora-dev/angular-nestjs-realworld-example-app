@@ -30,7 +30,7 @@ export class CookieConsentService {
       this._consent.set(stored);
       this._isLoading.set(false);
 
-      // 同意済みの場合は即座にConsent Modeを更新
+      // Update Consent Mode immediately if already accepted
       if (stored === 'accepted') {
         this.updateConsentMode('accepted');
       }
@@ -51,7 +51,7 @@ export class CookieConsentService {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.setItem(STORAGE_KEY, 'rejected');
       this._consent.set('rejected');
-      // 拒否時はdeniedのまま維持
+      // Keep denied when rejected
     }
   }
 
@@ -59,7 +59,7 @@ export class CookieConsentService {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.removeItem(STORAGE_KEY);
       this._consent.set(null);
-      // ページをリロードして設定を反映
+      // Reload page to apply settings
       window.location.reload();
     }
   }
@@ -77,6 +77,6 @@ export class CookieConsentService {
         ad_personalization: 'granted',
       });
     }
-    // 拒否時はdeniedのまま維持（何もしない）
+    // Keep denied when rejected (do nothing)
   }
 }

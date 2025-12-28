@@ -30,6 +30,9 @@ import { OAuth2Client } from 'google-auth-library';
 
 import type { CurrentUserType } from '$decorators';
 import { CurrentUser } from '$decorators';
+import type { ProcessOAuthCallbackResult } from '$modules/auth/commands/process-oauth-callback/process-oauth-callback.command';
+import type { RefreshAccessTokenResult } from '$modules/auth/commands/refresh-access-token/refresh-access-token.command';
+import type { RegisterUserResult } from '$modules/auth/commands/register-user/register-user.command';
 import {
   ProcessOAuthCallbackCommand,
   RefreshAccessTokenCommand,
@@ -48,9 +51,6 @@ import { GoogleAuthGuard } from './guards';
 import { GetAuthUserInfoQuery, GetAuthUserQuery, GetPendingRegistrationQuery } from './queries';
 import { AuthService } from './services';
 
-import type { ProcessOAuthCallbackResult } from './commands/process-oauth-callback/process-oauth-callback.handler';
-import type { RefreshAccessTokenResult } from './commands/refresh-access-token/refresh-access-token.handler';
-import type { RegisterUserResult } from './commands/register-user/register-user.handler';
 import type { Request, Response } from 'express';
 
 @ApiTags('Auth')

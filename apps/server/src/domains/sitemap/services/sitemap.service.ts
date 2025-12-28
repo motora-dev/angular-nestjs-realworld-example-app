@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
-import { SitemapDto } from '../contracts';
-import { SitemapRepository } from '../repositories';
+import type { SitemapDto } from '$domains/sitemap/contracts';
+import { SitemapRepository } from '$domains/sitemap/repositories/sitemap.repository';
 
 @Injectable()
 export class SitemapService {

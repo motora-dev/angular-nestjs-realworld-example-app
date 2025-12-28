@@ -1,11 +1,10 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-import { ProcessOAuthCallbackCommand } from './process-oauth-callback.command';
-import { AuthService } from '../../services';
-
-export type ProcessOAuthCallbackResult =
-  | { type: 'login'; accessToken: string; refreshToken: string }
-  | { type: 'register'; pendingToken: string };
+import {
+  ProcessOAuthCallbackCommand,
+  type ProcessOAuthCallbackResult,
+} from '$modules/auth/commands/process-oauth-callback/process-oauth-callback.command';
+import { AuthService } from '$modules/auth/services/auth.service';
 
 @CommandHandler(ProcessOAuthCallbackCommand)
 export class ProcessOAuthCallbackHandler implements ICommandHandler<ProcessOAuthCallbackCommand> {

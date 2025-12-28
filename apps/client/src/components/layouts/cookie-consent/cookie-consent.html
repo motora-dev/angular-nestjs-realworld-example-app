@@ -5,8 +5,12 @@
   <div class="max-w-5xl mx-auto flex items-center justify-between gap-4 flex-wrap">
     <div class="flex-1 min-w-[300px]">
       <p class="m-0 text-sm text-gray-700 leading-relaxed">
-        当サイトでは、サービス向上のためCookieを使用しています。分析や広告のためのCookieについては、同意をお願いします。
-        <a routerLink="/privacy-policy" class="text-blue-600 underline ml-1">詳細はこちら</a>
+        <span i18n="@@cookieConsent.message"
+          >This site uses cookies to improve services. Please consent to cookies for analytics and advertising.</span
+        >
+        <a routerLink="/privacy-policy" class="text-blue-600 underline ml-1" i18n="@@cookieConsent.detailsLink"
+          >Learn more</a
+        >
       </p>
     </div>
     <div class="flex gap-3 shrink-0">
@@ -14,15 +18,17 @@
         type="button"
         (click)="reject()"
         class="px-5 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-300 rounded-md cursor-pointer transition-colors hover:bg-gray-50"
+        i18n="@@cookieConsent.reject"
       >
-        拒否する
+        Reject
       </button>
       <button
         type="button"
         (click)="accept()"
         class="px-5 py-2 text-sm font-medium text-white bg-blue-600 border-none rounded-md cursor-pointer transition-colors hover:bg-blue-700"
+        i18n="@@cookieConsent.accept"
       >
-        同意する
+        Accept
       </button>
     </div>
   </div>

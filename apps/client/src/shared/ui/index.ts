@@ -1,3 +1,4 @@
 export * from './button';
 export * from './input';
-// highlighterは遅延ロード対象のため、直接パス（$shared/ui/highlighter）を使用
+export * from './validator';
+// highlighter is lazy-loaded, so use direct path ($shared/ui/highlighter)

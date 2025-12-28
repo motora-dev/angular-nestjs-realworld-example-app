@@ -20,15 +20,15 @@ export class SnackbarComponent {
   private readonly leavingIds = signal<Set<string>>(new Set());
 
   constructor() {
-    // snackbarsが変更されたときに、各Snackbarの自動非表示タイマーを設定
+    // Set auto-hide timer for each Snackbar when snackbars change
     effect(() => {
       const currentSnackbars = this.snackbars();
       const currentTimers = this.timers();
 
-      // 変更検知を明示的にトリガー（effect内でSignalを読み取った後）
+      // Explicitly trigger change detection (after reading Signal in effect)
       this.cdr.markForCheck();
 
-      // 既存のタイマーをクリア
+      // Clear existing timers
       currentTimers.forEach((timer, id) => {
         if (!currentSnackbars.find((item) => item.id === id)) {
           clearTimeout(timer);
@@ -36,13 +36,13 @@ export class SnackbarComponent {
         }
       });
 
-      // 新しいSnackbarに対してタイマーを設定
+      // Set timer for new Snackbars
       currentSnackbars.forEach((item) => {
         if (!currentTimers.has(item.id)) {
           const timer = setTimeout(() => {
-            // リーブアニメーションを適用
+            // Apply leave animation
             this.leavingIds.update((ids) => new Set([...ids, item.id]));
-            // アニメーション完了後に要素を削除
+            // Remove element after animation completes
             setTimeout(() => {
               this.snackbarFacade.hideSnackbar(item.id);
               this.leavingIds.update((ids) => {
@@ -50,7 +50,7 @@ export class SnackbarComponent {
                 newIds.delete(item.id);
                 return newIds;
               });
-            }, 200); // リーブアニメーションの時間と一致させる
+            }, 200); // Match leave animation duration
             currentTimers.delete(item.id);
             this.timers.set(new Map(currentTimers));
           }, item.duration);
@@ -70,9 +70,9 @@ export class SnackbarComponent {
       currentTimers.delete(id);
       this.timers.set(new Map(currentTimers));
     }
-    // リーブアニメーションを適用
+    // Apply leave animation
     this.leavingIds.update((ids) => new Set([...ids, id]));
-    // アニメーション完了後に要素を削除
+    // Remove element after animation completes
     setTimeout(() => {
       this.snackbarFacade.hideSnackbar(id);
       this.leavingIds.update((ids) => {
@@ -80,7 +80,7 @@ export class SnackbarComponent {
         newIds.delete(id);
         return newIds;
       });
-    }, 200); // リーブアニメーションの時間と一致させる
+    }, 200); // Match leave animation duration
   }
 
   isLeaving(id: string): boolean {

@@ -1,9 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { vi } from 'vitest';
 
 import { PrismaAdapter } from '$adapters';
 import { AuthRepository } from './auth.repository';
 
-import type { User } from '@monorepo/database/client';
+import type { RefreshToken, User } from '@monorepo/database/client';
 
 describe('AuthRepository', () => {
   let repository: AuthRepository;
@@ -28,6 +29,11 @@ describe('AuthRepository', () => {
       },
       account: {
         findUnique: vi.fn(),
+      },
+      refreshToken: {
+        create: vi.fn(),
+        findUnique: vi.fn(),
+        deleteMany: vi.fn(),
       },
     };
 
@@ -89,6 +95,14 @@ describe('AuthRepository', () => {
       expect(result).toEqual(mockUser);
     });
 
+    it('should return null when account found but user is null', async () => {
+      mockPrismaAdapter.account.findUnique.mockResolvedValue({ user: null });
+
+      const result = await repository.getUserByProvider('google', 'google_123');
+
+      expect(result).toBeNull();
+    });
+
     it('should return null when not found', async () => {
       mockPrismaAdapter.account.findUnique.mockResolvedValue(null);
 
@@ -142,6 +156,132 @@ describe('AuthRepository', () => {
       const result = await repository.isUsernameTaken('newuser');
 
       expect(result).toBe(false);
+    });
+  });
+
+  describe('findUserByEmail', () => {
+    it('should return user when found by email', async () => {
+      mockPrismaAdapter.user.findUnique.mockResolvedValue(mockUser);
+
+      const result = await repository.findUserByEmail('test@gmail.com');
+
+      expect(mockPrismaAdapter.user.findUnique).toHaveBeenCalledWith({
+        where: { email: 'test@gmail.com' },
+      });
+      expect(result).toEqual(mockUser);
+    });
+
+    it('should return null when user not found by email', async () => {
+      mockPrismaAdapter.user.findUnique.mockResolvedValue(null);
+
+      const result = await repository.findUserByEmail('notfound@gmail.com');
+
+      expect(mockPrismaAdapter.user.findUnique).toHaveBeenCalledWith({
+        where: { email: 'notfound@gmail.com' },
+      });
+      expect(result).toBeNull();
+    });
+  });
+
+  describe('createRefreshToken', () => {
+    it('should create a new refresh token', async () => {
+      const mockRefreshToken: RefreshToken = {
+        id: 1,
+        token: 'refresh-token-123',
+        userId: 1,
+        expiresAt: new Date('2024-12-31'),
+        createdAt: new Date(),
+      };
+
+      const expiresAt = new Date('2024-12-31');
+      mockPrismaAdapter.refreshToken.create.mockResolvedValue(mockRefreshToken);
+
+      const result = await repository.createRefreshToken(1, 'refresh-token-123', expiresAt);
+
+      expect(mockPrismaAdapter.refreshToken.create).toHaveBeenCalledWith({
+        data: {
+          token: 'refresh-token-123',
+          userId: 1,
+          expiresAt,
+        },
+      });
+      expect(result).toEqual(mockRefreshToken);
+    });
+  });
+
+  describe('findRefreshToken', () => {
+    it('should return refresh token with user when found', async () => {
+      const mockRefreshTokenWithUser = {
+        id: 1,
+        token: 'refresh-token-123',
+        userId: 1,
+        expiresAt: new Date('2024-12-31'),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        user: mockUser,
+      };
+
+      mockPrismaAdapter.refreshToken.findUnique.mockResolvedValue(mockRefreshTokenWithUser);
+
+      const result = await repository.findRefreshToken('refresh-token-123');
+
+      expect(mockPrismaAdapter.refreshToken.findUnique).toHaveBeenCalledWith({
+        where: { token: 'refresh-token-123' },
+        include: { user: true },
+      });
+      expect(result).toEqual(mockRefreshTokenWithUser);
+    });
+
+    it('should return null when refresh token not found', async () => {
+      mockPrismaAdapter.refreshToken.findUnique.mockResolvedValue(null);
+
+      const result = await repository.findRefreshToken('non-existent-token');
+
+      expect(mockPrismaAdapter.refreshToken.findUnique).toHaveBeenCalledWith({
+        where: { token: 'non-existent-token' },
+        include: { user: true },
+      });
+      expect(result).toBeNull();
+    });
+  });
+
+  describe('deleteRefreshToken', () => {
+    it('should delete refresh token by token string', async () => {
+      mockPrismaAdapter.refreshToken.deleteMany.mockResolvedValue({ count: 1 });
+
+      await repository.deleteRefreshToken('refresh-token-123');
+
+      expect(mockPrismaAdapter.refreshToken.deleteMany).toHaveBeenCalledWith({
+        where: { token: 'refresh-token-123' },
+      });
+    });
+  });
+
+  describe('deleteAllRefreshTokens', () => {
+    it('should delete all refresh tokens for a user', async () => {
+      mockPrismaAdapter.refreshToken.deleteMany.mockResolvedValue({ count: 3 });
+
+      await repository.deleteAllRefreshTokens(1);
+
+      expect(mockPrismaAdapter.refreshToken.deleteMany).toHaveBeenCalledWith({
+        where: { userId: 1 },
+      });
+    });
+  });
+
+  describe('deleteExpiredRefreshTokens', () => {
+    it('should delete expired refresh tokens', async () => {
+      mockPrismaAdapter.refreshToken.deleteMany.mockResolvedValue({ count: 5 });
+
+      await repository.deleteExpiredRefreshTokens();
+
+      expect(mockPrismaAdapter.refreshToken.deleteMany).toHaveBeenCalledWith({
+        where: {
+          expiresAt: {
+            lt: expect.any(Date),
+          },
+        },
+      });
     });
   });
 });

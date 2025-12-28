@@ -34,7 +34,7 @@ export default [
     rules: {
       ...angularEslintPlugin.configs.recommended.rules,
       '@angular-eslint/directive-selector': ['error', { type: 'attribute', prefix: ['app'], style: 'camelCase' }],
-      // 属性セレクターを使うコンポーネント（button, input等）はcamelCaseを許可
+      // Allow camelCase for components using attribute selectors (button, input, etc.)
       '@angular-eslint/component-selector': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unused-vars': [

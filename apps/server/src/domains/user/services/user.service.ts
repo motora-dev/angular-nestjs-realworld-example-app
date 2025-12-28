@@ -1,11 +1,15 @@
 import { ERROR_CODE } from '@monorepo/error-code';
 import { Injectable } from '@nestjs/common';
 
+import type {
+  CreateUserDto,
+  CreateUserResponseDto,
+  UpdateUserRequestDto,
+  UserResponseDto,
+} from '$domains/user/contracts';
+import { toUserDto } from '$domains/user/presenters/user.presenter';
+import { UserRepository } from '$domains/user/repositories/user.repository';
 import { ConflictError, NotFoundError } from '$errors';
-import { toUserDto } from '../presenters';
-import { UserRepository } from '../repositories';
-
-import type { CreateUserDto, CreateUserResponseDto, UpdateUserRequestDto, UserResponseDto } from '../contracts';
 
 @Injectable()
 export class UserService {

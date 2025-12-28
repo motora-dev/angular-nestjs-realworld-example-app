@@ -1,9 +1,18 @@
+import { Prisma } from '@monorepo/database/client';
+
 /**
- * User profile from database
+ * Prisma select definitions for consistent queries
  */
-export interface UserProfile {
-  id: number;
-  username: string;
-  bio: string | null;
-  image: string | null;
-}
+export const userProfileSelect = {
+  id: true,
+  username: true,
+  bio: true,
+  image: true,
+} as const;
+
+/**
+ * DB type aliases (derived from Prisma)
+ */
+export type UserProfile = Prisma.UserGetPayload<{
+  select: typeof userProfileSelect;
+}>;

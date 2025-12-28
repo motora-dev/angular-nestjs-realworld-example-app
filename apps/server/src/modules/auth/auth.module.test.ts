@@ -32,17 +32,17 @@ describe('AuthModule', () => {
       const providers = Reflect.getMetadata('providers', AuthModule) || [];
       const exports = Reflect.getMetadata('exports', AuthModule) || [];
 
-      // imports の確認
+      // Verify imports
       expect(moduleMetadata).toContain(ConfigModule);
       expect(moduleMetadata).toContain(CqrsModule);
 
-      // controllers の確認
+      // Verify controllers
       expect(controllers).toContain(AuthController);
 
-      // exports の確認
+      // Verify exports
       expect(exports).toContain(AuthService);
 
-      // providers の確認（具体的なクラスは実際のファイルが存在しないとテストできないため、長さのみ確認）
+      // Verify providers (only check length since specific classes cannot be tested without actual files)
       expect(providers).toBeDefined();
       expect(Array.isArray(providers)).toBe(true);
     });
@@ -183,7 +183,7 @@ describe('AuthModule', () => {
         .useValue({})
         .compile();
 
-      // エクスポートされたサービスを取得できることを確認
+      // Verify that exported service can be retrieved
       const exportedService = testModule.get<AuthService>(AuthService);
       expect(exportedService).toBe(mockService);
       await testModule.close();
@@ -252,7 +252,7 @@ describe('AuthModule', () => {
       const keys = Object.keys(instance);
 
       expect(Array.isArray(keys)).toBe(true);
-      // 新しいインスタンスにはプロパティがないため、空配列になる
+      // New instance has no properties, so it becomes an empty array
       expect(keys).toHaveLength(0);
     });
 
@@ -309,12 +309,12 @@ describe('AuthModule', () => {
 
       expect(providers).toBeDefined();
       expect(Array.isArray(providers)).toBe(true);
-      // 最低限の期待プロバイダー数をチェック（具体的なクラスがモックされているため）
-      expect(providers.length).toBeGreaterThanOrEqual(4); // AuthService, AuthRepository, PrismaAdapter, コマンドハンドラー
+      // Check minimum expected number of providers (since specific classes are mocked)
+      expect(providers.length).toBeGreaterThanOrEqual(4); // AuthService, AuthRepository, PrismaAdapter, command handlers
     });
 
     it('should be a valid NestJS module', () => {
-      // モジュールデコレーターが適切に適用されているかチェック
+      // Check if module decorator is properly applied
       expect(Reflect.hasMetadata('imports', AuthModule)).toBe(true);
       expect(Reflect.hasMetadata('controllers', AuthModule)).toBe(true);
       expect(Reflect.hasMetadata('providers', AuthModule)).toBe(true);

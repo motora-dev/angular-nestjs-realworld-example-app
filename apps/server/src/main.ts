@@ -20,14 +20,14 @@ async function bootstrap() {
   // Set global API prefix for all routes
   app.setGlobalPrefix('api');
 
-  // Cloud Run環境でクライアントの実際のIPアドレスを取得するための設定
-  // X-Forwarded-ForヘッダーからIPアドレスを信頼する
+  // Configure to get client's actual IP address in Cloud Run environment
+  // Trust IP address from X-Forwarded-For header
   app.set('trust proxy', true);
 
-  // Cookieパーサーを使用してクッキーを解析
+  // Use cookie parser to parse cookies
   app.use(cookieParser());
 
-  // CORSを有効化
+  // Enable CORS
   const allowedOrigins = config
     .get('CORS_ORIGINS')
     ?.split(',')
@@ -40,9 +40,9 @@ async function bootstrap() {
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-Xsrf-Token'],
   });
 
-  // csrf-csrfの設定
+  // Configure csrf-csrf
   const csrfSecretRaw = config.get('CSRF_SECRET') || 'fallback-csrf-secret-for-dev-only';
-  // 32文字の秘密鍵を生成（元のシークレットをパディング）
+  // Generate 32-character secret key (pad original secret)
   const csrfSecret = csrfSecretRaw.padEnd(32, '0').substring(0, 32);
 
   // Cross-subdomain cookie sharing (e.g., '.motora-dev.com' for api.motora-dev.com and realworld.motora-dev.com)
@@ -63,7 +63,7 @@ async function bootstrap() {
     ignoredMethods: ['GET', 'HEAD', 'OPTIONS'],
     getCsrfTokenFromRequest: (req) => {
       const token = req.headers['x-xsrf-token'];
-      // 配列の場合は最初の要素を返す
+      // Return first element if array
       return Array.isArray(token) ? token[0] : token;
     },
   });
@@ -86,25 +86,25 @@ async function bootstrap() {
     next();
   });
 
-  // req.csrfToken()メソッドを追加
+  // Add req.csrfToken() method
   app.use((req: any, res: any, next: any) => {
     req.csrfToken = () => generateCsrfToken(req, res);
     next();
   });
 
-  // CSRF保護を適用
+  // Apply CSRF protection
   app.use(doubleCsrfProtection);
 
-  // CSRFトークンをクッキーに設定
+  // Set CSRF token in cookie
   app.use((req: any, res: any, next: any) => {
-    req.csrfToken(); // トークン生成とクッキー設定をライブラリに任せる
+    req.csrfToken(); // Let library handle token generation and cookie setting
     next();
   });
 
-  // ロギング機能を有効化
+  // Enable logging
   app.useGlobalInterceptors(app.get(LoggingInterceptor));
 
-  // グローバルな例外フィルターとして登録
+  // Register as global exception filter
   app.useGlobalFilters(new HttpExceptionFilter());
 
   // OpenAPI configuration
@@ -115,7 +115,7 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, swaggerConfig);
-  // YAML形式で出力
+  // Output in YAML format
   const yamlString = yaml.dump(document);
   fs.writeFileSync('./openapi.yml', yamlString);
 

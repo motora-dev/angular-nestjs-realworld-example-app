@@ -10,7 +10,7 @@ const isWatch = process.argv.includes('--watch');
 const isDebug = process.argv.includes('--debug');
 const isProduction = !isWatch && !isDebug;
 
-// NestJSのオプショナルパッケージ（インストールしていないが、coreが動的にロードしようとする）
+// NestJS optional packages (not installed, but core tries to load them dynamically)
 const nestjsOptionalPackages = [
   '@nestjs/websockets',
   '@nestjs/websockets/socket-module',
@@ -18,8 +18,8 @@ const nestjsOptionalPackages = [
   '@nestjs/microservices/microservices-module',
 ];
 
-// 外部化するパッケージを取得
-// 全ての依存関係を外部化（node_modulesからロード）
+// Get packages to externalize
+// Externalize all dependencies (load from node_modules)
 const getExternalPackages = () => {
   const packageJson = JSON.parse(fs.readFileSync(path.resolve(dirname, 'package.json'), 'utf-8'));
   return [
@@ -27,13 +27,13 @@ const getExternalPackages = () => {
     ...Object.keys(packageJson.dependencies || {}),
     ...Object.keys(packageJson.devDependencies || {}),
     '@prisma/client',
-  ].filter((pkg) => !pkg.startsWith('@monorepo/')); // モノレポ内のパッケージはバンドルに含める
+  ].filter((pkg) => !pkg.startsWith('@monorepo/')); // Include monorepo packages in bundle
 };
 
 const externalPackages = getExternalPackages();
 
 /**
- * SWCを使ってデコレーターをサポートするesbuildプラグイン
+ * esbuild plugin to support decorators using SWC
  * @returns {esbuild.Plugin}
  */
 function swcPlugin() {
@@ -77,28 +77,28 @@ const config = {
   target: 'node24',
   outfile: path.resolve(dirname, 'dist/main.js'),
   format: 'esm',
-  sourcemap: isWatch || isDebug, // 開発時・デバッグ時のみsourcemap生成
-  // node_modulesのパッケージは外部化（バンドルしない）
+  sourcemap: isWatch || isDebug, // Generate sourcemap only in development/debug mode
+  // Externalize node_modules packages (don't bundle)
   external: externalPackages,
-  // バナーでreflect-metadataをインポート
+  // Import reflect-metadata in banner
   banner: {
     js: "import 'reflect-metadata';",
   },
   plugins: [swcPlugin()],
-  // 本番ビルド時はesbuildのログを抑制し、カスタムでサイズ表示
+  // Suppress esbuild logs in production build and show custom size display
   logLevel: isProduction ? 'silent' : 'info',
   metafile: isProduction,
 };
 
 /**
- * Nodeプロセスを管理するクラス
+ * Class to manage Node process
  */
 class NodeProcess {
   /** @type {import('node:child_process').ChildProcess | null} */
   process = null;
 
   /**
-   * サーバーを起動
+   * Start server
    */
   start() {
     const args = [path.resolve(dirname, 'dist/main.js')];
@@ -120,7 +120,7 @@ class NodeProcess {
   }
 
   /**
-   * サーバーを再起動
+   * Restart server
    */
   restart() {
     if (this.process) {
@@ -135,7 +135,7 @@ class NodeProcess {
   }
 
   /**
-   * サーバーを停止
+   * Stop server
    */
   stop() {
     if (this.process) {
@@ -147,7 +147,7 @@ class NodeProcess {
 
 async function build() {
   if (isWatch) {
-    // watchモード
+    // Watch mode
     const nodeProcess = new NodeProcess();
 
     /** @type {esbuild.Plugin} */
@@ -167,7 +167,7 @@ async function build() {
       plugins: [...(config.plugins || []), restartPlugin],
     });
 
-    // Ctrl+Cでクリーンアップ
+    // Cleanup on Ctrl+C
     process.on('SIGINT', async () => {
       console.log('\n\n👋 Shutting down...\n');
       nodeProcess.stop();
@@ -178,10 +178,10 @@ async function build() {
     await ctx.watch();
     console.log('👀 Watching for changes...\n');
   } else {
-    // 単発ビルド
+    // One-time build
     const result = await esbuild.build(config);
 
-    // 本番ビルド時はバンドルサイズを表示
+    // Show bundle size in production build
     if (isProduction && result.metafile) {
       const outputs = result.metafile.outputs;
       for (const [file, info] of Object.entries(outputs)) {

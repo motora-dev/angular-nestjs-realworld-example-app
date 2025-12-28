@@ -18,11 +18,11 @@ const meta: Meta<InputFieldComponent> = {
   argTypes: {
     label: {
       control: 'text',
-      description: 'ラベルテキスト',
+      description: 'Label text',
     },
     id: {
       control: 'text',
-      description: 'HTML id属性（ラベルとの関連付け用）',
+      description: 'HTML id attribute (for label association)',
     },
   },
 };
@@ -30,39 +30,39 @@ const meta: Meta<InputFieldComponent> = {
 export default meta;
 type Story = StoryObj<InputFieldComponent>;
 
-/** ラベル付きの基本的な入力フィールド */
+/** Basic input field with label */
 export const Default: Story = {
   render: () => {
     const control = new FormControl('');
     return {
       props: { control },
       template: `
-        <app-input-field label="ユーザー名" id="username" [control]="control">
-          <input appInput id="username" [formControl]="control" placeholder="ユーザー名を入力" />
+        <app-input-field label="Username" id="username" [control]="control">
+          <input appInput id="username" [formControl]="control" placeholder="Enter username" />
         </app-input-field>
       `,
     };
   },
 };
 
-/** 必須フィールド（タッチ後にエラー表示） */
+/** Required field (shows error after touch) */
 export const Required: Story = {
   render: () => {
     const control = new FormControl('', [Validators.required]);
-    // タッチ状態をシミュレート
+    // Simulate touched state
     control.markAsTouched();
     return {
       props: { control },
       template: `
-        <app-input-field label="メールアドレス" id="email" [control]="control">
-          <input appInput id="email" [formControl]="control" [error]="control.invalid && control.touched" placeholder="必須項目です" />
+        <app-input-field label="Email" id="email" [control]="control">
+          <input appInput id="email" [formControl]="control" [error]="control.invalid && control.touched" placeholder="This field is required" />
         </app-input-field>
       `,
     };
   },
 };
 
-/** 最小文字数バリデーション */
+/** Minimum length validation */
 export const MinLength: Story = {
   render: () => {
     const control = new FormControl('ab', [Validators.minLength(5)]);
@@ -70,31 +70,31 @@ export const MinLength: Story = {
     return {
       props: { control },
       template: `
-        <app-input-field label="パスワード" id="password" [control]="control">
-          <input appInput id="password" type="password" [formControl]="control" [error]="control.invalid && control.touched" placeholder="5文字以上" />
+        <app-input-field label="Password" id="password" [control]="control">
+          <input appInput id="password" type="password" [formControl]="control" [error]="control.invalid && control.touched" placeholder="At least 5 characters" />
         </app-input-field>
       `,
     };
   },
 };
 
-/** 最大文字数バリデーション */
+/** Maximum length validation */
 export const MaxLength: Story = {
   render: () => {
-    const control = new FormControl('これは長すぎるテキストです', [Validators.maxLength(10)]);
+    const control = new FormControl('This text is too long', [Validators.maxLength(10)]);
     control.markAsTouched();
     return {
       props: { control },
       template: `
-        <app-input-field label="ニックネーム" id="nickname" [control]="control">
-          <input appInput id="nickname" [formControl]="control" [error]="control.invalid && control.touched" placeholder="10文字以内" />
+        <app-input-field label="Nickname" id="nickname" [control]="control">
+          <input appInput id="nickname" [formControl]="control" [error]="control.invalid && control.touched" placeholder="Max 10 characters" />
         </app-input-field>
       `,
     };
   },
 };
 
-/** メールバリデーション */
+/** Email validation */
 export const Email: Story = {
   render: () => {
     const control = new FormControl('invalid-email', [Validators.email]);
@@ -102,7 +102,7 @@ export const Email: Story = {
     return {
       props: { control },
       template: `
-        <app-input-field label="メールアドレス" id="email-field" [control]="control">
+        <app-input-field label="Email" id="email-field" [control]="control">
           <input appInput id="email-field" type="email" [formControl]="control" [error]="control.invalid && control.touched" placeholder="example@email.com" />
         </app-input-field>
       `,
@@ -110,24 +110,24 @@ export const Email: Story = {
   },
 };
 
-/** カスタムエラーメッセージ */
+/** Custom error messages */
 export const CustomErrorMessages: Story = {
   render: () => {
     const control = new FormControl('', [Validators.required]);
     control.markAsTouched();
-    const messages = { required: 'この項目は必須入力です' };
+    const messages = { required: 'This field is required' };
     return {
       props: { control, messages },
       template: `
-        <app-input-field label="会社名" id="company" [control]="control" [messages]="messages">
-          <input appInput id="company" [formControl]="control" [error]="control.invalid && control.touched" placeholder="会社名を入力" />
+        <app-input-field label="Company Name" id="company" [control]="control" [messages]="messages">
+          <input appInput id="company" [formControl]="control" [error]="control.invalid && control.touched" placeholder="Enter company name" />
         </app-input-field>
       `,
     };
   },
 };
 
-/** 有効な入力 */
+/** Valid input */
 export const Valid: Story = {
   render: () => {
     const control = new FormControl('valid@example.com', [Validators.required, Validators.email]);
@@ -135,7 +135,7 @@ export const Valid: Story = {
     return {
       props: { control },
       template: `
-        <app-input-field label="メールアドレス" id="valid-email" [control]="control">
+        <app-input-field label="Email" id="valid-email" [control]="control">
           <input appInput id="valid-email" type="email" [formControl]="control" [error]="control.invalid && control.touched" />
         </app-input-field>
       `,
@@ -143,7 +143,7 @@ export const Valid: Story = {
   },
 };
 
-/** ラベルなし */
+/** Without label */
 export const WithoutLabel: Story = {
   render: () => {
     const control = new FormControl('');
@@ -151,14 +151,14 @@ export const WithoutLabel: Story = {
       props: { control },
       template: `
         <app-input-field id="no-label" [control]="control">
-          <input appInput id="no-label" [formControl]="control" placeholder="ラベルなし入力" />
+          <input appInput id="no-label" [formControl]="control" placeholder="Input without label" />
         </app-input-field>
       `,
     };
   },
 };
 
-/** 複数フィールドのフォーム例 */
+/** Form example with multiple fields */
 export const FormExample: Story = {
   render: () => {
     const nameControl = new FormControl('', [Validators.required]);
@@ -168,16 +168,16 @@ export const FormExample: Story = {
       props: { nameControl, emailControl, messageControl },
       template: `
         <form class="flex flex-col gap-4 max-w-md">
-          <app-input-field label="お名前" id="form-name" [control]="nameControl">
-            <input appInput id="form-name" [formControl]="nameControl" [error]="nameControl.invalid && nameControl.touched" placeholder="山田 太郎" />
+          <app-input-field label="Name" id="form-name" [control]="nameControl">
+            <input appInput id="form-name" [formControl]="nameControl" [error]="nameControl.invalid && nameControl.touched" placeholder="John Doe" />
           </app-input-field>
 
-          <app-input-field label="メールアドレス" id="form-email" [control]="emailControl">
+          <app-input-field label="Email" id="form-email" [control]="emailControl">
             <input appInput id="form-email" type="email" [formControl]="emailControl" [error]="emailControl.invalid && emailControl.touched" placeholder="email@example.com" />
           </app-input-field>
 
-          <app-input-field label="お問い合わせ内容" id="form-message" [control]="messageControl">
-            <textarea appInput id="form-message" [formControl]="messageControl" [error]="messageControl.invalid && messageControl.touched" placeholder="10文字以上で入力してください" rows="4"></textarea>
+          <app-input-field label="Message" id="form-message" [control]="messageControl">
+            <textarea appInput id="form-message" [formControl]="messageControl" [error]="messageControl.invalid && messageControl.touched" placeholder="Enter at least 10 characters" rows="4"></textarea>
           </app-input-field>
         </form>
       `,

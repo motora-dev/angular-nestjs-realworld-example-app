@@ -1,9 +1,13 @@
-import type { UpdateArticleRequestDto } from '../../contracts';
+import { Command } from '@nestjs/cqrs';
 
-export class UpdateArticleCommand {
+import type { SingleArticleDto, UpdateArticleRequestDto } from '$domains/article-edit/contracts';
+
+export class UpdateArticleCommand extends Command<SingleArticleDto> {
   constructor(
     public readonly slug: string,
     public readonly request: UpdateArticleRequestDto,
     public readonly currentUserId: number,
-  ) {}
+  ) {
+    super();
+  }
 }

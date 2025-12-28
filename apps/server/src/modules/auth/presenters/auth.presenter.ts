@@ -1,6 +1,6 @@
 import type { CurrentUserType } from '$decorators';
+import type { RegisterResponse, UserInfo, UserResponse } from '$modules/auth/contracts';
 
-import type { RegisterResponse, UserInfo, UserResponse } from '../contracts';
 import type { User } from '@monorepo/database/client';
 
 /**

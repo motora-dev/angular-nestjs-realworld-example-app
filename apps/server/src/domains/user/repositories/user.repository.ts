@@ -1,9 +1,13 @@
 import { Injectable } from '@nestjs/common';
 
 import { PrismaAdapter } from '$adapters';
+import {
+  userWithAccountSelect,
+  type CreateUserParams,
+  type UpdateUserParams,
+  type UserWithAccount,
+} from '$domains/user/contracts';
 import { generatePublicId } from '$shared/utils/id-generator';
-
-import type { CreateUserParams, UpdateUserParams, UserWithAccount } from '../contracts';
 
 @Injectable()
 export class UserRepository {
@@ -15,13 +19,7 @@ export class UserRepository {
   async getById(id: number): Promise<UserWithAccount | null> {
     const user = await this.prisma.user.findUnique({
       where: { id },
-      select: {
-        id: true,
-        email: true,
-        username: true,
-        bio: true,
-        image: true,
-      },
+      select: userWithAccountSelect,
     });
 
     return user;
@@ -33,13 +31,7 @@ export class UserRepository {
   async getByUsername(username: string): Promise<UserWithAccount | null> {
     const user = await this.prisma.user.findUnique({
       where: { username },
-      select: {
-        id: true,
-        email: true,
-        username: true,
-        bio: true,
-        image: true,
-      },
+      select: userWithAccountSelect,
     });
 
     return user;
@@ -58,13 +50,7 @@ export class UserRepository {
       },
       include: {
         user: {
-          select: {
-            id: true,
-            email: true,
-            username: true,
-            bio: true,
-            image: true,
-          },
+          select: userWithAccountSelect,
         },
       },
     });
@@ -92,13 +78,7 @@ export class UserRepository {
           },
         },
       },
-      select: {
-        id: true,
-        email: true,
-        username: true,
-        bio: true,
-        image: true,
-      },
+      select: userWithAccountSelect,
     });
 
     return user;
@@ -116,13 +96,7 @@ export class UserRepository {
         bio: params.bio,
         image: params.image,
       },
-      select: {
-        id: true,
-        email: true,
-        username: true,
-        bio: true,
-        image: true,
-      },
+      select: userWithAccountSelect,
     });
 
     return user;

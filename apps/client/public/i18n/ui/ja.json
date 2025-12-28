@@ -274,5 +274,11 @@
   },
   "cookieSettingsButton": {
     "changeSettings": "Cookie設定を変更する"
+  },
+  "cookieConsent": {
+    "message": "当サイトでは、サービス向上のためCookieを使用しています。分析や広告のためのCookieについては、同意をお願いします。",
+    "detailsLink": "詳細はこちら",
+    "reject": "拒否する",
+    "accept": "同意する"
   }
 }
