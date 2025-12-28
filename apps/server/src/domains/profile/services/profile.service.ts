@@ -1,11 +1,10 @@
 import { ERROR_CODE } from '@monorepo/error-code';
 import { Injectable } from '@nestjs/common';
 
+import type { ProfileResponseDto } from '$domains/profile/contracts';
+import { toProfileDto } from '$domains/profile/presenters/profile.presenter';
+import { ProfileRepository } from '$domains/profile/repositories/profile.repository';
 import { NotFoundError } from '$errors';
-import { toProfileDto } from '../presenters';
-import { ProfileRepository } from '../repositories';
-
-import type { ProfileResponseDto } from '../contracts';
 
 @Injectable()
 export class ProfileService {

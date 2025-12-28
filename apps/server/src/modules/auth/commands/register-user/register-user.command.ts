@@ -1,8 +1,18 @@
-import { ICommand } from '@nestjs/cqrs';
+import { Command } from '@nestjs/cqrs';
 
-export class RegisterUserCommand implements ICommand {
+import type { RegisterResponse } from '$modules/auth/contracts';
+
+export interface RegisterUserResult {
+  response: RegisterResponse;
+  accessToken: string;
+  refreshToken: string;
+}
+
+export class RegisterUserCommand extends Command<RegisterUserResult> {
   constructor(
     public readonly pendingToken: string,
     public readonly username: string,
-  ) {}
+  ) {
+    super();
+  }
 }

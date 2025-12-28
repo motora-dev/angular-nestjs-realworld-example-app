@@ -13,12 +13,50 @@
 [![Build](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/ci-check.yml/badge.svg)](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/ci-check.yml)
 [![Test](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/ci-test.yml/badge.svg)](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/ci-test.yml)
 [![Deploy](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/cd-gcp.yml/badge.svg)](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/cd-gcp.yml)
-[![codecov](https://codecov.io/github/motora-dev/angular-nestjs-realworld-example-app/badge.svg?branch=main)](https://codecov.io/github/motora-dev/angular-nestjs-realworld-example-app)
+[![codecov client](https://codecov.io/github/motora-dev/angular-nestjs-realworld-example-app/badge.svg?branch=main&flag=client)](https://codecov.io/github/motora-dev/angular-nestjs-realworld-example-app?flags=client) [![codecov server](https://codecov.io/github/motora-dev/angular-nestjs-realworld-example-app/badge.svg?branch=main&flag=server)](https://codecov.io/github/motora-dev/angular-nestjs-realworld-example-app?flags=server)
 
-このコードベースは、**Angular** と **NestJS** を使用した本格的なフルスタックアプリケーションのデモンストレーションとして作成されました。
+## パフォーマンス
+
+![Lighthouse Performance Report](docs/images/lighthouse-performance-report.jpeg)
+
+Google Lighthouseによるパフォーマンス評価で、全カテゴリ（パフォーマンス、アクセシビリティ、ベストプラクティス、SEO）で100点満点を獲得しています。
+
+このコードベースは、**Angular** と **NestJS** を使用した本格的なフルスタックアプリケーションのデモンストレーションとして作成しました。
 CRUD操作、認証、ルーティング、ページネーションなどの機能を含みます。
 
 他のフロントエンド/バックエンドとの連携については、[RealWorld](https://github.com/gothinkster/realworld) リポジトリをご覧ください。
+
+---
+
+## 目次
+
+### 概要
+
+- [対象読者](#対象読者)
+- [プロジェクト構成](#-プロジェクト構成)
+- [アーキテクチャ](#-アーキテクチャ)
+- [技術スタック](#-技術スタック)
+
+### 開発
+
+- [開発環境のセットアップ](#-開発環境のセットアップ)
+- [利用可能なコマンド](#-利用可能なコマンド)
+- [テスト](#-テスト)
+- [開発フロー](#-開発フロー)
+
+### 運用
+
+- [CI/CD パイプライン](#-cicd-パイプライン)
+- [環境構成](#-環境構成)
+- [インフラストラクチャ（Terraform）](#-インフラストラクチャterraform)
+- [ログ・モニタリング](#-ログモニタリング)
+
+### リファレンス
+
+- [主要な依存関係](#-主要な依存関係)
+- [API仕様](#-api仕様)
+
+---
 
 ## 対象読者
 
@@ -83,36 +121,6 @@ CRUD操作、認証、ルーティング、ページネーションなどの機�
 
 - **認証方式**: RealWorld標準のユーザー名/パスワード認証ではなく、OAuth認証のみを実装
 - **一部APIエンドポイント**: ディレクトリ構造（Vertical Slice Architecture）に準拠するため、一部エンドポイントのパスが標準と異なる
-
----
-
-## 目次
-
-### 概要
-
-- [対象読者](#対象読者)
-- [プロジェクト構成](#-プロジェクト構成)
-- [アーキテクチャ](#-アーキテクチャ)
-- [技術スタック](#-技術スタック)
-
-### 開発
-
-- [開発環境のセットアップ](#-開発環境のセットアップ)
-- [利用可能なコマンド](#-利用可能なコマンド)
-- [テスト](#-テスト)
-- [開発フロー](#-開発フロー)
-
-### 運用
-
-- [CI/CD パイプライン](#-cicd-パイプライン)
-- [環境構成](#-環境構成)
-- [インフラストラクチャ（Terraform）](#-インフラストラクチャterraform)
-- [ログ・モニタリング](#-ログモニタリング)
-
-### リファレンス
-
-- [主要な依存関係](#-主要な依存関係)
-- [API仕様](#-api仕様)
 
 ---
 

@@ -51,14 +51,14 @@ flag_management:
     # クライアント側の設定
     - name: client
       paths:
-        - packages/client/src/
+        - apps/client/src/
       target: 100% # クライアント目標
       carryforward: true
 
     # サーバー側の設定
     - name: server
       paths:
-        - packages/server/src/
+        - apps/server/src/
       target: 100% # サーバー目標
       carryforward: true
 

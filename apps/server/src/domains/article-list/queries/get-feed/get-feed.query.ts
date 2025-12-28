@@ -1,8 +1,12 @@
-import { GetFeedQueryDto } from '../../contracts';
+import { Query } from '@nestjs/cqrs';
 
-export class GetFeedQuery {
+import type { GetFeedQueryDto, MultipleArticlesDto } from '$domains/article-list/contracts';
+
+export class GetFeedQuery extends Query<MultipleArticlesDto> {
   constructor(
     public readonly params: GetFeedQueryDto,
     public readonly currentUserId: number,
-  ) {}
+  ) {
+    super();
+  }
 }

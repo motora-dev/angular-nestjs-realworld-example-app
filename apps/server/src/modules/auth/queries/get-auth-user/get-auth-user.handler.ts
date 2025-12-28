@@ -1,7 +1,7 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 
-import { toUserResponse } from '$modules/auth/presenters';
-import { GetAuthUserQuery } from './get-auth-user.query';
+import { toUserResponse } from '$modules/auth/presenters/auth.presenter';
+import { GetAuthUserQuery } from '$modules/auth/queries/get-auth-user/get-auth-user.query';
 
 @QueryHandler(GetAuthUserQuery)
 export class GetAuthUserHandler implements IQueryHandler<GetAuthUserQuery> {

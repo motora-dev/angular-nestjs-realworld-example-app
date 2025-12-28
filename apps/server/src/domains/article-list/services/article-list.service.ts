@@ -1,15 +1,14 @@
 import { Injectable } from '@nestjs/common';
 
-import { toArticleDto } from '../presenters';
-import { ArticleListRepository } from '../repositories';
-
 import type {
   ArticleWithRelations,
   GetArticlesQueryDto,
   GetFeedQueryDto,
   MultipleArticlesDto,
   TagsDto,
-} from '../contracts';
+} from '$domains/article-list/contracts';
+import { toArticleDto } from '$domains/article-list/presenters';
+import { ArticleListRepository } from '$domains/article-list/repositories/article-list.repository';
 
 @Injectable()
 export class ArticleListService {

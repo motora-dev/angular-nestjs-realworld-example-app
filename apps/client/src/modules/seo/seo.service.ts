@@ -37,7 +37,7 @@ export class SeoService {
   }
 
   /**
-   * ページのメタデータを設定します
+   * Set page metadata
    */
   setPageMeta(options: SeoMetaOptions): void {
     const { title, description, type = 'website', url, tags = [] } = options;
@@ -68,7 +68,7 @@ export class SeoService {
   }
 
   /**
-   * デフォルトのメタデータをリセットします
+   * Reset to default metadata
    */
   resetToDefault(): void {
     const defaultTitle = $localize`:@@seo.defaultTitle:conduit - Angular + NestJS RealWorld Example App`;
@@ -79,7 +79,7 @@ export class SeoService {
   }
 
   /**
-   * OG画像URLを構築します（NestJS APIのエンドポイント）
+   * Build OG image URL (NestJS API endpoint)
    */
   private buildOgImageUrl(title: string, tags: string[]): string {
     const params = new URLSearchParams();

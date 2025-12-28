@@ -47,17 +47,17 @@ import type { ValidationErrorCode } from '@monorepo/error-code';
     AuthModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env.local', '.env'], // 複数ファイル対応（優先順位順）
+      envFilePath: ['.env.local', '.env'], // Support multiple files (priority order)
     }),
     ProfileModule,
     SitemapModule,
     UserModule,
-    // レート制限の設定
+    // Rate limiting configuration
     ThrottlerModule.forRoot([
       {
         name: 'short',
-        ttl: 60000, // 60秒間（1分）
-        limit: 100, // 同一IPから10リクエストまで
+        ttl: 60000, // 60 seconds (1 minute)
+        limit: 100, // Up to 100 requests from same IP
       },
     ]),
   ],

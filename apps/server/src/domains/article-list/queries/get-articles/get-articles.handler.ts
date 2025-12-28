@@ -8,7 +8,7 @@ export class GetArticlesHandler implements IQueryHandler<GetArticlesQuery> {
   constructor(private readonly service: ArticleListService) {}
 
   async execute(query: GetArticlesQuery) {
-    // 戻り値型を明示しないことで、Query<MultipleArticlesDto> の型が変われば自動で追従
+    // Omit explicit return type to automatically follow changes in Query<MultipleArticlesDto> type
     return this.service.getArticles(query.params, query.currentUserId);
   }
 }

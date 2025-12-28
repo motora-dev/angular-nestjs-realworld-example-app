@@ -274,5 +274,11 @@
   },
   "cookieSettingsButton": {
     "changeSettings": "Change Cookie Settings"
+  },
+  "cookieConsent": {
+    "message": "This site uses cookies to improve services. Please consent to cookies for analytics and advertising.",
+    "detailsLink": "Learn more",
+    "reject": "Reject",
+    "accept": "Accept"
   }
 }

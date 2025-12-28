@@ -1,10 +1,10 @@
 import { ERROR_CODE } from '@monorepo/error-code';
 import { Injectable } from '@nestjs/common';
 
+import { toArticleDto } from '$domains/article/presenters';
+import { toCommentDto } from '$domains/article/presenters';
+import { ArticleRepository } from '$domains/article/repositories';
 import { NotFoundError } from '$errors';
-import { toArticleDto } from '../presenters';
-import { toCommentDto } from '../presenters';
-import { ArticleRepository } from '../repositories';
 
 import type { MultipleCommentsDto, SingleArticleDto } from '../contracts';
 

@@ -1,12 +1,16 @@
 import { ERROR_CODE } from '@monorepo/error-code';
 import { Injectable } from '@nestjs/common';
 
+import type {
+  ArticleWithRelations,
+  CommentWithAuthor,
+  CreateArticleRequestDto,
+  CreateCommentRequestDto,
+  UpdateArticleRequestDto,
+} from '$domains/article-edit/contracts';
+import { ArticleEditQueryRepository } from '$domains/article-edit/repositories/article-edit-query.repository';
+import { ArticleEditRepository } from '$domains/article-edit/repositories/article-edit.repository';
 import { ForbiddenError, NotFoundError } from '$errors';
-import { ArticleEditQueryRepository } from '../repositories/article-edit-query.repository';
-import { ArticleEditRepository } from '../repositories/article-edit.repository';
-
-import type { ArticleWithRelations, CommentWithAuthor } from '../contracts';
-import type { CreateArticleRequestDto, CreateCommentRequestDto, UpdateArticleRequestDto } from '../contracts';
 
 @Injectable()
 export class ArticleEditService {

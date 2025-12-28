@@ -6,7 +6,7 @@ import {
   commentWithAuthorInclude,
   type ArticleWithRelations,
   type CommentWithAuthor,
-} from '../contracts';
+} from '$domains/article/contracts';
 
 @Injectable()
 export class ArticleRepository {

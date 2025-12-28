@@ -1,4 +1,4 @@
-import type { CommentDto, AuthorDto, CommentWithAuthor } from '../contracts';
+import type { CommentDto, AuthorDto, CommentWithAuthor } from '$domains/article/contracts';
 
 /**
  * Convert CommentWithAuthor (DB model) to CommentDto (API response)

@@ -13,14 +13,16 @@ import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { AbstractControl, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { filter, merge, switchMap } from 'rxjs';
 
-/** Default error messages for common validators */
-const DEFAULT_ERROR_MESSAGES: Record<string, string> = {
-  required: '入力は必須です',
-  minlength: '文字数が足りません',
-  maxlength: '文字数が多すぎます',
-  email: 'メールアドレス形式で入力してください',
-  pattern: '入力形式が正しくありません',
-};
+import {
+  VALIDATION_MESSAGE_EMAIL,
+  VALIDATION_MESSAGE_MAXLENGTH,
+  VALIDATION_MESSAGE_MINLENGTH,
+  VALIDATION_MESSAGE_PATTERN,
+  VALIDATION_MESSAGE_REQUIRED,
+  formatMaxLengthMessage,
+  formatMinLengthMessage,
+  formatUnknownErrorMessage,
+} from '$shared/ui/validator';
 
 /**
  * TagsFieldComponent - Composed component for tags input with chip UI
@@ -31,7 +33,7 @@ const DEFAULT_ERROR_MESSAGES: Record<string, string> = {
  * @example
  * ```html
  * <app-tags-field
- *   label="タグ"
+ *   label="Tags"
  *   [control]="form.controls.tags"
  * >
  * </app-tags-field>
@@ -80,9 +82,18 @@ export class TagsFieldComponent implements ControlValueAccessor {
   /** Input element reference */
   private readonly inputElement = viewChild.required<ElementRef<HTMLInputElement>>('inputRef');
 
+  /** Default error messages mapping */
+  private readonly defaultMessages: Record<string, string> = {
+    required: VALIDATION_MESSAGE_REQUIRED,
+    minlength: VALIDATION_MESSAGE_MINLENGTH,
+    maxlength: VALIDATION_MESSAGE_MAXLENGTH,
+    email: VALIDATION_MESSAGE_EMAIL,
+    pattern: VALIDATION_MESSAGE_PATTERN,
+  };
+
   /** Merged error messages (custom + defaults) */
   private readonly mergedMessages = computed(() => ({
-    ...DEFAULT_ERROR_MESSAGES,
+    ...this.defaultMessages,
     ...this.messages(),
   }));
 
@@ -107,13 +118,13 @@ export class TagsFieldComponent implements ControlValueAccessor {
       // Handle minlength/maxlength with actual values
       if (key === 'minlength') {
         const error = ctrl.errors?.['minlength'];
-        return `${error.requiredLength}文字以上で入力してください`;
+        return formatMinLengthMessage(error.requiredLength);
       }
       if (key === 'maxlength') {
         const error = ctrl.errors?.['maxlength'];
-        return `${error.requiredLength}文字以内で入力してください`;
+        return formatMaxLengthMessage(error.requiredLength);
       }
-      return msgs[key] ?? `${key} エラー`;
+      return msgs[key] ?? formatUnknownErrorMessage(key);
     });
   });
 

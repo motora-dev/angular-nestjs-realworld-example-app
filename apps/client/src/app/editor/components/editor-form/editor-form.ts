@@ -46,14 +46,6 @@ export class EditorFormComponent {
 
   readonly tagField = new FormControl<string>('', { nonNullable: true });
 
-  constructor() {
-    // Set initial tag list from input
-    const tags = this.initialTagList();
-    if (tags.length > 0) {
-      this.tagList.set(tags);
-    }
-  }
-
   addTag(): void {
     const tag = this.tagField.value.trim();
     if (tag && !this.tagList().includes(tag)) {

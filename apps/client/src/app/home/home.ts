@@ -43,19 +43,19 @@ export class HomeComponent {
     });
 
     // Load initial articles based on auth status
-    // 楽観的UI: 認証チェックを待たずに、まずはGlobal Feed (未ログイン状態) を表示する
+    // Optimistic UI: Display Global Feed (unauthenticated state) first without waiting for auth check
     const initialConfig: ArticleListConfig = { type: 'all', filters: {} };
     this.listConfig.set(initialConfig);
     this.facade.loadArticles(initialConfig);
 
-    // 認証状態が確定したら、必要に応じてフィードを切り替える
+    // Switch feed if needed once auth status is determined
     this.authFacade.isAuthenticated$
       .pipe(
         filter((isAuth): isAuth is boolean => isAuth === true),
         take(1),
       )
       .subscribe(() => {
-        // ログイン済みと判明したら、Your Feedに切り替える
+        // Switch to Your Feed once logged in is confirmed
         const config: ArticleListConfig = { type: 'feed', filters: {} };
         this.listConfig.set(config);
         this.facade.loadArticles(config);

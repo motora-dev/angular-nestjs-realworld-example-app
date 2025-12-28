@@ -2,17 +2,12 @@ import { ERROR_CODE } from '@monorepo/error-code';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { ConflictError, UnauthorizedError } from '$errors';
-import { RegisterUserCommand } from './register-user.command';
-import { toRegisterResponse } from '../../presenters';
-import { AuthService } from '../../services';
-
-import type { RegisterResponse } from '../../contracts';
-
-export interface RegisterUserResult {
-  response: RegisterResponse;
-  accessToken: string;
-  refreshToken: string;
-}
+import {
+  RegisterUserCommand,
+  type RegisterUserResult,
+} from '$modules/auth/commands/register-user/register-user.command';
+import { toRegisterResponse } from '$modules/auth/presenters/auth.presenter';
+import { AuthService } from '$modules/auth/services/auth.service';
 
 @CommandHandler(RegisterUserCommand)
 export class RegisterUserHandler implements ICommandHandler<RegisterUserCommand> {

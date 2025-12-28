@@ -32,7 +32,7 @@ export class SpinnerState {
     const state = ctx.getState();
     ctx.patchState({
       loadingCount: state.loadingCount + 1,
-      message: action.message ?? state.message, // メッセージが指定されていない場合は既存のメッセージを保持
+      message: action.message ?? state.message, // Keep existing message if not specified
     });
   }
 
@@ -42,7 +42,7 @@ export class SpinnerState {
     const newCount = Math.max(0, count - 1);
     ctx.patchState({
       loadingCount: newCount,
-      message: newCount === 0 ? null : ctx.getState().message, // カウントが0になったらメッセージをクリア
+      message: newCount === 0 ? null : ctx.getState().message, // Clear message when count reaches 0
     });
   }
 }

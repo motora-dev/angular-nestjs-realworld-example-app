@@ -15,6 +15,7 @@ const LOCALES = ['ja'] as const;
 const SOURCE_XLF_PATH = resolve(process.cwd(), 'locale/messages.xlf');
 const UI_I18N_DIR = resolve(process.cwd(), 'public/i18n/ui');
 const ERROR_I18N_DIR = resolve(process.cwd(), 'public/i18n/error');
+const VALIDATOR_I18N_DIR = resolve(process.cwd(), 'public/i18n/validator');
 const OUTPUT_DIR = resolve(process.cwd(), 'locale');
 
 interface TranslationData {
@@ -23,18 +24,42 @@ interface TranslationData {
 
 /**
  * Get nested value from object using dot-separated key path
+ * Also supports flat keys with dots (e.g., "minlength.withValue")
  */
 function getNestedValue(obj: TranslationData, keys: string[]): string | undefined {
   let current: TranslationData | string | undefined = obj;
 
-  for (const key of keys) {
+  // Try nested path first (e.g., validation.minlength.withValue -> validation -> minlength -> withValue)
+  for (let i = 0; i < keys.length; i++) {
     if (current === undefined || current === null || typeof current === 'string') {
-      return undefined;
+      break;
     }
-    current = current[key];
+    current = current[keys[i]];
   }
 
-  return typeof current === 'string' ? current : undefined;
+  if (typeof current === 'string') {
+    return current;
+  }
+
+  // If nested path failed, try flat key with dots (e.g., validation -> minlength.withValue)
+  if (keys.length > 1) {
+    current = obj;
+    for (let i = 0; i < keys.length - 1; i++) {
+      if (current === undefined || current === null || typeof current === 'string') {
+        return undefined;
+      }
+      current = current[keys[i]];
+    }
+    if (current !== undefined && current !== null && typeof current === 'object') {
+      const flatKey = keys.slice(1).join('.');
+      const flatValue = current[flatKey];
+      if (typeof flatValue === 'string') {
+        return flatValue;
+      }
+    }
+  }
+
+  return undefined;
 }
 
 /**
@@ -49,12 +74,13 @@ function loadJsonTranslations(filePath: string): TranslationData {
 }
 
 /**
- * Get translation for a given ID from UI and error translations
+ * Get translation for a given ID from UI, error, and validator translations
  */
 function getTranslation(
   id: string,
   uiTranslations: TranslationData,
   errorTranslations: TranslationData,
+  validatorTranslations: TranslationData,
 ): string | undefined {
   const keys = id.split('.');
 
@@ -65,6 +91,10 @@ function getTranslation(
   // Then try error translations
   const errorValue = getNestedValue(errorTranslations, keys);
   if (errorValue) return errorValue;
+
+  // Finally try validator translations
+  const validatorValue = getNestedValue(validatorTranslations, keys);
+  if (validatorValue) return validatorValue;
 
   return undefined;
 }
@@ -133,6 +163,7 @@ function generateLocaleXlf(
   locale: string,
   uiTranslations: TranslationData,
   errorTranslations: TranslationData,
+  validatorTranslations: TranslationData,
 ): { xlf: string; missingKeys: string[] } {
   const { header, transUnits, footer } = parseXlf(sourceXlfContent);
   const missingKeys: string[] = [];
@@ -145,7 +176,7 @@ function generateLocaleXlf(
 
   // Process each trans-unit
   const processedTransUnits = transUnits.map(({ id, content }) => {
-    const translation = getTranslation(id, uiTranslations, errorTranslations);
+    const translation = getTranslation(id, uiTranslations, errorTranslations, validatorTranslations);
 
     if (translation) {
       return addTargetToTransUnit(content, translation, locale);
@@ -188,9 +219,16 @@ function main(): void {
     // Load translations
     const uiTranslations = loadJsonTranslations(resolve(UI_I18N_DIR, `${locale}.json`));
     const errorTranslations = loadJsonTranslations(resolve(ERROR_I18N_DIR, `${locale}.json`));
+    const validatorTranslations = loadJsonTranslations(resolve(VALIDATOR_I18N_DIR, `${locale}.json`));
 
     // Generate locale-specific XLF
-    const { xlf, missingKeys } = generateLocaleXlf(sourceXlfContent, locale, uiTranslations, errorTranslations);
+    const { xlf, missingKeys } = generateLocaleXlf(
+      sourceXlfContent,
+      locale,
+      uiTranslations,
+      errorTranslations,
+      validatorTranslations,
+    );
 
     // Write output file
     const outputPath = resolve(OUTPUT_DIR, `messages.${locale}.xlf`);
