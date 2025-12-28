@@ -13,7 +13,7 @@
 [![Build](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/ci-check.yml/badge.svg)](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/ci-check.yml)
 [![Test](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/ci-test.yml/badge.svg)](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/ci-test.yml)
 [![Deploy](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/cd-gcp.yml/badge.svg)](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/cd-gcp.yml)
-[![codecov](https://codecov.io/github/motora-dev/angular-nestjs-realworld-example-app/badge.svg?branch=main)](https://codecov.io/github/motora-dev/angular-nestjs-realworld-example-app)
+[![codecov client](https://codecov.io/github/motora-dev/angular-nestjs-realworld-example-app/badge.svg?branch=main&flag=client)](https://codecov.io/github/motora-dev/angular-nestjs-realworld-example-app?flags=client) [![codecov server](https://codecov.io/github/motora-dev/angular-nestjs-realworld-example-app/badge.svg?branch=main&flag=server)](https://codecov.io/github/motora-dev/angular-nestjs-realworld-example-app?flags=server)
 
 ## Performance
 
