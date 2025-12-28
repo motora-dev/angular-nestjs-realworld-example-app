@@ -38,7 +38,7 @@ export const appConfig: ApplicationConfig = {
     ),
     provideRouter(
       routes,
-      withPreloading(PreloadAllModules), // 全ルートを自動プリロード。チャンク合計が2MB超の場合はカスタムプリロード戦略を検討
+      withPreloading(PreloadAllModules), // Auto-preload all routes. Consider custom preload strategy if total chunks exceed 2MB
     ),
     provideStore([AuthState, ErrorState, SnackbarState, SpinnerState], withNgxsFormPlugin()),
     provideZonelessChangeDetection(),

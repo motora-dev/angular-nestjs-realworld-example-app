@@ -12,7 +12,7 @@ import {
 } from '$components/layouts';
 import { AuthFacade } from '$modules/auth';
 
-/** Material Symbols Outlined フォントURL*/
+/** Material Symbols Outlined font URL */
 const MATERIAL_SYMBOLS_URL =
   'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap';
 
@@ -57,11 +57,11 @@ export class App {
   }
 
   /**
-   * セッション確認をrequestIdleCallbackで遅延実行
-   * クリティカルパスから外すことで、初期ロード時間を短縮
+   * Defer session check using requestIdleCallback
+   * Reduce initial load time by moving it off the critical path
    */
   private checkSessionOnIdle(): void {
-    // セッション確認を非クリティカルパスとして遅延実行
+    // Defer session check as non-critical path
     this.authFacade.checkSession();
   }
 

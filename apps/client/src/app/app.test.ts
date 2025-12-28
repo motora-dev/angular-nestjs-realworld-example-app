@@ -20,25 +20,25 @@ describe('App', () => {
   let preloadSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(async () => {
-    // requestIdleCallbackとsetTimeoutをモックして即座に実行されるようにする
+    // Mock requestIdleCallback and setTimeout to execute immediately
     originalRequestIdleCallback = globalThis.requestIdleCallback;
     originalSetTimeout = globalThis.setTimeout;
 
-    // requestIdleCallbackをモック（即座に実行）
+    // Mock requestIdleCallback (execute immediately)
     globalThis.requestIdleCallback = ((callback: IdleRequestCallback) => {
       callback({ didTimeout: false, timeRemaining: () => 0 });
       return 0;
     }) as typeof requestIdleCallback;
 
-    // setTimeoutをモック（即座に実行）
+    // Mock setTimeout (execute immediately)
     globalThis.setTimeout = ((callback: () => void) => {
       callback();
       return 0;
     }) as typeof setTimeout;
 
-    // preload()メソッドを空のメソッドでモック
+    // Mock preload() method with empty method
     preloadSpy = vi.spyOn(App.prototype as any, 'preload').mockImplementation(() => {
-      // 空の実装
+      // Empty implementation
     });
 
     await TestBed.configureTestingModule({
@@ -56,13 +56,13 @@ describe('App', () => {
   });
 
   afterEach(() => {
-    // fixtureを破棄して非同期処理をクリーンアップ
+    // Destroy fixture and cleanup async operations
     if (fixture) {
       fixture.destroy();
     }
     httpMock.verify();
 
-    // モックを元に戻す
+    // Restore mocks
     if (preloadSpy) {
       preloadSpy.mockRestore();
     }

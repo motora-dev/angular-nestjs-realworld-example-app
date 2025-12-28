@@ -7,7 +7,7 @@ import { ErrorFacade } from '$modules/error';
 import { NotFoundError } from '$modules/error/client-errors';
 import { ClientError } from '$modules/error/error.model';
 
-/** ページ遷移対象のステータスコードとルートのマッピング */
+/** Mapping of status codes and routes for page navigation */
 const PAGE_NAVIGATE_ROUTES: Record<number, string> = {
   401: '/error/401',
   403: '/error/403',
@@ -15,12 +15,12 @@ const PAGE_NAVIGATE_ROUTES: Record<number, string> = {
 };
 
 /**
- * クライアント側のエラーをキャッチしてエラーダイアログ表示またはページ遷移を行うハンドラー
- * - HttpErrorResponse 401/403/404: エラーページに遷移（URLは元のまま）
- * - HttpErrorResponse その他: httpErrorInterceptor で処理済みのためスキップ
- * - NotFoundError: 404エラーページに遷移（URLは元のまま）
- * - その他のエラー: エラーダイアログを表示
- * SSR環境では処理をスキップ
+ * Handler that catches client-side errors and displays error dialog or navigates to error page
+ * - HttpErrorResponse 401/403/404: Navigate to error page (URL remains unchanged)
+ * - HttpErrorResponse others: Skip (already handled by httpErrorInterceptor)
+ * - NotFoundError: Navigate to 404 error page (URL remains unchanged)
+ * - Other errors: Display error dialog
+ * Skip processing in SSR environment
  */
 @Injectable()
 export class ClientErrorHandler implements ErrorHandler {
@@ -29,33 +29,33 @@ export class ClientErrorHandler implements ErrorHandler {
   private readonly errorFacade = inject(ErrorFacade);
 
   handleError(error: unknown): void {
-    // SSRなら処理をスキップ
+    // Skip processing in SSR
     if (!isPlatformBrowser(this.platformId)) {
       return;
     }
 
-    // HttpErrorResponse の場合
+    // For HttpErrorResponse
     if (error instanceof HttpErrorResponse) {
       const route = PAGE_NAVIGATE_ROUTES[error.status];
       if (route) {
-        // 401/403/404 → ページ遷移（URLは元のまま）
+        // 401/403/404 → Navigate to page (URL remains unchanged)
         this.router.navigate([route], { skipLocationChange: true });
       }
-      // その他の HttpErrorResponse は httpErrorInterceptor で処理済み → スキップ
+      // Other HttpErrorResponse already handled by httpErrorInterceptor → Skip
       return;
     }
 
-    // NotFoundError の場合
+    // For NotFoundError
     if (error instanceof NotFoundError) {
       const route = PAGE_NAVIGATE_ROUTES[error.statusCode];
       if (route) {
-        // 404 → ページ遷移（URLは元のまま）
+        // 404 → Navigate to page (URL remains unchanged)
         this.router.navigate([route], { skipLocationChange: true });
       }
       return;
     }
 
-    // HttpErrorResponse 以外（純粋なクライアントエラー）→ ダイアログ表示
+    // Other than HttpErrorResponse (pure client error) → Display dialog
     const clientError: ClientError = {
       type: 'client',
       message:
