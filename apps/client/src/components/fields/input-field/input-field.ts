@@ -3,13 +3,13 @@ import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { AbstractControl } from '@angular/forms';
 import { filter, merge, switchMap } from 'rxjs';
 
-/** Default error messages for common validators */
+/** Default error messages for common validators using @angular/localize */
 const DEFAULT_ERROR_MESSAGES: Record<string, string> = {
-  required: '入力は必須です',
-  minlength: '文字数が足りません',
-  maxlength: '文字数が多すぎます',
-  email: 'メールアドレス形式で入力してください',
-  pattern: '入力形式が正しくありません',
+  required: $localize`:@@validation.required:This field is required`,
+  minlength: $localize`:@@validation.minlength:Insufficient characters`,
+  maxlength: $localize`:@@validation.maxlength:Too many characters`,
+  email: $localize`:@@validation.email:Please enter a valid email address`,
+  pattern: $localize`:@@validation.pattern:Invalid format`,
 };
 
 /**
@@ -85,13 +85,13 @@ export class InputFieldComponent {
       // Handle minlength/maxlength with actual values
       if (key === 'minlength') {
         const error = ctrl.errors?.['minlength'];
-        return `${error.requiredLength}文字以上で入力してください`;
+        return $localize`:@@validation.minlength.withValue:Please enter at least ${error.requiredLength}:INTERPOLATION: characters`;
       }
       if (key === 'maxlength') {
         const error = ctrl.errors?.['maxlength'];
-        return `${error.requiredLength}文字以内で入力してください`;
+        return $localize`:@@validation.maxlength.withValue:Please enter no more than ${error.requiredLength}:INTERPOLATION: characters`;
       }
-      return msgs[key] ?? `${key} エラー`;
+      return msgs[key] ?? $localize`:@@validation.unknown:${key}:INTERPOLATION: error`;
     });
   });
 

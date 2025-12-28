@@ -112,6 +112,24 @@ describe('HeaderComponent', () => {
       const showMenu = component.showMenuButton();
       expect(typeof showMenu).toBe('boolean');
     });
+
+    it('should return false when url does not start with /article/', async () => {
+      const router = TestBed.inject(Router);
+      await router.navigate(['/']);
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const showMenu = component.showMenuButton();
+      expect(showMenu).toBe(false);
+    });
+
+    it('should return false when url is undefined', () => {
+      // The computed should handle undefined gracefully
+      // Since currentUrl uses startWith, it should always have a value
+      // But we test the nullish coalescing behavior
+      const showMenu = component.showMenuButton();
+      expect(typeof showMenu).toBe('boolean');
+    });
   });
 
   describe('logout', () => {

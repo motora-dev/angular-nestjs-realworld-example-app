@@ -84,6 +84,21 @@ describe('ErrorDialogComponent', () => {
       expect(component.errorMessage()).toBeTruthy();
       expect(typeof component.errorMessage()).toBe('string');
     });
+
+    it('should return default message for unknown error code', async () => {
+      const apiErrorWithUnknownCode: AppError = {
+        type: 'api',
+        errorCode: 'UNKNOWN_ERROR_CODE',
+        message: 'Unknown error',
+      };
+      mockErrorFacade.error$.next(apiErrorWithUnknownCode);
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      // Should fallback to UNEXPECTED_ERROR message
+      expect(component.errorMessage()).toBeTruthy();
+      expect(typeof component.errorMessage()).toBe('string');
+    });
   });
 
   describe('close', () => {

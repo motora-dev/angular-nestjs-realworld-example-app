@@ -92,4 +92,26 @@ describe('csrfTokenInterceptor', () => {
     const callArg = (next as ReturnType<typeof vi.fn>).mock.calls[0][0] as HttpRequest<unknown>;
     expect(callArg.headers.get('x-xsrf-token')).toBe('test-token');
   });
+
+  it('should not modify request when XSRF-TOKEN cookie has no value', () => {
+    document.cookie = 'XSRF-TOKEN=';
+    TestBed.runInInjectionContext(() => {
+      interceptor(request, next);
+    });
+
+    expect(next).toHaveBeenCalledWith(request);
+    const callArg = (next as ReturnType<typeof vi.fn>).mock.calls[0][0] as HttpRequest<unknown>;
+    expect(callArg.headers.has('x-xsrf-token')).toBe(false);
+  });
+
+  it('should not modify request when XSRF-TOKEN cookie has only whitespace', () => {
+    document.cookie = 'XSRF-TOKEN=   ';
+    TestBed.runInInjectionContext(() => {
+      interceptor(request, next);
+    });
+
+    expect(next).toHaveBeenCalledWith(request);
+    const callArg = (next as ReturnType<typeof vi.fn>).mock.calls[0][0] as HttpRequest<unknown>;
+    expect(callArg.headers.has('x-xsrf-token')).toBe(false);
+  });
 });

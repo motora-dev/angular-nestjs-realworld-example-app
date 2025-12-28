@@ -43,6 +43,7 @@ describe('SnackbarComponent', () => {
   afterEach(() => {
     // Clear all timers
     vi.clearAllTimers();
+    vi.useRealTimers();
   });
 
   it('should create', () => {
@@ -124,6 +125,99 @@ describe('SnackbarComponent', () => {
       expect(styles).toContain('rounded-lg');
       expect(styles).toContain('shadow-lg');
       expect(styles).toContain('p-4');
+    });
+  });
+
+  describe('auto-hide timer', () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+    });
+
+    it('should set timer for new snackbar and auto-hide after duration', async () => {
+      const snackbar: SnackbarItem = {
+        id: 'auto-hide-id',
+        message: 'Auto hide message',
+        type: 'info',
+        duration: 1000,
+        createdAt: Date.now(),
+      };
+
+      mockSnackbarFacade.snackbars$.next([snackbar]);
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      // Timer should be set
+      expect(component['timers']().has('auto-hide-id')).toBe(true);
+
+      // Fast-forward time
+      vi.advanceTimersByTime(1000);
+
+      // After duration, leavingIds should be updated
+      expect(component['leavingIds']().has('auto-hide-id')).toBe(true);
+
+      // Fast-forward animation time
+      vi.advanceTimersByTime(200);
+
+      // hideSnackbar should be called
+      expect(mockSnackbarFacade.hideSnackbar).toHaveBeenCalledWith('auto-hide-id');
+      expect(component['leavingIds']().has('auto-hide-id')).toBe(false);
+    });
+
+    it('should clear timer when snackbar is removed from list', async () => {
+      const snackbar1: SnackbarItem = {
+        id: 'snackbar-1',
+        message: 'Message 1',
+        type: 'info',
+        duration: 3000,
+        createdAt: Date.now(),
+      };
+      const snackbar2: SnackbarItem = {
+        id: 'snackbar-2',
+        message: 'Message 2',
+        type: 'info',
+        duration: 3000,
+        createdAt: Date.now(),
+      };
+
+      mockSnackbarFacade.snackbars$.next([snackbar1, snackbar2]);
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      expect(component['timers']().has('snackbar-1')).toBe(true);
+      expect(component['timers']().has('snackbar-2')).toBe(true);
+
+      // Remove snackbar-1 from list
+      mockSnackbarFacade.snackbars$.next([snackbar2]);
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      // Timer for snackbar-1 should be cleared
+      expect(component['timers']().has('snackbar-1')).toBe(false);
+      expect(component['timers']().has('snackbar-2')).toBe(true);
+    });
+
+    it('should not set duplicate timer for same snackbar', async () => {
+      const snackbar: SnackbarItem = {
+        id: 'duplicate-id',
+        message: 'Message',
+        type: 'info',
+        duration: 3000,
+        createdAt: Date.now(),
+      };
+
+      mockSnackbarFacade.snackbars$.next([snackbar]);
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const timerCount1 = component['timers']().size;
+
+      // Add same snackbar again (should not create duplicate timer)
+      mockSnackbarFacade.snackbars$.next([snackbar]);
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const timerCount2 = component['timers']().size;
+      expect(timerCount2).toBe(timerCount1);
     });
   });
 });

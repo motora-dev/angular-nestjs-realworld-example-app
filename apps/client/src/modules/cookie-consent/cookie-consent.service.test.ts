@@ -99,6 +99,38 @@ describe('CookieConsentService', () => {
       });
     });
 
+    it('should not call gtag when window.gtag is undefined during initialization', () => {
+      vi.mocked(localStorage.getItem).mockReturnValue('accepted');
+      delete (window as any).gtag;
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        providers: [{ provide: PLATFORM_ID, useValue: 'browser' }],
+      });
+      expect(() => {
+        const newService = TestBed.inject(CookieConsentService);
+        expect(newService.consent()).toBe('accepted');
+        expect(newService.isLoading()).toBe(false);
+      }).not.toThrow();
+      // gtag should not be called when it's undefined (check would fail if gtag was called)
+    });
+
+    it('should not call gtag when window.gtag is not a function during initialization', () => {
+      vi.mocked(localStorage.getItem).mockReturnValue('accepted');
+      const originalGtag = window.gtag;
+      (window as any).gtag = 'not-a-function';
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        providers: [{ provide: PLATFORM_ID, useValue: 'browser' }],
+      });
+      expect(() => {
+        const newService = TestBed.inject(CookieConsentService);
+        expect(newService.consent()).toBe('accepted');
+        expect(newService.isLoading()).toBe(false);
+      }).not.toThrow();
+      // Restore original gtag for cleanup
+      window.gtag = originalGtag;
+    });
+
     it('should set isLoading to false on server platform', () => {
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({
@@ -127,6 +159,28 @@ describe('CookieConsentService', () => {
       });
     });
 
+    it('should not call gtag when window.gtag is undefined', () => {
+      const gtagSpy = vi.mocked(window.gtag);
+      const callCountBefore = gtagSpy.mock.calls.length;
+      delete (window as any).gtag;
+      service.acceptConsent();
+      expect(localStorage.setItem).toHaveBeenCalledWith('cookie-consent', 'accepted');
+      expect(service.consent()).toBe('accepted');
+      // gtag should not be called when it's undefined, so call count should not increase
+      expect(gtagSpy.mock.calls.length).toBe(callCountBefore);
+    });
+
+    it('should not call gtag when window.gtag is not a function', () => {
+      const gtagSpy = vi.mocked(window.gtag);
+      const callCountBefore = gtagSpy.mock.calls.length;
+      (window as any).gtag = 'not-a-function';
+      service.acceptConsent();
+      expect(localStorage.setItem).toHaveBeenCalledWith('cookie-consent', 'accepted');
+      expect(service.consent()).toBe('accepted');
+      // gtag should not be called when it's not a function, so call count should not increase
+      expect(gtagSpy.mock.calls.length).toBe(callCountBefore);
+    });
+
     it('should not accept consent on server platform', () => {
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({
@@ -136,6 +190,26 @@ describe('CookieConsentService', () => {
       const serverService = TestBed.inject(CookieConsentService);
       serverService.acceptConsent();
       expect(localStorage.setItem).not.toHaveBeenCalled();
+    });
+
+    it('should return early in updateConsentMode on server platform', () => {
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        providers: [{ provide: PLATFORM_ID, useValue: 'server' }],
+      });
+
+      const serverService = TestBed.inject(CookieConsentService);
+      // Access private method using type assertion for testing purposes
+      const updateConsentMode = (serverService as any).updateConsentMode.bind(serverService);
+
+      // Should not throw and should return early without calling gtag
+      const gtagSpy = vi.fn();
+      window.gtag = gtagSpy;
+      updateConsentMode('accepted');
+      expect(gtagSpy).not.toHaveBeenCalled();
+
+      updateConsentMode('rejected');
+      expect(gtagSpy).not.toHaveBeenCalled();
     });
   });
 

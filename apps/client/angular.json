@@ -139,7 +139,6 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "coverage": true,
             "coverageInclude": ["src/**/*.ts"],
             "coverageExclude": [
               "src/**/*.d.ts",

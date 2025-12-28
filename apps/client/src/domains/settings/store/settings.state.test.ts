@@ -68,6 +68,25 @@ describe('SettingsState', () => {
       const formValue = store.selectSnapshot(SettingsState.getFormValue);
       expect(formValue).toEqual(mockForm);
     });
+
+    it('should return null when settingsForm is undefined', () => {
+      const state = { settingsForm: undefined } as any;
+      const formValue = SettingsState.getFormValue(state);
+      expect(formValue).toBeNull();
+    });
+
+    it('should return null when settingsForm.model is undefined', () => {
+      const state = {
+        settingsForm: {
+          model: undefined,
+          dirty: false,
+          status: '',
+          errors: {},
+        },
+      } as any;
+      const formValue = SettingsState.getFormValue(state);
+      expect(formValue).toBeNull();
+    });
   });
 
   describe('SetSettingsForm action', () => {

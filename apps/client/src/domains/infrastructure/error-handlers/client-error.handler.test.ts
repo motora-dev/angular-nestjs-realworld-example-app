@@ -96,6 +96,19 @@ describe('ClientErrorHandler', () => {
       expect(errorFacade.showError).not.toHaveBeenCalled();
     });
 
+    it('should skip navigation for NotFoundError when route is not found', () => {
+      // Create a NotFoundError with a status code that doesn't exist in PAGE_NAVIGATE_ROUTES
+      const error = new NotFoundError('Resource not found');
+      // Override statusCode to a value not in PAGE_NAVIGATE_ROUTES (e.g., 500)
+      // Using 'as any' to bypass readonly property for testing purposes
+      (error as any).statusCode = 500;
+
+      handler.handleError(error);
+
+      expect(router.navigate).not.toHaveBeenCalled();
+      expect(errorFacade.showError).not.toHaveBeenCalled();
+    });
+
     it('should display error dialog for Error instance', () => {
       const error = new Error('Test error message');
       handler.handleError(error);

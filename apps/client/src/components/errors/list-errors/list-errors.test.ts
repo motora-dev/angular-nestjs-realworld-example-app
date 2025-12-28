@@ -34,6 +34,12 @@ describe('ListErrorsComponent', () => {
       expect(component.errorList()).toEqual([]);
     });
 
+    it('should return empty array when errors.errors is null', () => {
+      fixture.componentRef.setInput('errors', { errors: null } as any);
+      fixture.detectChanges();
+      expect(component.errorList()).toEqual([]);
+    });
+
     it('should return formatted error list', () => {
       const errors: Errors = {
         errors: {

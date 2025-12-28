@@ -192,4 +192,88 @@ describe('httpErrorInterceptor', () => {
       });
     });
   });
+
+  it('should use default message when server error message is not present', () => {
+    const error = new HttpErrorResponse({
+      status: 400,
+      error: {},
+    });
+    vi.mocked(next).mockReturnValueOnce(throwError(() => error));
+
+    TestBed.runInInjectionContext(() => {
+      interceptor(request, next).subscribe({
+        error: (e) => {
+          expect(e).toBe(error);
+          expect(errorFacade.showError).toHaveBeenCalledWith({
+            type: 'server',
+            status: 400,
+            message: 'An unexpected error occurred',
+          });
+        },
+      });
+    });
+  });
+
+  it('should use default message when server error is null', () => {
+    const error = new HttpErrorResponse({
+      status: 409,
+      error: null,
+    });
+    vi.mocked(next).mockReturnValueOnce(throwError(() => error));
+
+    TestBed.runInInjectionContext(() => {
+      interceptor(request, next).subscribe({
+        error: (e) => {
+          expect(e).toBe(error);
+          expect(errorFacade.showError).toHaveBeenCalledWith({
+            type: 'server',
+            status: 409,
+            message: 'An unexpected error occurred',
+          });
+        },
+      });
+    });
+  });
+
+  it('should use default errorCode when errorCode is not present', () => {
+    const error = new HttpErrorResponse({
+      status: 500,
+      error: { message: 'Error message' },
+    });
+    vi.mocked(next).mockReturnValueOnce(throwError(() => error));
+
+    TestBed.runInInjectionContext(() => {
+      interceptor(request, next).subscribe({
+        error: (e) => {
+          expect(e).toBe(error);
+          expect(errorFacade.showError).toHaveBeenCalledWith({
+            type: 'api',
+            errorCode: '500',
+            message: 'Error message',
+          });
+        },
+      });
+    });
+  });
+
+  it('should use default errorCode when error is null', () => {
+    const error = new HttpErrorResponse({
+      status: 500,
+      error: null,
+    });
+    vi.mocked(next).mockReturnValueOnce(throwError(() => error));
+
+    TestBed.runInInjectionContext(() => {
+      interceptor(request, next).subscribe({
+        error: (e) => {
+          expect(e).toBe(error);
+          expect(errorFacade.showError).toHaveBeenCalledWith({
+            type: 'api',
+            errorCode: '500',
+            message: 'An unexpected error occurred',
+          });
+        },
+      });
+    });
+  });
 });

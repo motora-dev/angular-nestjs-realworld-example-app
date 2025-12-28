@@ -84,7 +84,7 @@ describe('InputFieldComponent', () => {
       fixture.detectChanges();
       const messages = component.activeErrorMessages();
       expect(messages.length).toBeGreaterThan(0);
-      expect(messages[0]).toContain('必須');
+      expect(messages[0]).toContain('required');
     });
 
     it('should return error messages for email validator', () => {
@@ -100,10 +100,10 @@ describe('InputFieldComponent', () => {
       const control = new FormControl('', Validators.required);
       control.markAsTouched();
       fixture.componentRef.setInput('control', control);
-      fixture.componentRef.setInput('messages', { required: 'カスタムメッセージ' });
+      fixture.componentRef.setInput('messages', { required: 'Custom message' });
       fixture.detectChanges();
       const messages = component.activeErrorMessages();
-      expect(messages).toContain('カスタムメッセージ');
+      expect(messages).toContain('Custom message');
     });
 
     it('should handle minlength validator with actual value', () => {
@@ -113,7 +113,8 @@ describe('InputFieldComponent', () => {
       fixture.detectChanges();
       const messages = component.activeErrorMessages();
       expect(messages.length).toBeGreaterThan(0);
-      expect(messages[0]).toContain('5文字以上');
+      expect(messages[0]).toContain('5');
+      expect(messages[0]).toContain('characters');
     });
 
     it('should handle maxlength validator with actual value', () => {
@@ -123,7 +124,8 @@ describe('InputFieldComponent', () => {
       fixture.detectChanges();
       const messages = component.activeErrorMessages();
       expect(messages.length).toBeGreaterThan(0);
-      expect(messages[0]).toContain('5文字以内');
+      expect(messages[0]).toContain('5');
+      expect(messages[0]).toContain('characters');
     });
   });
 
@@ -141,10 +143,51 @@ describe('InputFieldComponent', () => {
     });
 
     it('should accept messages input', () => {
-      const messages = { required: 'カスタムメッセージ' };
+      const messages = { required: 'Custom message' };
       fixture.componentRef.setInput('messages', messages);
       fixture.detectChanges();
       expect(component.messages()).toEqual(messages);
+    });
+  });
+
+  describe('control state updates', () => {
+    it('should update controlState when control status changes', async () => {
+      const control = new FormControl('', Validators.required);
+      fixture.componentRef.setInput('control', control);
+      fixture.detectChanges();
+
+      const initialState = component['controlState']();
+
+      // Trigger status change
+      control.setValue('new value');
+      control.markAsTouched();
+
+      // Wait for async updates
+      await fixture.whenStable();
+      fixture.detectChanges();
+
+      // controlState should be updated (incremented)
+      const newState = component['controlState']();
+      expect(newState).toBeGreaterThan(initialState);
+    });
+
+    it('should update controlState when control events fire', async () => {
+      const control = new FormControl('');
+      fixture.componentRef.setInput('control', control);
+      fixture.detectChanges();
+
+      const initialState = component['controlState']();
+
+      // Trigger event
+      control.markAsDirty();
+
+      // Wait for async updates
+      await fixture.whenStable();
+      fixture.detectChanges();
+
+      // controlState should be updated
+      const newState = component['controlState']();
+      expect(newState).toBeGreaterThan(initialState);
     });
   });
 });

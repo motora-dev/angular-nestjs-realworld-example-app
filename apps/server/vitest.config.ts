@@ -72,15 +72,7 @@ export default defineConfig({
       reportsDirectory: './coverage',
       reporter: ['text', 'json', 'lcov'],
       include: ['src/**/*.ts'],
-      exclude: [
-        'src/**/*.d.ts',
-        'src/**/*.dto.ts',
-        'src/**/*.input.ts',
-        'src/**/*.module.ts',
-        'src/**/*.test.ts',
-        'src/**/index.ts',
-        'src/main.ts',
-      ],
+      exclude: ['src/**/*.d.ts', 'src/**/*.module.ts', 'src/**/*.test.ts', 'src/**/index.ts', 'src/main.ts'],
     },
   },
 

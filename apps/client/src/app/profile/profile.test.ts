@@ -135,6 +135,89 @@ describe('ProfileComponent', () => {
     });
   });
 
+  describe('favorites route', () => {
+    beforeEach(async () => {
+      // Reset mocks
+      mockProfileFacade = {
+        profile$: new BehaviorSubject<Profile | null>(null),
+        loadProfile: vi.fn(),
+        follow: vi.fn(() => of(mockProfile)),
+        unfollow: vi.fn(() => of(mockProfile)),
+      };
+
+      mockHomeFacade = {
+        articles$: new BehaviorSubject<any[]>([]),
+        loadArticles: vi.fn(),
+      };
+
+      mockAuthFacade = {
+        currentUser$: new BehaviorSubject<User | null>(null),
+      };
+
+      mockRouter = {
+        navigate: vi.fn(),
+      };
+
+      // Mock ActivatedRoute with favorites path
+      const mockActivatedRoute = {
+        snapshot: {
+          params: {
+            username: 'testuser',
+          },
+          firstChild: {
+            routeConfig: {
+              path: 'favorites',
+            },
+          },
+        },
+      };
+
+      await TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [ProfileComponent],
+        providers: [
+          provideRouter([]),
+          provideHttpClient(),
+          provideHttpClientTesting(),
+          provideStore([ProfileState, HomeState, AuthState]),
+          { provide: ProfileFacade, useValue: mockProfileFacade },
+          { provide: HomeFacade, useValue: mockHomeFacade },
+          { provide: AuthFacade, useValue: mockAuthFacade },
+          { provide: ActivatedRoute, useValue: mockActivatedRoute },
+          { provide: API_URL, useValue: 'http://localhost:3000' },
+        ],
+      })
+        .overrideComponent(ProfileComponent, {
+          set: {
+            providers: [
+              { provide: ProfileFacade, useValue: mockProfileFacade },
+              { provide: HomeFacade, useValue: mockHomeFacade },
+            ],
+          },
+        })
+        .compileComponents();
+
+      const router = TestBed.inject(Router);
+      mockRouter.navigate = vi.spyOn(router, 'navigate').mockImplementation(() => Promise.resolve(true));
+
+      fixture = TestBed.createComponent(ProfileComponent);
+      component = fixture.componentInstance;
+    });
+
+    it('should set activeTab to favorites when route path is favorites', () => {
+      expect(component.activeTab()).toBe('favorites');
+    });
+
+    it('should load articles with favorites type when route path is favorites', () => {
+      // Should be called twice: once in constructor with 'posts', then with 'favorites'
+      expect(mockHomeFacade.loadArticles).toHaveBeenCalledTimes(2);
+      expect(mockHomeFacade.loadArticles).toHaveBeenLastCalledWith({
+        type: 'all',
+        filters: { favorited: 'testuser' },
+      });
+    });
+  });
+
   describe('isCurrentUser', () => {
     it('should return true when current user matches profile', async () => {
       mockAuthFacade.currentUser$.next(mockUser);
