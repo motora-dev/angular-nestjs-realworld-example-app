@@ -75,6 +75,7 @@ export default defineConfig({
       exclude: [
         'src/**/*.d.ts',
         'src/**/*.dto.ts',
+        'src/**/*.input.ts',
         'src/**/*.module.ts',
         'src/**/*.test.ts',
         'src/**/index.ts',

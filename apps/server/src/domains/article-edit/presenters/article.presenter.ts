@@ -1,4 +1,4 @@
-import type { ArticleDto, AuthorDto, ArticleWithRelations } from '../contracts';
+import type { ArticleDto, AuthorDto, ArticleWithRelations } from '$domains/article-edit/contracts';
 
 /**
  * Convert ArticleWithRelations (DB model) to ArticleDto (API response)
