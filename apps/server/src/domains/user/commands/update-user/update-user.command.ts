@@ -1,8 +1,12 @@
-import type { UpdateUserRequestDto } from '../../contracts';
+import { Command } from '@nestjs/cqrs';
 
-export class UpdateUserCommand {
+import type { UpdateUserRequestDto, UserResponseDto } from '$domains/user/contracts';
+
+export class UpdateUserCommand extends Command<UserResponseDto> {
   constructor(
     public readonly userId: number,
     public readonly request: UpdateUserRequestDto,
-  ) {}
+  ) {
+    super();
+  }
 }

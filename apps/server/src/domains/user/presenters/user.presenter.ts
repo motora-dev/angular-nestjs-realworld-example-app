@@ -1,4 +1,4 @@
-import type { UserDto, UserWithAccount } from '../contracts';
+import type { UserDto, UserWithAccount } from '$domains/user/contracts';
 
 /**
  * Convert UserWithAccount (DB model) to UserDto (API response)

@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { PrismaAdapter } from '$adapters';
-
-import type { UserProfile } from '../contracts';
+import { userProfileSelect, type UserProfile } from '$domains/profile/contracts';
 
 @Injectable()
 export class ProfileRepository {
@@ -14,12 +13,7 @@ export class ProfileRepository {
   async getByUsername(username: string): Promise<UserProfile | null> {
     const user = await this.prisma.user.findUnique({
       where: { username },
-      select: {
-        id: true,
-        username: true,
-        bio: true,
-        image: true,
-      },
+      select: userProfileSelect,
     });
 
     return user;

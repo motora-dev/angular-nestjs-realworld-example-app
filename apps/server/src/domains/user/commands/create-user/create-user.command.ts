@@ -1,5 +1,9 @@
-import type { CreateUserDto } from '../../contracts';
+import { Command } from '@nestjs/cqrs';
 
-export class CreateUserCommand {
-  constructor(public readonly dto: CreateUserDto) {}
+import type { CreateUserDto, CreateUserResponseDto } from '$domains/user/contracts';
+
+export class CreateUserCommand extends Command<CreateUserResponseDto> {
+  constructor(public readonly dto: CreateUserDto) {
+    super();
+  }
 }

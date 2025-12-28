@@ -15,6 +15,12 @@
 [![Deploy](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/cd-gcp.yml/badge.svg)](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/cd-gcp.yml)
 [![codecov](https://codecov.io/github/motora-dev/angular-nestjs-realworld-example-app/badge.svg?branch=main)](https://codecov.io/github/motora-dev/angular-nestjs-realworld-example-app)
 
+## パフォーマンス
+
+![Lighthouse Performance Report](docs/images/lighthouse-performance-report.png)
+
+Google Lighthouseによるパフォーマンス評価で、全カテゴリ（パフォーマンス、アクセシビリティ、ベストプラクティス、SEO）で100点満点を獲得しています。
+
 このコードベースは、**Angular** と **NestJS** を使用した本格的なフルスタックアプリケーションのデモンストレーションとして作成されました。
 CRUD操作、認証、ルーティング、ページネーションなどの機能を含みます。
 

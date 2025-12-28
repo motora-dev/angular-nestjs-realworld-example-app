@@ -1,4 +1,4 @@
-import type { ProfileDto, UserProfile } from '../contracts';
+import type { ProfileDto, UserProfile } from '$domains/profile/contracts';
 
 /**
  * Convert UserProfile (DB model) to ProfileDto (API response)
