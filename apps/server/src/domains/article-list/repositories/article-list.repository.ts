@@ -6,7 +6,7 @@ import {
   type ArticleWithRelations,
   type GetArticlesParams,
   type GetFeedParams,
-} from '../contracts';
+} from '$domains/article-list/contracts';
 
 @Injectable()
 export class ArticleListRepository {
