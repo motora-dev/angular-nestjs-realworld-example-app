@@ -2,7 +2,17 @@ import { ERROR_CODE } from '@monorepo/error-code';
 import { ArgumentsHost, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { vi, type MockInstance } from 'vitest';
 
-import { BadRequestError, ForbiddenError, InternalServerError, NotFoundError, UnauthorizedError } from '$errors';
+import {
+  AppError,
+  BadRequestError,
+  ConflictError,
+  ForbiddenError,
+  InternalServerError,
+  NotFoundError,
+  UnauthorizedError,
+  UnprocessableEntityError,
+  type ValidationFieldError,
+} from '$errors';
 import { HttpExceptionFilter } from './http-exception.filter';
 
 describe('HttpExceptionFilter', () => {
@@ -165,6 +175,45 @@ describe('HttpExceptionFilter', () => {
       });
     });
 
+    it('should handle HttpException with object response without message property', () => {
+      const error = new HttpException({ error: 'Some error' }, HttpStatus.BAD_REQUEST);
+
+      filter.catch(error, mockArgumentsHost);
+
+      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
+      // When errorResponse is an object without message property, it will be undefined
+      expect(mockResponse.json).toHaveBeenCalledWith({
+        errorCode: '',
+        message: undefined,
+        params: undefined,
+      });
+    });
+
+    it('should handle HttpException with object response where message is explicitly undefined', () => {
+      // Create a mock HttpException that returns an object without message property
+      // We need to make it pass instanceof check, so we extend HttpException
+      class CustomHttpException extends HttpException {
+        constructor() {
+          super({ error: 'Some error' }, HttpStatus.BAD_REQUEST);
+        }
+
+        getResponse() {
+          return { error: 'Some error' }; // No message property
+        }
+      }
+
+      const error = new CustomHttpException();
+
+      filter.catch(error, mockArgumentsHost);
+
+      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
+      expect(mockResponse.json).toHaveBeenCalledWith({
+        errorCode: '',
+        message: undefined,
+        params: undefined,
+      });
+    });
+
     it('should handle HttpException with NotFoundException', () => {
       const error = new HttpException('Resource not found', HttpStatus.NOT_FOUND);
 
@@ -277,6 +326,224 @@ describe('HttpExceptionFilter', () => {
         errorCode: ERROR_CODE.INTERNAL_SERVER_ERROR,
         message: ERROR_CODE.INTERNAL_SERVER_ERROR,
         params,
+      });
+    });
+  });
+
+  describe('UnprocessableEntityError handling', () => {
+    it('should handle UnprocessableEntityError with GitHub-style response', () => {
+      const errors = [
+        { field: 'email', code: ERROR_CODE.EMAIL_INVALID },
+        { field: 'username', code: ERROR_CODE.USERNAME_INVALID_FORMAT },
+      ];
+      const error = new UnprocessableEntityError(errors);
+
+      filter.catch(error, mockArgumentsHost);
+
+      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.UNPROCESSABLE_ENTITY);
+      expect(mockResponse.json).toHaveBeenCalledWith({
+        errorCode: ERROR_CODE.VALIDATION_ERROR,
+        message: 'Validation Failed',
+        errors,
+      });
+    });
+
+    it('should handle UnprocessableEntityError with empty errors array', () => {
+      const errors: ValidationFieldError[] = [];
+      const error = new UnprocessableEntityError(errors);
+
+      filter.catch(error, mockArgumentsHost);
+
+      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.UNPROCESSABLE_ENTITY);
+      expect(mockResponse.json).toHaveBeenCalledWith({
+        errorCode: ERROR_CODE.VALIDATION_ERROR,
+        message: 'Validation Failed',
+        errors: [],
+      });
+    });
+  });
+
+  describe('Logging levels', () => {
+    it('should log error level for 5xx errors', () => {
+      const error = new InternalServerError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+
+      filter.catch(error, mockArgumentsHost);
+
+      expect(loggerErrorSpy).toHaveBeenCalledTimes(1);
+      expect(loggerWarnSpy).not.toHaveBeenCalled();
+      expect(loggerLogSpy).not.toHaveBeenCalled();
+    });
+
+    it('should log error level for 400 Bad Request', () => {
+      const error = new BadRequestError(ERROR_CODE.VALIDATION_ERROR);
+
+      filter.catch(error, mockArgumentsHost);
+
+      expect(loggerErrorSpy).toHaveBeenCalledTimes(1);
+      expect(loggerWarnSpy).not.toHaveBeenCalled();
+      expect(loggerLogSpy).not.toHaveBeenCalled();
+    });
+
+    it('should log error level for 422 Unprocessable Entity', () => {
+      const errors = [{ field: 'email', code: ERROR_CODE.EMAIL_INVALID as any }];
+      const error = new UnprocessableEntityError(errors);
+
+      filter.catch(error, mockArgumentsHost);
+
+      expect(loggerErrorSpy).toHaveBeenCalledTimes(1);
+      expect(loggerWarnSpy).not.toHaveBeenCalled();
+      expect(loggerLogSpy).not.toHaveBeenCalled();
+    });
+
+    it('should log warn level for 403 Forbidden', () => {
+      const error = new ForbiddenError(ERROR_CODE.FORBIDDEN);
+
+      filter.catch(error, mockArgumentsHost);
+
+      expect(loggerWarnSpy).toHaveBeenCalledTimes(1);
+      expect(loggerErrorSpy).not.toHaveBeenCalled();
+      expect(loggerLogSpy).not.toHaveBeenCalled();
+    });
+
+    it('should log info level for 401 Unauthorized', () => {
+      const error = new UnauthorizedError(ERROR_CODE.UNAUTHORIZED);
+
+      filter.catch(error, mockArgumentsHost);
+
+      expect(loggerLogSpy).toHaveBeenCalledTimes(1);
+      expect(loggerErrorSpy).not.toHaveBeenCalled();
+      expect(loggerWarnSpy).not.toHaveBeenCalled();
+    });
+
+    it('should log info level for 404 Not Found', () => {
+      const error = new NotFoundError(ERROR_CODE.USER_NOT_FOUND);
+
+      filter.catch(error, mockArgumentsHost);
+
+      expect(loggerLogSpy).toHaveBeenCalledTimes(1);
+      expect(loggerErrorSpy).not.toHaveBeenCalled();
+      expect(loggerWarnSpy).not.toHaveBeenCalled();
+    });
+
+    it('should log info level for 409 Conflict', () => {
+      const error = new ConflictError(ERROR_CODE.USERNAME_ALREADY_EXISTS);
+
+      filter.catch(error, mockArgumentsHost);
+
+      expect(loggerLogSpy).toHaveBeenCalledTimes(1);
+      expect(loggerErrorSpy).not.toHaveBeenCalled();
+      expect(loggerWarnSpy).not.toHaveBeenCalled();
+    });
+
+    it('should log error level for unknown Error (500)', () => {
+      const error = new Error('Something went wrong');
+
+      filter.catch(error, mockArgumentsHost);
+
+      expect(loggerErrorSpy).toHaveBeenCalledTimes(1);
+      expect(loggerWarnSpy).not.toHaveBeenCalled();
+      expect(loggerLogSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Logging exception stack handling', () => {
+    it('should include stack trace when exception is Error instance', () => {
+      const error = new Error('Test error');
+      error.stack = 'Error: Test error\n    at test.js:1:1';
+
+      filter.catch(error, mockArgumentsHost);
+
+      const logCall = loggerErrorSpy.mock.calls[0][0];
+      const logData = JSON.parse(logCall);
+      expect(logData.stack).toBe('Error: Test error\n    at test.js:1:1');
+    });
+
+    it('should not include stack trace when exception is not Error instance', () => {
+      const error = { some: 'object' };
+
+      filter.catch(error, mockArgumentsHost);
+
+      const logCall = loggerErrorSpy.mock.calls[0][0];
+      const logData = JSON.parse(logCall);
+      expect(logData.stack).toBeUndefined();
+    });
+  });
+
+  describe('Logging endpoint handling', () => {
+    it('should use originalUrl when available', () => {
+      mockRequest.originalUrl = '/original/endpoint';
+      mockRequest.url = '/fallback/endpoint';
+      const error = new BadRequestError(ERROR_CODE.VALIDATION_ERROR);
+
+      filter.catch(error, mockArgumentsHost);
+
+      const logCall = loggerErrorSpy.mock.calls[0][0];
+      const logData = JSON.parse(logCall);
+      expect(logData.endpoint).toBe('/original/endpoint');
+    });
+
+    it('should fallback to url when originalUrl is undefined', () => {
+      mockRequest.originalUrl = undefined;
+      mockRequest.url = '/fallback/endpoint';
+      const error = new BadRequestError(ERROR_CODE.VALIDATION_ERROR);
+
+      filter.catch(error, mockArgumentsHost);
+
+      const logCall = loggerErrorSpy.mock.calls[0][0];
+      const logData = JSON.parse(logCall);
+      expect(logData.endpoint).toBe('/fallback/endpoint');
+    });
+
+    it('should fallback to url when originalUrl is null', () => {
+      mockRequest.originalUrl = null;
+      mockRequest.url = '/fallback/endpoint';
+      const error = new BadRequestError(ERROR_CODE.VALIDATION_ERROR);
+
+      filter.catch(error, mockArgumentsHost);
+
+      const logCall = loggerErrorSpy.mock.calls[0][0];
+      const logData = JSON.parse(logCall);
+      expect(logData.endpoint).toBe('/fallback/endpoint');
+    });
+
+    it('should fallback to url when originalUrl is empty string', () => {
+      mockRequest.originalUrl = '';
+      mockRequest.url = '/fallback/endpoint';
+      const error = new BadRequestError(ERROR_CODE.VALIDATION_ERROR);
+
+      filter.catch(error, mockArgumentsHost);
+
+      const logCall = loggerErrorSpy.mock.calls[0][0];
+      const logData = JSON.parse(logCall);
+      expect(logData.endpoint).toBe('/fallback/endpoint');
+    });
+  });
+
+  describe('getStatusCode fallback', () => {
+    it('should return INTERNAL_SERVER_ERROR for unknown AppError subclass', () => {
+      // Create a custom AppError subclass that doesn't match any instanceof check
+      // This tests the fallback return statement at line 134
+      class UnknownAppError extends AppError {
+        constructor() {
+          super(ERROR_CODE.INTERNAL_SERVER_ERROR);
+        }
+      }
+      // Set name after construction
+      Object.defineProperty(UnknownAppError.prototype, 'name', {
+        value: 'UnknownAppError',
+        writable: true,
+      });
+
+      const error = new UnknownAppError();
+
+      filter.catch(error, mockArgumentsHost);
+
+      // Should fallback to INTERNAL_SERVER_ERROR status
+      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR);
+      expect(mockResponse.json).toHaveBeenCalledWith({
+        errorCode: ERROR_CODE.INTERNAL_SERVER_ERROR,
+        message: ERROR_CODE.INTERNAL_SERVER_ERROR,
+        params: undefined,
       });
     });
   });

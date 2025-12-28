@@ -6,8 +6,12 @@ import { PrismaAdapter } from './prisma.adapter';
 describe('PrismaAdapter', () => {
   let adapter: PrismaAdapter;
   let prismaMock: any;
+  const originalEnv = process.env.DATABASE_URL;
 
   beforeEach(async () => {
+    // Set up environment variable for constructor
+    process.env.DATABASE_URL = 'postgresql://test:test@localhost:5432/test';
+
     prismaMock = {
       $connect: vi.fn(),
       $disconnect: vi.fn(),
@@ -28,6 +32,16 @@ describe('PrismaAdapter', () => {
     }).compile();
 
     adapter = module.get<PrismaAdapter>(PrismaAdapter);
+  });
+
+  afterEach(() => {
+    // Restore original environment variable
+    if (originalEnv) {
+      process.env.DATABASE_URL = originalEnv;
+    } else {
+      delete process.env.DATABASE_URL;
+    }
+    vi.clearAllMocks();
   });
 
   describe('lifecycle hooks', () => {
@@ -60,6 +74,24 @@ describe('PrismaAdapter', () => {
     it('should have prisma client methods', () => {
       expect(adapter.$connect).toBeDefined();
       expect(adapter.$disconnect).toBeDefined();
+    });
+  });
+
+  describe('constructor', () => {
+    it('should handle missing DATABASE_URL', () => {
+      const originalUrl = process.env.DATABASE_URL;
+      delete process.env.DATABASE_URL;
+
+      try {
+        // Constructor should not throw even if DATABASE_URL is missing
+        // (Prisma will handle this during connection)
+        expect(() => new PrismaAdapter()).not.toThrow();
+      } finally {
+        // Restore original URL
+        if (originalUrl) {
+          process.env.DATABASE_URL = originalUrl;
+        }
+      }
     });
   });
 });
