@@ -155,7 +155,8 @@
               "src/main.ts",
               "src/server.ts",
               "src/test-setup.ts"
-            ]
+            ],
+            "coverageReporters": ["text", "text-summary", "html", "json", "lcov"]
           },
           "configurations": {
             "unit": {
