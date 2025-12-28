@@ -1,10 +1,10 @@
 import { ERROR_CODE } from '@monorepo/error-code';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 
-import { toUserInfo } from '$modules/auth/presenters';
+import { toUserInfo } from '$modules/auth/presenters/auth.presenter';
+import { GetAuthUserInfoQuery } from '$modules/auth/queries/get-auth-user-info/get-auth-user-info.query';
 import { AuthService } from '$modules/auth/services/auth.service';
 import { NotFoundError } from '$shared/errors/app-error';
-import { GetAuthUserInfoQuery } from './get-auth-user-info.query';
 
 @QueryHandler(GetAuthUserInfoQuery)
 export class GetAuthUserInfoHandler implements IQueryHandler<GetAuthUserInfoQuery> {

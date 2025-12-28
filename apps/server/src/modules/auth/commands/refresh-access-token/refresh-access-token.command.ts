@@ -1,5 +1,11 @@
-import { ICommand } from '@nestjs/cqrs';
+import { Command } from '@nestjs/cqrs';
 
-export class RefreshAccessTokenCommand implements ICommand {
-  constructor(public readonly refreshToken: string) {}
+export interface RefreshAccessTokenResult {
+  accessToken: string;
+}
+
+export class RefreshAccessTokenCommand extends Command<RefreshAccessTokenResult | null> {
+  constructor(public readonly refreshToken: string) {
+    super();
+  }
 }

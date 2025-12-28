@@ -3,9 +3,9 @@ import { ConfigService } from '@nestjs/config';
 import { randomBytes } from 'crypto';
 import jwt from 'jsonwebtoken';
 
-import { AuthRepository } from '../repositories/auth.repository';
+import type { JwtPayload, PendingRegistrationPayload } from '$modules/auth/contracts';
+import { AuthRepository } from '$modules/auth/repositories/auth.repository';
 
-import type { JwtPayload, PendingRegistrationPayload } from '../contracts';
 import type { User } from '@monorepo/database/client';
 
 @Injectable()

@@ -133,6 +133,76 @@ describe('UserService', () => {
       });
     });
 
+    it('should update user without checking username when username is not provided', async () => {
+      const userId = 1;
+      const request = {
+        user: {
+          email: 'newemail@example.com',
+          bio: 'New bio',
+        },
+      };
+
+      mockRepository.getById.mockResolvedValue(mockUserWithAccount);
+      mockRepository.isEmailTaken.mockResolvedValue(false);
+      mockRepository.update.mockResolvedValue({
+        ...mockUserWithAccount,
+        email: 'newemail@example.com',
+        bio: 'New bio',
+      });
+      vi.mocked(Presenters.toUserDto).mockReturnValue({
+        ...mockUserDto,
+        email: 'newemail@example.com',
+        bio: 'New bio',
+      });
+
+      const result = await service.updateUser(userId, request);
+
+      expect(result).toEqual({
+        user: {
+          ...mockUserDto,
+          email: 'newemail@example.com',
+          bio: 'New bio',
+        },
+      });
+      expect(mockRepository.isUsernameTaken).not.toHaveBeenCalled();
+      expect(mockRepository.isEmailTaken).toHaveBeenCalledWith('newemail@example.com', userId);
+    });
+
+    it('should update user without checking email when email is not provided', async () => {
+      const userId = 1;
+      const request = {
+        user: {
+          username: 'newusername',
+          bio: 'New bio',
+        },
+      };
+
+      mockRepository.getById.mockResolvedValue(mockUserWithAccount);
+      mockRepository.isUsernameTaken.mockResolvedValue(false);
+      mockRepository.update.mockResolvedValue({
+        ...mockUserWithAccount,
+        username: 'newusername',
+        bio: 'New bio',
+      });
+      vi.mocked(Presenters.toUserDto).mockReturnValue({
+        ...mockUserDto,
+        username: 'newusername',
+        bio: 'New bio',
+      });
+
+      const result = await service.updateUser(userId, request);
+
+      expect(result).toEqual({
+        user: {
+          ...mockUserDto,
+          username: 'newusername',
+          bio: 'New bio',
+        },
+      });
+      expect(mockRepository.isUsernameTaken).toHaveBeenCalledWith('newusername', userId);
+      expect(mockRepository.isEmailTaken).not.toHaveBeenCalled();
+    });
+
     it('should throw NotFoundError when user is not found', async () => {
       const userId = 999;
       const request = {
@@ -249,6 +319,83 @@ describe('UserService', () => {
 
       expect(result).toBeNull();
       expect(mockRepository.getByOAuthAccount).toHaveBeenCalledWith(provider, providerId);
+    });
+  });
+
+  describe('updateUser - image field handling', () => {
+    it('should update user with image field when provided', async () => {
+      const userId = 1;
+      const request = {
+        user: {
+          email: 'newemail@example.com',
+          username: 'newusername',
+          bio: 'New bio',
+          image: 'https://example.com/new-image.jpg',
+        },
+      };
+
+      mockRepository.getById.mockResolvedValue(mockUserWithAccount);
+      mockRepository.isUsernameTaken.mockResolvedValue(false);
+      mockRepository.isEmailTaken.mockResolvedValue(false);
+      mockRepository.update.mockResolvedValue({
+        ...mockUserWithAccount,
+        ...request.user,
+      });
+      vi.mocked(Presenters.toUserDto).mockReturnValue({
+        ...mockUserDto,
+        ...request.user,
+      });
+
+      const result = await service.updateUser(userId, request);
+
+      expect(result).toEqual({
+        user: {
+          ...mockUserDto,
+          ...request.user,
+        },
+      });
+      expect(mockRepository.update).toHaveBeenCalledWith(userId, {
+        email: request.user.email,
+        username: request.user.username,
+        bio: request.user.bio,
+        image: request.user.image,
+      });
+    });
+
+    it('should handle undefined image field in request', async () => {
+      const userId = 1;
+      const request = {
+        user: {
+          email: 'newemail@example.com',
+          username: 'newusername',
+          bio: 'New bio',
+        },
+      };
+
+      mockRepository.getById.mockResolvedValue(mockUserWithAccount);
+      mockRepository.isUsernameTaken.mockResolvedValue(false);
+      mockRepository.isEmailTaken.mockResolvedValue(false);
+      mockRepository.update.mockResolvedValue({
+        ...mockUserWithAccount,
+        email: request.user.email,
+        username: request.user.username,
+        bio: request.user.bio,
+      });
+      vi.mocked(Presenters.toUserDto).mockReturnValue({
+        ...mockUserDto,
+        email: request.user.email,
+        username: request.user.username,
+        bio: request.user.bio,
+      });
+
+      await service.updateUser(userId, request);
+
+      expect(mockRepository.update).toHaveBeenCalledWith(userId, {
+        email: request.user.email,
+        username: request.user.username,
+        bio: request.user.bio,
+        image: undefined,
+      });
     });
   });
 });
