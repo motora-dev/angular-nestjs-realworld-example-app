@@ -1,34 +1,20 @@
-import { ERROR_CODE, ValidationErrorCode } from '@monorepo/error-code';
-import { CanActivate, ExecutionContext, Logger, Module, ValidationPipe } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
-import { vi, type MockInstance } from 'vitest';
-
-import type { INestApplication } from '@nestjs/common';
-
 import { PrismaAdapter } from '$adapters';
-import type { CurrentUserType } from '$decorators';
+import { ProfileModule } from '$domains/profile/profile.module';
 import { UnprocessableEntityError } from '$errors';
 import { HttpExceptionFilter } from '$filters';
 import { GoogleAuthGuard } from '$modules/auth/guards';
-import { ProfileModule } from '$domains/profile/profile.module';
+import { ERROR_CODE, ValidationErrorCode } from '@monorepo/error-code';
+import { ExecutionContext, Logger, Module, ValidationPipe } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+import { vi, type MockInstance } from 'vitest';
+
+import type { CurrentUserType } from '$decorators';
+import type { INestApplication } from '@nestjs/common';
 
 @Module({
   imports: [ProfileModule],
 })
 class TestModule {}
-
-// Custom guard to set authenticated user in request
-class MockAuthGuard implements CanActivate {
-  constructor(private readonly user?: CurrentUserType) {}
-
-  canActivate(context: ExecutionContext): boolean {
-    const request = context.switchToHttp().getRequest();
-    if (this.user) {
-      request.user = this.user;
-    }
-    return true;
-  }
-}
 
 describe('Profile Controller E2E', () => {
   let app: INestApplication;
@@ -50,9 +36,9 @@ describe('Profile Controller E2E', () => {
   };
 
   beforeAll(async () => {
-    // For profile endpoints, auth is optional, so we can use a guard that allows optional user
-    const mockGuard = new MockAuthGuard();
-
+    // For profile endpoints, use a guard that sets user when needed
+    // GET endpoint doesn't require auth, but follow/unfollow do
+    // Note: GET endpoint uses @CurrentUser() which reads from request.user if available
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [TestModule],
     })
@@ -70,7 +56,14 @@ describe('Profile Controller E2E', () => {
         },
       })
       .overrideGuard(GoogleAuthGuard)
-      .useValue(mockGuard)
+      .useValue({
+        canActivate: (context: ExecutionContext) => {
+          const request = context.switchToHttp().getRequest();
+          // Always set user for testing
+          request.user = mockCurrentUser;
+          return true;
+        },
+      })
       .compile();
 
     prismaAdapter = moduleFixture.get<PrismaAdapter>(PrismaAdapter);
@@ -97,6 +90,14 @@ describe('Profile Controller E2E', () => {
 
     app.useGlobalFilters(new HttpExceptionFilter());
 
+    // Middleware to set user for all requests (for testing purposes)
+    // This simulates authenticated requests even when @UseGuards is not applied
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    app.use((req: any, res: any, next: any) => {
+      req.user = mockCurrentUser;
+      next();
+    });
+
     await app.init();
     await app.listen(0); // Start on random port
 
@@ -120,6 +121,7 @@ describe('Profile Controller E2E', () => {
 
   describe('GET /api/profiles/:username', () => {
     it('should return 200 with profile data when user exists', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       vi.mocked(prismaAdapter.user.findUnique).mockResolvedValueOnce(mockProfileUser as any);
       vi.mocked(prismaAdapter.follow.findUnique).mockResolvedValueOnce(null);
 
@@ -134,6 +136,7 @@ describe('Profile Controller E2E', () => {
     });
 
     it('should return 200 with following=true when authenticated user is following', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       vi.mocked(prismaAdapter.user.findUnique).mockResolvedValueOnce(mockProfileUser as any);
       vi.mocked(prismaAdapter.follow.findUnique).mockResolvedValueOnce({
         followerId: 1,
@@ -141,14 +144,14 @@ describe('Profile Controller E2E', () => {
         createdAt: new Date('2024-01-01T00:00:00.000Z'),
       });
 
-      // Set authenticated user in request
-      const mockGuard = new MockAuthGuard(mockCurrentUser);
-      app.useGlobalGuards(mockGuard);
-
+      // The guard sets request.user, so CurrentUser decorator will return the user
       const response = await fetch(`${baseUrl}/profiles/profileuser`);
 
       expect(response.status).toBe(200);
       const body = await response.json();
+      // Note: The guard sets user, so following should be checked
+      // However, GET endpoint doesn't use @UseGuards, so guard might not run
+      // Let's check if following is true when guard sets the user
       expect(body.profile.following).toBe(true);
     });
 
@@ -165,15 +168,14 @@ describe('Profile Controller E2E', () => {
 
   describe('POST /api/profiles/:username/follow', () => {
     it('should return 200 with profile when follow is successful', async () => {
-      const mockGuard = new MockAuthGuard(mockCurrentUser);
-      app.useGlobalGuards(mockGuard);
-
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       vi.mocked(prismaAdapter.user.findUnique).mockResolvedValueOnce(mockProfileUser as any);
       vi.mocked(prismaAdapter.follow.findUnique).mockResolvedValueOnce(null);
       vi.mocked(prismaAdapter.follow.upsert).mockResolvedValueOnce({
         followerId: 1,
         followingId: 2,
         createdAt: new Date('2024-01-01T00:00:00.000Z'),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
       const response = await fetch(`${baseUrl}/profiles/profileuser/follow`, {
@@ -188,9 +190,6 @@ describe('Profile Controller E2E', () => {
     });
 
     it('should return 404 when user does not exist', async () => {
-      const mockGuard = new MockAuthGuard(mockCurrentUser);
-      app.useGlobalGuards(mockGuard);
-
       vi.mocked(prismaAdapter.user.findUnique).mockResolvedValueOnce(null);
 
       const response = await fetch(`${baseUrl}/profiles/non-existent-user/follow`, {
@@ -205,15 +204,14 @@ describe('Profile Controller E2E', () => {
 
   describe('DELETE /api/profiles/:username/follow', () => {
     it('should return 200 with profile when unfollow is successful', async () => {
-      const mockGuard = new MockAuthGuard(mockCurrentUser);
-      app.useGlobalGuards(mockGuard);
-
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       vi.mocked(prismaAdapter.user.findUnique).mockResolvedValueOnce(mockProfileUser as any);
       vi.mocked(prismaAdapter.follow.findUnique).mockResolvedValueOnce({
         followerId: 1,
         followingId: 2,
         createdAt: new Date('2024-01-01T00:00:00.000Z'),
       });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       vi.mocked(prismaAdapter.follow.deleteMany).mockResolvedValueOnce({ count: 1 } as any);
 
       const response = await fetch(`${baseUrl}/profiles/profileuser/follow`, {
@@ -228,9 +226,6 @@ describe('Profile Controller E2E', () => {
     });
 
     it('should return 404 when user does not exist', async () => {
-      const mockGuard = new MockAuthGuard(mockCurrentUser);
-      app.useGlobalGuards(mockGuard);
-
       vi.mocked(prismaAdapter.user.findUnique).mockResolvedValueOnce(null);
 
       const response = await fetch(`${baseUrl}/profiles/non-existent-user/follow`, {
@@ -243,4 +238,3 @@ describe('Profile Controller E2E', () => {
     });
   });
 });
-
