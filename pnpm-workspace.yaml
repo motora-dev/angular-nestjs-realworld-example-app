@@ -27,12 +27,14 @@ versions:
   google-auth-library: &google-auth-library 10.5.0
   husky: &husky 9.1.7
   jsdom: &jsdom 27.4.0
+  js-yaml: &js-yaml 4.1.1
+  jsonwebtoken: &jsonwebtoken 9.0.3
   katex: &katex 0.16.27
   lint-staged: &lint-staged 16.2.7
   marked: &marked 17.0.1
   nestjs: &nestjs 11.1.10
   nestjs-cli: &nestjs-cli 11.0.14
-  nestjs-swagger: &nestjs-swagger 11.2.0
+  nestjs-swagger: &nestjs-swagger 11.2.3
   nestjs-config: &nestjs-config 4.0.2
   nestjs-cqrs: &nestjs-cqrs 11.0.3
   nestjs-passport: &nestjs-passport 11.0.5
@@ -63,6 +65,8 @@ versions:
   types-cookie-parser: &types-cookie-parser 1.4.10
   types-express: &types-express 5.0.6
   types-express-session: &types-express-session 1.18.2
+  types-js-yaml: &types-js-yaml 4.0.9
+  types-jsonwebtoken: &types-jsonwebtoken 9.0.10
   typescript: &typescript 5.9.3
   typescript-eslint: &typescript-eslint 8.50.1
   unplugin-swc: &unplugin-swc 1.5.9
@@ -119,6 +123,8 @@ catalog:
   '@types/cookie-parser': *types-cookie-parser
   '@types/express': *types-express
   '@types/express-session': *types-express-session
+  '@types/js-yaml': *types-js-yaml
+  '@types/jsonwebtoken': *types-jsonwebtoken
   '@types/node': *node
   '@typescript-eslint/eslint-plugin': *typescript-eslint
   '@typescript-eslint/parser': *typescript-eslint
@@ -142,6 +148,8 @@ catalog:
   google-auth-library: *google-auth-library
   husky: *husky
   jsdom: *jsdom
+  js-yaml: *js-yaml
+  jsonwebtoken: *jsonwebtoken
   lint-staged: *lint-staged
   marked: *marked
   pg: *pg
