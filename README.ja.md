@@ -192,7 +192,7 @@ flowchart TB
         end
     end
 
-    subgraph Neon["Neon"]
+    subgraph Supabase["Supabase"]
         PostgreSQL[(PostgreSQL)]
     end
 
