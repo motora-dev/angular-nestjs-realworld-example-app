@@ -96,6 +96,10 @@
     ],
     "src/**/*.html": [
       "eslint --fix --config eslint.config.mjs --max-warnings 0"
+    ],
+    "test/**/*.ts": [
+      "prettier --write",
+      "eslint --fix --config eslint.config.mjs --max-warnings 0"
     ]
   },
   "volta": {

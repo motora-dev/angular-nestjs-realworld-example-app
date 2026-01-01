@@ -2,12 +2,11 @@ import { ERROR_CODE, ValidationErrorCode } from '@monorepo/error-code';
 import { Module, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { UnprocessableEntityError } from '$errors';
+import { HttpExceptionFilter } from '$filters';
 import { AuthControllerMock } from './auth.controller.mock';
 
 import type { INestApplication } from '@nestjs/common';
-
-import { UnprocessableEntityError } from '$errors';
-import { HttpExceptionFilter } from '$filters';
 
 @Module({
   controllers: [AuthControllerMock],

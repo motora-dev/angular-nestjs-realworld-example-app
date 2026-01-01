@@ -1,16 +1,17 @@
-import { ERROR_CODE, ValidationErrorCode } from '@monorepo/error-code';
+import { ValidationErrorCode } from '@monorepo/error-code';
 import { CanActivate, ExecutionContext, Logger, Module, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { vi, type MockInstance } from 'vitest';
 
-import type { INestApplication } from '@nestjs/common';
-
 import { PrismaAdapter } from '$adapters';
 import type { CurrentUserType } from '$decorators';
+import { ArticleListModule } from '$domains/article-list/article-list.module';
+import { ArticleWithRelations } from '$domains/article-list/contracts';
 import { UnprocessableEntityError } from '$errors';
 import { HttpExceptionFilter } from '$filters';
 import { GoogleAuthGuard } from '$modules/auth/guards';
-import { ArticleListModule } from '$domains/article-list/article-list.module';
+
+import type { INestApplication } from '@nestjs/common';
 
 @Module({
   imports: [ArticleListModule],
@@ -256,11 +257,8 @@ describe('Article List Controller E2E', () => {
 
   describe('GET /api/tags', () => {
     it('should return 200 with tags list', async () => {
-      const articlesWithTags = [
-        { tags: ['tag1', 'tag2'] },
-        { tags: ['tag2', 'tag3'] },
-      ];
-      vi.mocked(prismaAdapter.article.findMany).mockResolvedValueOnce(articlesWithTags as any);
+      const articlesWithTags = [{ tags: ['tag1', 'tag2'] }, { tags: ['tag2', 'tag3'] }];
+      vi.mocked(prismaAdapter.article.findMany).mockResolvedValueOnce(articlesWithTags as ArticleWithRelations[]);
 
       const response = await fetch(`${baseUrl}/tags`);
 
@@ -284,4 +282,3 @@ describe('Article List Controller E2E', () => {
     });
   });
 });
-

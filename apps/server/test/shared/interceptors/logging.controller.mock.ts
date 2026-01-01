@@ -1,6 +1,7 @@
-import { NotFoundError } from '$errors';
 import { ERROR_CODE } from '@monorepo/error-code';
 import { Controller, Get } from '@nestjs/common';
+
+import { NotFoundError } from '$errors';
 
 @Controller('logging')
 export class LoggingControllerMock {
