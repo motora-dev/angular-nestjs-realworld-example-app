@@ -10,9 +10,9 @@
     "start": "node esbuild.config.mjs --watch --debug",
     "start:prd": "node dist/main.js",
     "check-all": "pnpm lint && pnpm format && pnpm build && pnpm tsc && pnpm test",
-    "format": "prettier --check \"src/**/*.ts\"",
-    "format:fix": "prettier --write \"src/**/*.ts\"",
-    "lint": "eslint \"src/**/*.ts\" --config eslint.config.mjs",
+    "format": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format:fix": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "lint": "eslint \"src/**/*.ts\" \"test/**/*.ts\" --config eslint.config.mjs",
     "lint:fix": "pnpm lint --fix",
     "tsc": "pnpm tsc:build && pnpm tsc:test",
     "tsc:build": "tsc --noEmit --project tsconfig.build.json",
@@ -71,6 +71,10 @@
   },
   "lint-staged": {
     "src/**/*.ts": [
+      "prettier --write",
+      "eslint --fix --config eslint.config.mjs --max-warnings 0"
+    ],
+    "test/**/*.ts": [
       "prettier --write",
       "eslint --fix --config eslint.config.mjs --max-warnings 0"
     ]

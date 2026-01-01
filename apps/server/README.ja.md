@@ -710,6 +710,92 @@ pnpm prisma db push
 pnpm prisma db seed
 ```
 
+## バリデーション・変換（class-validator / class-transformer）
+
+**キーワード**: `class-validator`, `class-transformer`, `DTO`, `バリデーション`, `変換`
+
+このセクションでは、NestJS における DTO のバリデーションと変換パターンについて説明します。
+
+**関連ファイル**:
+
+- `apps/server/src/domains/{domain}/contracts/{domain}.input.ts` - 入力バリデーション
+- `apps/server/src/domains/{domain}/contracts/{domain}.dto.ts` - レスポンス変換
+
+### class-validator によるバリデーション
+
+入力データのバリデーションには `class-validator` のデコレーターを使用します。
+
+```typescript
+// contracts/article.input.ts
+import { IsString, IsNotEmpty, MaxLength, IsOptional, IsArray } from 'class-validator';
+
+export class CreateArticleInput {
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(100)
+  title: string;
+
+  @IsString()
+  @IsNotEmpty()
+  description: string;
+
+  @IsString()
+  @IsNotEmpty()
+  body: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  tagList?: string[];
+}
+```
+
+### class-transformer による変換
+
+レスポンス DTO の変換には `class-transformer` を使用します。
+
+```typescript
+// contracts/article.dto.ts
+import { Expose, Transform, Type } from 'class-transformer';
+
+export class ArticleDto {
+  @Expose()
+  id: number;
+
+  @Expose()
+  title: string;
+
+  @Expose()
+  @Type(() => Date)
+  createdAt: Date;
+
+  @Expose()
+  @Transform(({ obj }) => obj.author?.username)
+  authorUsername: string;
+}
+```
+
+### ValidationPipe の設定
+
+`main.ts` でグローバルに `ValidationPipe` を設定しています。
+
+```typescript
+// main.ts
+app.useGlobalPipes(
+  new ValidationPipe({
+    whitelist: true,           // DTOに定義されていないプロパティを除外
+    forbidNonWhitelisted: true, // 未定義プロパティがあればエラー
+    transform: true,            // class-transformerによる自動変換を有効化
+  }),
+);
+```
+
+**メリット:**
+
+- デコレーターベースで宣言的にバリデーションを定義
+- OpenAPI 仕様（Swagger）との連携が容易
+- 型安全なデータ変換
+
 ## エラーハンドリング
 
 **キーワード**: `エラーハンドリング`, `AppError`, `HttpExceptionFilter`, `例外処理`, `エラーレスポンス`
@@ -1035,6 +1121,11 @@ async checkSession(): Promise<{ authenticated: boolean; user?: User }> {
 | ---------------- | ---------------------------------------- |
 | `/api/docs`      | Redoc UI（インタラクティブドキュメント） |
 | `/api/docs.json` | OpenAPI JSON 仕様                        |
+
+**公開URL:**
+
+- **Redoc UI**: https://api.realworld.motora-dev.com/api/docs
+- **OpenAPI JSON**: https://api.realworld.motora-dev.com/api/docs.json
 
 ### 設定例
 
