@@ -32,7 +32,7 @@ versions:
   katex: &katex 0.16.27
   lint-staged: &lint-staged 16.2.7
   marked: &marked 17.0.1
-  nestjs: &nestjs 11.1.10
+  nestjs: &nestjs 11.1.11
   nestjs-cli: &nestjs-cli 11.0.14
   nestjs-swagger: &nestjs-swagger 11.2.3
   nestjs-config: &nestjs-config 4.0.2
@@ -43,7 +43,7 @@ versions:
   ngx-translate-core: &ngx-translate-core 17.0.0
   ngxs: &ngxs 21.0.0
   node: &node 24.10.1
-  paralleldrive-cuid2: &paralleldrive-cuid2 3.0.4
+  paralleldrive-cuid2: &paralleldrive-cuid2 3.0.6
   pg: &pg 8.16.3
   playwright: &playwright 1.57.0
   postcss: &postcss 8.5.6
@@ -51,11 +51,11 @@ versions:
   prisma: &prisma 7.2.0
   reflect-metadata: &reflect-metadata 0.2.2
   rimraf: &rimraf 6.1.2
-  rx-angular: &rx-angular 20.1.0
-  rx-angular-isr: &rx-angular-isr 20.0.0
+  rx-angular: &rx-angular 21.0.0
+  rx-angular-isr: &rx-angular-isr 21.0.0
   rxjs: &rxjs 7.8.2
-  storybook: &storybook 10.1.10
-  swc: &swc 1.15.7
+  storybook: &storybook 10.1.11
+  swc: &swc 1.15.8
   tailwind-merge: &tailwind-merge 3.4.0
   tailwindcss: &tailwindcss 4.1.18
   ts-node: &ts-node 10.9.2
@@ -68,7 +68,7 @@ versions:
   types-js-yaml: &types-js-yaml 4.0.9
   types-jsonwebtoken: &types-jsonwebtoken 9.0.10
   typescript: &typescript 5.9.3
-  typescript-eslint: &typescript-eslint 8.50.1
+  typescript-eslint: &typescript-eslint 8.51.0
   unplugin-swc: &unplugin-swc 1.5.9
   vite: &vite 7.3.0
   vitest: &vitest 4.0.16
@@ -88,6 +88,7 @@ catalog:
   '@angular-eslint/template-parser': *angular-eslint
   '@angular/forms': *angular
   '@angular/platform-browser': *angular
+  '@angular/platform-browser-dynamic': *angular
   '@angular/platform-server': *angular
   '@angular/router': *angular
   '@angular/ssr': *angular-build
