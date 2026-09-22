@@ -22,6 +22,7 @@ describe('App', () => {
   let component: App;
   let mockAuthFacade: {
     isAuthenticated$: Observable<boolean>;
+    currentUser$: Observable<null>;
     checkSession: ReturnType<typeof vi.fn>;
   };
   let originalRequestIdleCallback: typeof requestIdleCallback | undefined;
@@ -38,6 +39,7 @@ describe('App', () => {
     const isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
     mockAuthFacade = {
       isAuthenticated$: isAuthenticatedSubject.asObservable(),
+      currentUser$: new BehaviorSubject(null).asObservable(),
       checkSession: vi.fn(),
     };
 
@@ -145,6 +147,7 @@ describe('App', () => {
       const isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
       const serverMockAuthFacade = {
         isAuthenticated$: isAuthenticatedSubject.asObservable(),
+        currentUser$: new BehaviorSubject(null).asObservable(),
         checkSession: vi.fn(),
       };
 
@@ -280,6 +283,7 @@ describe('App', () => {
       const isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
       const mockAuthFacadeWithSubject = {
         isAuthenticated$: isAuthenticatedSubject.asObservable(),
+        currentUser$: new BehaviorSubject(null).asObservable(),
         checkSession: vi.fn(),
       };
 

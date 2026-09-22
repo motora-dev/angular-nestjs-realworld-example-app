@@ -4,7 +4,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { provideRouter } from '@angular/router';
 import { provideStore } from '@ngxs/store';
-import { of } from 'rxjs';
+import { of, Observable } from 'rxjs';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 
 import { EditorArticle, EditorFacade } from '$domains/editor';
@@ -20,6 +20,7 @@ describe('EditorComponent', () => {
     loadArticle: ReturnType<typeof vi.fn>;
     createArticle: ReturnType<typeof vi.fn>;
     updateArticle: ReturnType<typeof vi.fn>;
+    isFormInvalid$: Observable<boolean>;
   };
   let mockRouter: {
     navigate: ReturnType<typeof vi.fn>;
@@ -48,6 +49,7 @@ describe('EditorComponent', () => {
       loadArticle: vi.fn(() => of(mockArticle)),
       createArticle: vi.fn(() => of(mockArticle)),
       updateArticle: vi.fn(() => of(mockArticle)),
+      isFormInvalid$: of(false),
     };
 
     mockRouter = {

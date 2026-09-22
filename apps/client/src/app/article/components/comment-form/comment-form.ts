@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgxsFormDirective } from '@ngxs/form-plugin';
-import { RxPush } from '@rx-angular/template/push';
 
 import { ArticleFacade } from '$domains/article';
 
@@ -12,7 +12,7 @@ interface CommentForm {
 @Component({
   selector: 'app-comment-form',
   standalone: true,
-  imports: [ReactiveFormsModule, NgxsFormDirective, RxPush],
+  imports: [ReactiveFormsModule, NgxsFormDirective],
   templateUrl: './comment-form.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -24,7 +24,7 @@ export class CommentFormComponent {
 
   readonly submitComment = output<string>();
 
-  readonly isFormInvalid$ = this.articleFacade.isCommentFormInvalid$;
+  readonly isFormInvalid = toSignal(this.articleFacade.isCommentFormInvalid$);
 
   readonly commentForm = new FormGroup<CommentForm>({
     body: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.pattern(/\S/)] }),

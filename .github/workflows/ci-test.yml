@@ -32,13 +32,13 @@ jobs:
         if: steps.changed-files.outputs.any_changed == 'true'
         uses: pnpm/action-setup@v3
         with:
-          version: 10.24.0
+          version: 12.5.1
 
       - name: Setup Node.js
         if: steps.changed-files.outputs.any_changed == 'true'
         uses: actions/setup-node@v4
         with:
-          node-version: 24.11.1
+          node-version: 24.21.0
           cache: 'pnpm'
 
       - name: Install dependencies
@@ -82,13 +82,13 @@ jobs:
         if: steps.changed-files.outputs.any_changed == 'true'
         uses: pnpm/action-setup@v3
         with:
-          version: 10.24.0
+          version: 12.5.1
 
       - name: Setup Node.js
         if: steps.changed-files.outputs.any_changed == 'true'
         uses: actions/setup-node@v4
         with:
-          node-version: 24.11.1
+          node-version: 24.21.0
           cache: 'pnpm'
 
       - name: Install dependencies
@@ -132,13 +132,13 @@ jobs:
         if: steps.changed-files.outputs.any_changed == 'true'
         uses: pnpm/action-setup@v3
         with:
-          version: 10.24.0
+          version: 12.5.1
 
       - name: Setup Node.js
         if: steps.changed-files.outputs.any_changed == 'true'
         uses: actions/setup-node@v4
         with:
-          node-version: 24.11.1
+          node-version: 24.21.0
           cache: 'pnpm'
 
       - name: Install dependencies
@@ -191,13 +191,13 @@ jobs:
         if: steps.changed-files.outputs.any_changed == 'true'
         uses: pnpm/action-setup@v3
         with:
-          version: 10.24.0
+          version: 12.5.1
 
       - name: Setup Node.js
         if: steps.changed-files.outputs.any_changed == 'true'
         uses: actions/setup-node@v4
         with:
-          node-version: 24.11.1
+          node-version: 24.21.0
           cache: 'pnpm'
 
       - name: Install dependencies
@@ -267,13 +267,13 @@ jobs:
         if: steps.changed-files.outputs.any_changed == 'true'
         uses: pnpm/action-setup@v3
         with:
-          version: 10.24.0
+          version: 12.5.1
 
       - name: Setup Node.js
         if: steps.changed-files.outputs.any_changed == 'true'
         uses: actions/setup-node@v4
         with:
-          node-version: 24.11.1
+          node-version: 24.21.0
           cache: 'pnpm'
 
       - name: Install dependencies

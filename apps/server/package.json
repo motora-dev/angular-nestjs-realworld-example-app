@@ -65,21 +65,9 @@
     "rimraf": "catalog:",
     "ts-node": "catalog:",
     "tsx": "catalog:",
+    "typescript": "catalog:",
     "unplugin-swc": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:"
-  },
-  "lint-staged": {
-    "src/**/*.ts": [
-      "prettier --write",
-      "eslint --fix --config eslint.config.mjs --max-warnings 0"
-    ],
-    "test/**/*.ts": [
-      "prettier --write",
-      "eslint --fix --config eslint.config.mjs --max-warnings 0"
-    ]
-  },
-  "volta": {
-    "extends": "../../package.json"
   }
 }

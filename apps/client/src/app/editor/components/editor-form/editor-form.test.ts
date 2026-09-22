@@ -287,29 +287,19 @@ describe('EditorFormComponent', () => {
     });
   });
 
-  describe('observables', () => {
-    it('should expose isLoading$ from spinnerFacade', async () => {
-      let isLoading = false;
-      component.isLoading$.subscribe((value) => {
-        isLoading = value;
-      });
-
-      expect(isLoading).toBe(false);
+  describe('signals', () => {
+    it('should expose isLoading from spinnerFacade', () => {
+      expect(component.isLoading()).toBe(false);
 
       mockSpinnerFacade.isLoading$.next(true);
-      expect(isLoading).toBe(true);
+      expect(component.isLoading()).toBe(true);
     });
 
-    it('should expose isFormInvalid$ from editorFacade', async () => {
-      let isInvalid = false;
-      component.isFormInvalid$.subscribe((value) => {
-        isInvalid = value;
-      });
-
-      expect(isInvalid).toBe(false);
+    it('should expose isFormInvalid from editorFacade', () => {
+      expect(component.isFormInvalid()).toBe(false);
 
       mockEditorFacade.isFormInvalid$.next(true);
-      expect(isInvalid).toBe(true);
+      expect(component.isFormInvalid()).toBe(true);
     });
   });
 });

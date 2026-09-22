@@ -3,21 +3,21 @@
 Backend API built with NestJS + esbuild + swc + Vitest + Prisma + CQRS.
 
 **Framework & Build:**</br>
-[![NestJS](https://img.shields.io/badge/NestJS-11.1.10-E0234E.svg?logo=nestjs)](https://nestjs.com/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6.svg?logo=typescript)](https://www.typescriptlang.org/)
-[![esbuild](https://img.shields.io/badge/esbuild-0.27.2-FFCF00.svg?logo=esbuild)](https://esbuild.github.io/)
-[![SWC](https://img.shields.io/badge/SWC-1.15.7-F8C457.svg)](https://swc.rs/)
+[![NestJS](https://img.shields.io/badge/NestJS-12.0.4-E0234E.svg?logo=nestjs)](https://nestjs.com/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-6.0.3-3178C6.svg?logo=typescript)](https://www.typescriptlang.org/)
+[![esbuild](https://img.shields.io/badge/esbuild-0.28.2-FFCF00.svg?logo=esbuild)](https://esbuild.github.io/)
+[![SWC](https://img.shields.io/badge/SWC-1.16.2-F8C457.svg)](https://swc.rs/)
 
 **Lint & Format:**</br>
-[![ESLint](https://img.shields.io/badge/ESLint-9.39.2-4B32C3.svg?logo=eslint)](https://eslint.org/)
-[![Prettier](https://img.shields.io/badge/Prettier-3.7.4-F7B93E.svg?logo=prettier)](https://prettier.io/)
+[![ESLint](https://img.shields.io/badge/ESLint-9.39.5-4B32C3.svg?logo=eslint)](https://eslint.org/)
+[![Prettier](https://img.shields.io/badge/Prettier-3.9.8-F7B93E.svg?logo=prettier)](https://prettier.io/)
 
 **Database:**</br>
-[![Prisma](https://img.shields.io/badge/Prisma-7.2.0-2D3748.svg?logo=prisma)](https://www.prisma.io/)
+[![Prisma](https://img.shields.io/badge/Prisma-7.10.0-2D3748.svg?logo=prisma)](https://www.prisma.io/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1.svg?logo=postgresql)](https://www.postgresql.org/)
 
 **Testing:**</br>
-[![Vitest](https://img.shields.io/badge/Vitest-4.0.16-6E9F18.svg?logo=vitest)](https://vitest.dev/)
+[![Vitest](https://img.shields.io/badge/Vitest-4.1.11-6E9F18.svg?logo=vitest)](https://vitest.dev/)
 [![jsdom](https://img.shields.io/badge/jsdom-27.4.0-F7DF1E.svg)](https://github.com/jsdom/jsdom)
 
 ## Table of Contents
@@ -1268,7 +1268,7 @@ Versions are managed centrally in `pnpm-workspace.yaml` and unified across the m
 ```yaml
 # pnpm-workspace.yaml
 versions:
-  nestjs: &nestjs 11.0.0
+  # NestJS 12 (see pnpm-workspace.yaml catalog)
   prisma: &prisma 7.0.0
 
 catalog:

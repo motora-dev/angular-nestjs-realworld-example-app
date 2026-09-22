@@ -23,8 +23,5 @@
     "prisma": "catalog:",
     "rimraf": "catalog:",
     "typescript": "catalog:"
-  },
-  "volta": {
-    "extends": "../../package.json"
   }
 }

@@ -1,0 +1,12 @@
+[tools]
+node = "24.21.0"
+pnpm = "12.5.1"
+lefthook = "2.1.14"
+
+[settings]
+experimental = true
+idiomatic_version_file_enable_tools = ["node", "pnpm"]
+
+[hooks]
+# clone / mise install 後に git hooks を登録（CI ではスキップ）
+postinstall = "if [ -z \"${CI:-}\" ] && git rev-parse --git-dir >/dev/null 2>&1; then lefthook install --reset-hooks-path; fi"

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgxsFormDirective } from '@ngxs/form-plugin';
-import { RxPush } from '@rx-angular/template/push';
 
 import { EditorFacade } from '$domains/editor';
 import { SpinnerFacade } from '$modules/spinner';
@@ -22,7 +22,7 @@ export interface EditorFormSubmitEvent {
 @Component({
   selector: 'app-editor-form',
   standalone: true,
-  imports: [ReactiveFormsModule, NgxsFormDirective, RxPush],
+  imports: [ReactiveFormsModule, NgxsFormDirective],
   templateUrl: './editor-form.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -35,8 +35,8 @@ export class EditorFormComponent {
   readonly formSubmit = output<EditorFormSubmitEvent>();
 
   readonly tagList = signal<string[]>([]);
-  readonly isLoading$ = this.spinnerFacade.isLoading$;
-  readonly isFormInvalid$ = this.editorFacade.isFormInvalid$;
+  readonly isLoading = toSignal(this.spinnerFacade.isLoading$);
+  readonly isFormInvalid = toSignal(this.editorFacade.isFormInvalid$);
 
   readonly articleForm = new FormGroup<ArticleForm>({
     title: new FormControl('', { nonNullable: true, validators: [Validators.required] }),

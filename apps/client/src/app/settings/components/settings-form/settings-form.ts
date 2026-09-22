@@ -1,7 +1,7 @@
+import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgxsFormDirective } from '@ngxs/form-plugin';
-import { RxPush } from '@rx-angular/template/push';
 
 import { SettingsFacade, SettingsFormModel } from '$domains/settings';
 import { SpinnerFacade } from '$modules/spinner';
@@ -16,7 +16,7 @@ interface SettingsForm {
 @Component({
   selector: 'app-settings-form',
   standalone: true,
-  imports: [ReactiveFormsModule, NgxsFormDirective, RxPush],
+  imports: [AsyncPipe, ReactiveFormsModule, NgxsFormDirective],
   templateUrl: './settings-form.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

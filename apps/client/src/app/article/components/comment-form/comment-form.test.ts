@@ -89,7 +89,7 @@ describe('CommentFormComponent', () => {
     expect(submitSpy).toHaveBeenCalledWith('Test Comment');
   });
 
-  it('should subscribe to isCommentFormInvalid$ from facade', async () => {
+  it('should expose isFormInvalid from facade', async () => {
     const mockFacade = {
       isCommentFormInvalid$: of(true),
     };
@@ -104,10 +104,7 @@ describe('CommentFormComponent', () => {
     const newComponent = newFixture.componentInstance;
     newFixture.detectChanges();
 
-    const isInvalid = await new Promise<boolean>((resolve) => {
-      newComponent.isFormInvalid$?.subscribe((invalid) => resolve(invalid));
-    });
-    expect(isInvalid).toBe(true);
+    expect(newComponent.isFormInvalid()).toBe(true);
   });
 
   it('should render form with textarea', () => {

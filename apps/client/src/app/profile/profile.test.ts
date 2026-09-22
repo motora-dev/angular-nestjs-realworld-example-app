@@ -289,41 +289,26 @@ describe('ProfileComponent', () => {
     });
   });
 
-  describe('observables', () => {
-    it('should expose profile$ from facade', async () => {
-      let profile: Profile | null = null;
-      component.profile$.subscribe((value) => {
-        profile = value;
-      });
-
-      expect(profile).toBe(null);
+  describe('signals', () => {
+    it('should expose profile from facade', () => {
+      expect(component.profile()).toBe(null);
 
       mockProfileFacade.profile$.next(mockProfile);
-      expect(profile).toEqual(mockProfile);
+      expect(component.profile()).toEqual(mockProfile);
     });
 
-    it('should expose articles$ from homeFacade', async () => {
-      let articles: any[] = [];
-      component.articles$.subscribe((value) => {
-        articles = value;
-      });
-
-      expect(articles).toEqual([]);
+    it('should expose articles from homeFacade', () => {
+      expect(component.articles()).toEqual([]);
 
       mockHomeFacade.articles$.next([{ slug: 'test' }]);
-      expect(articles).toEqual([{ slug: 'test' }]);
+      expect(component.articles()).toEqual([{ slug: 'test' }]);
     });
 
-    it('should expose currentUser$ from authFacade', async () => {
-      let user: User | null = null;
-      component.currentUser$.subscribe((value) => {
-        user = value;
-      });
-
-      expect(user).toBe(null);
+    it('should expose currentUser from authFacade', () => {
+      expect(component.currentUser()).toBe(null);
 
       mockAuthFacade.currentUser$.next(mockUser);
-      expect(user).toEqual(mockUser);
+      expect(component.currentUser()).toEqual(mockUser);
     });
   });
 });

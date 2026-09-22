@@ -18,58 +18,54 @@
 
       <!-- Authentication navigation -->
       <nav class="flex items-center gap-4">
-        <ng-container *rxLet="isAuthenticated$; let isAuth">
-          @if (!isAuth) {
-          <!-- Not authenticated: Login / Register -->
-          <a
-            routerLink="/login"
-            class="rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white no-underline hover:bg-emerald-800"
-            i18n="@@header.loginOrRegister"
-          >
-            Sign in / Sign up
-          </a>
+        @if (!isAuthenticated()) {
+        <!-- Not authenticated: Login / Register -->
+        <a
+          routerLink="/login"
+          class="rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white no-underline hover:bg-emerald-800"
+          i18n="@@header.loginOrRegister"
+        >
+          Sign in / Sign up
+        </a>
+        } @else {
+        <!-- Authenticated: New Article, Settings, Profile, Logout -->
+        <a
+          routerLink="/editor"
+          class="text-gray-600 font-medium no-underline hover:text-gray-900"
+          i18n="@@header.newArticle"
+        >
+          New Article
+        </a>
+        <a
+          routerLink="/settings"
+          class="text-gray-600 font-medium no-underline hover:text-gray-900"
+          i18n="@@header.settings"
+        >
+          Settings
+        </a>
+        @if (currentUser(); as currentUser) {
+        <a
+          [routerLink]="['/profile', currentUser.username]"
+          class="flex items-center gap-2 text-gray-600 font-medium no-underline hover:text-gray-900"
+        >
+          @if (currentUser.image) {
+          <img [src]="currentUser.image" [alt]="currentUser.username" class="h-8 w-8 rounded-full object-cover" />
           } @else {
-          <!-- Authenticated: New Article, Settings, Profile, Logout -->
-          <a
-            routerLink="/editor"
-            class="text-gray-600 font-medium no-underline hover:text-gray-900"
-            i18n="@@header.newArticle"
-          >
-            New Article
-          </a>
-          <a
-            routerLink="/settings"
-            class="text-gray-600 font-medium no-underline hover:text-gray-900"
-            i18n="@@header.settings"
-          >
-            Settings
-          </a>
-          <ng-container *rxLet="currentUser$; let currentUser">
-            @if (currentUser) {
-            <a
-              [routerLink]="['/profile', currentUser.username]"
-              class="flex items-center gap-2 text-gray-600 font-medium no-underline hover:text-gray-900"
-            >
-              @if (currentUser.image) {
-              <img [src]="currentUser.image" [alt]="currentUser.username" class="h-8 w-8 rounded-full object-cover" />
-              } @else {
-              <div class="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center">
-                <span class="text-sm text-gray-600">{{ currentUser.username.charAt(0).toUpperCase() }}</span>
-              </div>
-              }
-              <span class="hidden sm:inline">{{ currentUser.username }}</span>
-            </a>
-            }
-          </ng-container>
-          <button
-            (click)="logout()"
-            class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
-            i18n="@@header.logout"
-          >
-            Log out
-          </button>
+          <div class="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center">
+            <span class="text-sm text-gray-600">{{ currentUser.username.charAt(0).toUpperCase() }}</span>
+          </div>
           }
-        </ng-container>
+          <span class="hidden sm:inline">{{ currentUser.username }}</span>
+        </a>
+        }
+        <button
+          (click)="logout()"
+          class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
+          i18n="@@header.logout"
+        >
+          Log out
+        </button>
+        }
       </nav>
     </div>
   </div>

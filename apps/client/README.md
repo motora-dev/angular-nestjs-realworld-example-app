@@ -1,30 +1,28 @@
 # Client Application
 
-Frontend application built with Angular 21 + Tailwind CSS 4 + SSR.
+Frontend application built with Angular 22 + Tailwind CSS 4 + SSR.
 
 **Framework & Build:**</br>
-[![Angular](https://img.shields.io/badge/Angular-21.0.6-DD0031.svg?logo=angular)](https://angular.dev/)
-[![Angular CDK](https://img.shields.io/badge/Angular_CDK-21.0.5-DD0031.svg?logo=angular)](https://material.angular.io/cdk/categories)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6.svg?logo=typescript)](https://www.typescriptlang.org/)
+[![Angular](https://img.shields.io/badge/Angular-22.1.7-DD0031.svg?logo=angular)](https://angular.dev/)
+[![Angular CDK](https://img.shields.io/badge/Angular_CDK-22.1.7-DD0031.svg?logo=angular)](https://material.angular.io/cdk/categories)
+[![TypeScript](https://img.shields.io/badge/TypeScript-6.0.3-3178C6.svg?logo=typescript)](https://www.typescriptlang.org/)
 [![esbuild](https://img.shields.io/badge/esbuild-@angular/build-FFCF00.svg?logo=esbuild)](https://angular.dev/tools/cli/build-system-migration)
 
 **Lint & Format:**</br>
-[![ESLint](https://img.shields.io/badge/ESLint-9.39.2-4B32C3.svg?logo=eslint)](https://eslint.org/)
-[![Prettier](https://img.shields.io/badge/Prettier-3.7.4-F7B93E.svg?logo=prettier)](https://prettier.io/)
+[![ESLint](https://img.shields.io/badge/ESLint-9.39.5-4B32C3.svg?logo=eslint)](https://eslint.org/)
+[![Prettier](https://img.shields.io/badge/Prettier-3.9.8-F7B93E.svg?logo=prettier)](https://prettier.io/)
 
 **SSR:**</br>
 [![SSR](https://img.shields.io/badge/SSR-Enabled-4CAF50.svg)](https://angular.dev/guide/ssr)
-[![ISR](https://img.shields.io/badge/ISR-@rx__angular-E91E63.svg)](https://www.rx-angular.io/docs/isr)
-[![Express](https://img.shields.io/badge/Express-4.21.0-000000.svg?logo=express)](https://expressjs.com/)
+[![Express](https://img.shields.io/badge/Express-5.2.1-000000.svg?logo=express)](https://expressjs.com/)
 
 **State Management & Reactive:**</br>
-[![NGXS](https://img.shields.io/badge/NGXS-21.0.0-3F51B5.svg)](https://www.ngxs.io/)
+[![NGXS](https://img.shields.io/badge/NGXS-22.0.0-3F51B5.svg)](https://www.ngxs.io/)
 [![RxJS](https://img.shields.io/badge/RxJS-7.8.2-B7178C.svg?logo=reactivex)](https://rxjs.dev/)
-[![RxAngular](https://img.shields.io/badge/RxAngular-20.1.0-E91E63.svg)](https://www.rx-angular.io/)
 
 **Styling:**</br>
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.1.18-06B6D4.svg?logo=tailwindcss)](https://tailwindcss.com/)
-[![PostCSS](https://img.shields.io/badge/PostCSS-8.5.6-DD3A0A.svg?logo=postcss)](https://postcss.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.3.3-06B6D4.svg?logo=tailwindcss)](https://tailwindcss.com/)
+[![PostCSS](https://img.shields.io/badge/PostCSS-8.5.28-DD3A0A.svg?logo=postcss)](https://postcss.org/)
 [![CVA](https://img.shields.io/badge/CVA-0.7-7C3AED.svg)](https://cva.style/)
 [![clsx](https://img.shields.io/badge/clsx-2.1-06B6D4.svg)](https://github.com/lukeed/clsx)
 [![tailwind-merge](https://img.shields.io/badge/tailwind--merge-3.4-06B6D4.svg)](https://github.com/dcastil/tailwind-merge)
@@ -63,7 +61,6 @@ Frontend application built with Angular 21 + Tailwind CSS 4 + SSR.
 
 **SSR / SEO**
 
-- [ISR (Incremental Static Regeneration)](#isr-incremental-static-regeneration)
 - [SEO Support](#seo-support)
 - [Cookie Consent (Google Consent Mode v2)](#cookie-consent-google-consent-mode-v2)
 
@@ -166,8 +163,6 @@ Runtime environment variables used by the SSR server (Express).
 | `BASIC_AUTH_ENABLED`  | Enable Basic authentication          | `true`            | No       |
 | `BASIC_AUTH_USER`     | Basic auth username                  | `admin`           | No       |
 | `BASIC_AUTH_PASSWORD` | Basic auth password                  | `password`        | No       |
-| **ISR**               |                                      |                   |          |
-| `ISR_SECRET`          | ISR invalidate secret                | `MY_SECRET_TOKEN` | No       |
 
 #### Setting Environment Variables
 
@@ -271,7 +266,7 @@ src/
 │   ├── app.config.ts     # Application config
 │   ├── app.routes.ts     # Routing definition
 │   └── {page}/           # Each page (Vertical Slice)
-│       ├── {page}.ts         # Parent component (Facade, RxLet)
+│       ├── {page}.ts         # Parent component (Facade)
 │       ├── {page}.html       # Layout + sub-component calls
 │       ├── {page}.routes.ts  # Routing definition
 │       └── components/       # Page-specific sub-components
@@ -284,7 +279,7 @@ src/
 │   └── ui/               # UI primitives (shadcn/ui equivalent)
 ├── main.ts               # Client entry point
 ├── main.server.ts        # SSR entry point
-├── server.ts             # Express server (SSR + ISR)
+├── server.ts             # Express server (SSR)
 └── index.html
 ```
 
@@ -294,7 +289,7 @@ Each page follows the standard pattern: **Parent component + Sub-components**.
 
 ```
 app/{page}/
-├── {page}.ts              # Parent (Facade provision, RxLet, Input/Output coordination)
+├── {page}.ts              # Parent (Facade provision, Input/Output coordination)
 ├── {page}.html            # Layout + sub-component calls
 ├── {page}.routes.ts       # Routing definition
 ├── index.ts
@@ -308,7 +303,7 @@ app/{page}/
 
 **Responsibility Separation:**
 
-- **Parent Component**: Facade provision, Observable subscription (`*rxLet`), Input/Output coordination with sub-components
+- **Parent Component**: Facade provision, Observable subscription (`async` / `toSignal`), Input/Output coordination with sub-components
 - **Sub-components**: Display only using data received via Input (Presentational)
 
 **Example:**
@@ -317,7 +312,7 @@ app/{page}/
 // File: apps/client/src/app/article-list/article-list.ts
 // Parent component implementation example
 @Component({
-  imports: [RxLet, ArticleListContentComponent],
+  imports: [AsyncPipe, ArticleListContentComponent],
   providers: [ArticleListFacade],
 })
 export class ArticleListComponent {
@@ -329,9 +324,9 @@ export class ArticleListComponent {
 ```html
 <!-- File: apps/client/src/app/article-list/article-list.html -->
 <!-- Parent template implementation example -->
-<ng-container *rxLet="articleList$; let articles">
+@if (articleList$ | async; as articles) {
   <app-article-list-content [articles]="articles" />
-</ng-container>
+}
 ```
 
 ```typescript
@@ -633,7 +628,7 @@ setArticle(ctx: StateContext<ArticleEditStateModel>, action: SetArticle) {
 
 ## Reactive Pattern Usage
 
-**Keywords**: `Signal`, `Observable`, `NGXS`, `RxLet`, `Reactive Forms`, `@ngxs/form-plugin`
+**Keywords**: `Signal`, `Observable`, `NGXS`, `AsyncPipe`, `toSignal`, `Reactive Forms`, `@ngxs/form-plugin`
 
 This section explains the usage of reactive patterns like Signal, Observable, NGXS, and Reactive Forms.
 
@@ -644,22 +639,22 @@ This section explains the usage of reactive patterns like Signal, Observable, NG
 | Forms        | **Reactive Forms + form-plugin** | Validation + Store sync          | `ngxsForm`                    |
 | Templates    | **AsyncPipe**                    | Observable rendering             | `(data$ \| async)`            |
 
-### AsyncPipe vs RxLet Selection Criteria
+### AsyncPipe / toSignal
 
-| Scenario                           | Recommended   | Reason                                                      |
-| ---------------------------------- | ------------- | ----------------------------------------------------------- |
-| SSR + Hydration (Page components)  | **AsyncPipe** | RxLet may cause CLS in SSR environments                     |
-| CSR only (Dialogs, Modals)         | **RxLet**     | No hydration needed, benefits from performance improvements |
-| Zone.js bypass for specific events | **RxUnpatch** | Bypass Zone.js for specific events only                     |
+| Approach | When to use |
+| -------- | ----------- |
+| **AsyncPipe** | Subscribe to Observables directly in templates (`data$ \| async`) |
+| **toSignal** | Convert Observables in the component class for Signal-based templates |
 
-> **Note**: RxLet automatically adds `ngSkipHydration` in SSR environments, which may cause SSR-rendered HTML to be completely re-rendered on the client, potentially resulting in layout shifts (CLS). Use `async` pipe for SSR page components.
+> Prefer `AsyncPipe` or `toSignal` for all components. This project no longer uses `@rx-angular/*`.
+
 
 ### Usage Guidelines
 
 - **shared/ui/, components/**: Use Signal for internal implementation
 - **Domain integration**: NGXS Store + `async` pipe to render Observables (refer to [State Management (NGXS)](#state-management-ngxs) section)
 - **Forms**: Validation with Reactive Forms, Store sync with @ngxs/form-plugin (refer to [Form Management](#form-management) section)
-- **Observables in templates**: Use `AsyncPipe` for SSR pages; `RxLet` is acceptable for CSR-only components
+- **Observables in templates**: Use `AsyncPipe` or `toSignal`
 
 ## Form Management
 
@@ -1093,92 +1088,6 @@ this.facade.updateArticle(articleId, request).subscribe(() => {
 
 ---
 
-## ISR (Incremental Static Regeneration)
-
-**Keywords**: `ISR`, `SSR`, `@rx-angular/isr`, `cache`, `static generation`, `regeneration`
-
-This section explains ISR (Incremental Static Regeneration) implementation using `@rx-angular/isr`.
-
-**Related Files**:
-
-- `apps/client/src/server.ts` - Express server (ISR configuration)
-- `apps/client/src/modules/isr/isr.service.ts` - ISR cache invalidation service
-
-### How ISR Works
-
-ISR is a mechanism to incrementally regenerate statically generated pages. Returns cached HTML on request while generating latest version in background.
-
-```mermaid
-sequenceDiagram
-    participant Browser
-    participant SSRServer
-    participant Cache
-    participant NestJS
-
-    Browser->>SSRServer: GET /article/123
-    SSRServer->>Cache: Check cache
-    alt Cache available (within expiry)
-        Cache->>Browser: Cached HTML
-    else No cache or expired
-        SSRServer->>NestJS: API call
-        NestJS->>SSRServer: Return data
-        SSRServer->>Cache: Save HTML
-        SSRServer->>Browser: Newly generated HTML
-    end
-```
-
-### Route Configuration
-
-Specify `revalidate` option for each route to set cache expiry.
-
-```typescript
-// apps/client/src/app/app.routes.ts
-export const routes: Routes = [
-  { path: '', component: HomeComponent, data: { revalidate: 60 } }, // 60 seconds
-  { path: 'article/:id', component: ArticleComponent, data: { revalidate: 300 } }, // 5 minutes
-];
-```
-
-### Cache Invalidation
-
-Use `IsrService` to manually invalidate cache on article update or deletion.
-
-```typescript
-// apps/client/src/modules/isr/isr.service.ts
-@Injectable({ providedIn: 'root' })
-export class IsrService {
-  invalidateCache(urlsToInvalidate: string[]): Observable<void> {
-    return this.http.post<void>('/api/invalidate-cache', {
-      secret: environment.isrSecret,
-      urlsToInvalidate,
-    });
-  }
-
-  // Invalidate article page cache
-  invalidateArticle(articleId: string): Observable<void> {
-    return this.invalidateCache([`/article/${articleId}`]);
-  }
-}
-```
-
-### SSR Server Configuration
-
-```typescript
-// apps/client/src/server.ts
-import { ISRHandler } from '@rx-angular/isr/server';
-
-const isr = new ISRHandler({
-  indexHtml,
-  invalidateSecretToken: process.env['ISR_SECRET'] || 'MY_SECRET_TOKEN',
-  enableLogging: !isProd,
-});
-
-// ISR cache invalidation endpoint
-server.post('/api/invalidate-cache', async (req, res) => {
-  await isr.invalidate(req, res, req.body);
-});
-```
-
 ## SEO Support
 
 **Keywords**: `SEO`, `Open Graph`, `Twitter Card`, `meta tags`, `OG image`, `Sitemap`
@@ -1381,7 +1290,7 @@ export const Default: Story = {
 
 ## Performance Optimization
 
-**Keywords**: `Zoneless`, `change detection`, `AsyncPipe`, `@rx-angular/template`, `RxUnpatch`, `ISR`
+**Keywords**: `Zoneless`, `change detection`, `AsyncPipe`, `toSignal`
 
 This section explains performance optimization considering Zoneless change detection and SSR hydration.
 
@@ -1419,129 +1328,47 @@ export class ArticleListComponent {
 }
 ```
 
-### Angular 17+ Zoneless Environment and AsyncPipe
+### Angular Zoneless and AsyncPipe
 
-In Angular 17+ Zoneless environments using `provideZonelessChangeDetection()`, `AsyncPipe` performs equivalently to RxLet. This is because unnecessary change detection from Zone.js does not occur.
+With `provideZonelessChangeDetection()`, `AsyncPipe` is SSR-compatible and performant enough to be the project standard. Prefer unifying on `AsyncPipe` / `toSignal` rather than third-party template directives.
 
-**Recommendation for Zoneless environments:**
+### Binding Observables in Templates
 
-| Scenario                 | Recommended          | Reason                                    |
-| ------------------------ | -------------------- | ----------------------------------------- |
-| SSR + Hydration          | `AsyncPipe`          | Hydration compatible + fast with Zoneless |
-| CSR only (Dialogs, etc.) | `AsyncPipe` or RxLet | Both perform equivalently                 |
-
-> **Conclusion**: In Zoneless environments, `AsyncPipe` is SSR-compatible and high-performance, making it the recommended standard. RxLet can be used for CSR-only components, but unifying the project with `AsyncPipe` maintains code consistency.
-
-### @rx-angular/template Use Cases
-
-RxLet / RxIf and other rx-angular directives can be used in **components that don't use SSR** (dialogs, modals, overlays, etc.).
-
-> **⚠️ Note**: RxLet / RxIf automatically add `ngSkipHydration`, so using them on SSR pages may skip hydration and cause CLS.
-
-#### Directive & Pipe Usage
-
-| Feature     | Purpose                                  | Example                                      |
-| ----------- | ---------------------------------------- | -------------------------------------------- |
-| `RxLet`     | Expand Observable as variable            | `*rxLet="data$; let data"`                   |
-| `RxIf`      | Conditional branching + suspense support | `*rxIf="page$; let page; suspense: loading"` |
-| `RxFor`     | Observable array loop (for future use)   | `*rxFor="let item of items$; trackBy: 'id'"` |
-| `RxPush`    | Use Observable in property binding       | `[data]="data$ \| push"`                     |
-| `RxUnpatch` | Exclude events from Zone.js              | `<div [unpatch]="['click']" (click)="...">`  |
-
-#### RxIf + RxPush Usage Example
+Bind Observables with `AsyncPipe` in templates, or convert them with `toSignal` in the component class.
 
 ```typescript
-import { RxIf } from '@rx-angular/template/if';
-import { RxPush } from '@rx-angular/template/push';
+import { AsyncPipe } from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
-  imports: [RxIf, RxPush],
+  imports: [AsyncPipe],
+  template: `
+    @if (page$ | async; as page) {
+      <app-content [items]="items()" />
+    }
+  `,
 })
-export class MyComponent {
+export class ArticlePageComponent {
+  private readonly facade = inject(ArticleFacade);
   readonly page$ = this.facade.page$;
-  readonly items$ = this.facade.items$;
+  readonly items = toSignal(this.facade.items$, { initialValue: [] });
 }
-```
-
-```html
-<!-- RxIf: Conditional branching + suspense -->
-<ng-container *rxIf="page$; let page; suspense: loading">
-  <!-- RxPush: Binding to child components -->
-  <app-content [page]="page" [items]="items$ | push" />
-</ng-container>
-
-<ng-template #loading>
-  <p>Loading...</p>
-</ng-template>
-```
-
-#### RxUnpatch Usage Example
-
-Use for events that don't require Change Detection (like overlay clicks).
-
-```html
-<!-- unpatch: Process events without going through Zone.js -->
-<div class="overlay" [unpatch]="['click']" (click)="closeSidebar()"></div>
-
-<!-- Unpatch multiple events -->
-<div [unpatch]="['scroll', 'mousemove']" (scroll)="onScroll()">...</div>
-```
-
-```typescript
-import { RxUnpatch } from '@rx-angular/template/unpatch';
-
-@Component({
-  imports: [RxUnpatch],
-})
-export class SidebarComponent { ... }
 ```
 
 #### Signal vs Observable Usage
 
-| Data Source    | Recommended Technology  | Reason                                                |
-| -------------- | ----------------------- | ----------------------------------------------------- |
-| **Signal**     | Built-in `@if` / `@for` | Signal already has efficient Change Detection         |
-| **Observable** | RxIf / RxFor / RxPush   | Subscribe to Observable without going through Zone.js |
+| Data Source | Recommended | Reason |
+| ----------- | ----------- | ------ |
+| **Signal** | Built-in `@if` / `@for` | Signals already drive efficient change detection |
+| **Observable** | `AsyncPipe` / `toSignal` | Bind or convert streams without Zone.js |
 
-**Why not convert Signal to rx-angular:**
+**Why not convert Signals to Observables unnecessarily:**
 
-1. **Signal is already efficient**: Angular Signal is a reactive primitive that doesn't depend on Zone.js
-2. **rx-angular is for Observable**: RxIf/RxFor/RxPush are designed to efficiently bind asynchronous streams (Observable) to templates
-3. **Avoid conversion overhead**: Converting Signal to Observable (`toObservable()`) is unnecessary complexity
-4. **Angular 17+ `@if`/`@for` are optimized for Signal**: Built-in control flow is designed with Signal in mind
-
-```typescript
-// Recommended: Use built-in @if/@for for Signal
-@Component({ ... })
-export class ArticleListContentComponent {
-  readonly articles = input.required<Article[]>();
-}
-```
-
-```html
-<!-- Signal-based: Built-in @for is sufficient -->
-@for (article of articles(); track article.id) {
-<app-article-card [article]="article" />
-}
-```
-
-```typescript
-// Recommended: Use rx-angular for Observable
-@Component({
-  imports: [RxIf, RxPush],
-})
-export class ArticlePageComponent {
-  readonly page$ = this.facade.page$;
-  readonly items$ = this.facade.items$;
-}
-```
-
-```html
-<!-- Observable-based: RxIf + RxPush -->
-<ng-container *rxIf="page$; let page">
-  <app-content [items]="items$ | push" />
-</ng-container>
-```
+1. **Signal is already efficient**: Angular Signal is a reactive primitive that does not depend on Zone.js
+2. **Prefer the right primitive**: Use Signals for sync state and AsyncPipe/toSignal for Observables
+3. **Avoid conversion overhead**: Converting Signal to Observable (`toObservable()`) adds unnecessary complexity
+4. **Built-in `@if`/`@for` are optimized for Signal**: Control flow is designed with Signals in mind
 
 ## Error Code Sync Test
 
@@ -1611,7 +1438,7 @@ Versions are managed centrally in `pnpm-workspace.yaml` and unified across the m
 ```yaml
 # File: pnpm-workspace.yaml (root directory)
 versions:
-  angular: &angular 21.0.0
+  # Angular 22 (see pnpm-workspace.yaml catalog)
   ngxs: &ngxs 20.1.0
 
 catalog:

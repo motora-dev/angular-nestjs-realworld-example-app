@@ -1,30 +1,28 @@
 # Client Application
 
-Angular 21 + Tailwind CSS 4 + SSR を採用したフロントエンドアプリケーションです。
+Angular 22 + Tailwind CSS 4 + SSR を採用したフロントエンドアプリケーションです。
 
 **フレームワーク & ビルド:**</br>
-[![Angular](https://img.shields.io/badge/Angular-21.0.6-DD0031.svg?logo=angular)](https://angular.dev/)
-[![Angular CDK](https://img.shields.io/badge/Angular_CDK-21.0.5-DD0031.svg?logo=angular)](https://material.angular.io/cdk/categories)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6.svg?logo=typescript)](https://www.typescriptlang.org/)
+[![Angular](https://img.shields.io/badge/Angular-22.1.7-DD0031.svg?logo=angular)](https://angular.dev/)
+[![Angular CDK](https://img.shields.io/badge/Angular_CDK-22.1.7-DD0031.svg?logo=angular)](https://material.angular.io/cdk/categories)
+[![TypeScript](https://img.shields.io/badge/TypeScript-6.0.3-3178C6.svg?logo=typescript)](https://www.typescriptlang.org/)
 [![esbuild](https://img.shields.io/badge/esbuild-@angular/build-FFCF00.svg?logo=esbuild)](https://angular.dev/tools/cli/build-system-migration)
 
 **Lint & フォーマット:**</br>
-[![ESLint](https://img.shields.io/badge/ESLint-9.39.2-4B32C3.svg?logo=eslint)](https://eslint.org/)
-[![Prettier](https://img.shields.io/badge/Prettier-3.7.4-F7B93E.svg?logo=prettier)](https://prettier.io/)
+[![ESLint](https://img.shields.io/badge/ESLint-9.39.5-4B32C3.svg?logo=eslint)](https://eslint.org/)
+[![Prettier](https://img.shields.io/badge/Prettier-3.9.8-F7B93E.svg?logo=prettier)](https://prettier.io/)
 
 **SSR:**</br>
 [![SSR](https://img.shields.io/badge/SSR-Enabled-4CAF50.svg)](https://angular.dev/guide/ssr)
-[![ISR](https://img.shields.io/badge/ISR-@rx--angular-E91E63.svg)](https://www.rx-angular.io/docs/isr)
-[![Express](https://img.shields.io/badge/Express-4.21.0-000000.svg?logo=express)](https://expressjs.com/)
+[![Express](https://img.shields.io/badge/Express-5.2.1-000000.svg?logo=express)](https://expressjs.com/)
 
 **状態管理 & リアクティブ:**</br>
-[![NGXS](https://img.shields.io/badge/NGXS-21.0.0-3F51B5.svg)](https://www.ngxs.io/)
+[![NGXS](https://img.shields.io/badge/NGXS-22.0.0-3F51B5.svg)](https://www.ngxs.io/)
 [![RxJS](https://img.shields.io/badge/RxJS-7.8.2-B7178C.svg?logo=reactivex)](https://rxjs.dev/)
-[![RxAngular](https://img.shields.io/badge/RxAngular-20.1.0-E91E63.svg)](https://www.rx-angular.io/)
 
 **スタイリング:**</br>
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.1.18-06B6D4.svg?logo=tailwindcss)](https://tailwindcss.com/)
-[![PostCSS](https://img.shields.io/badge/PostCSS-8.5.6-DD3A0A.svg?logo=postcss)](https://postcss.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.3.3-06B6D4.svg?logo=tailwindcss)](https://tailwindcss.com/)
+[![PostCSS](https://img.shields.io/badge/PostCSS-8.5.28-DD3A0A.svg?logo=postcss)](https://postcss.org/)
 [![CVA](https://img.shields.io/badge/CVA-0.7-7C3AED.svg)](https://cva.style/)
 [![clsx](https://img.shields.io/badge/clsx-2.1-06B6D4.svg)](https://github.com/lukeed/clsx)
 [![tailwind-merge](https://img.shields.io/badge/tailwind--merge-3.4-06B6D4.svg)](https://github.com/dcastil/tailwind-merge)
@@ -63,7 +61,6 @@ Angular 21 + Tailwind CSS 4 + SSR を採用したフロントエンドアプリ�
 
 **SSR / SEO**
 
-- [ISR（Incremental Static Regeneration）](#isrincremental-static-regeneration)
 - [SEO対応](#seo対応)
 - [Cookie Consent（Google Consent Mode v2）](#cookie-consentgoogle-consent-mode-v2)
 
@@ -166,8 +163,6 @@ SSRサーバー（Express）で使用する実行時環境変数です。
 | `BASIC_AUTH_ENABLED`  | Basic認証の有効化              | `true`            | いいえ |
 | `BASIC_AUTH_USER`     | Basic認証ユーザー名            | `admin`           | いいえ |
 | `BASIC_AUTH_PASSWORD` | Basic認証パスワード            | `password`        | いいえ |
-| **ISR**               |                                |                   |        |
-| `ISR_SECRET`          | ISR invalidate用シークレット   | `MY_SECRET_TOKEN` | いいえ |
 
 #### 環境変数の設定
 
@@ -271,7 +266,7 @@ src/
 │   ├── app.config.ts     # アプリケーション設定
 │   ├── app.routes.ts     # ルーティング定義
 │   └── {page}/           # 各ページ（Vertical Slice）
-│       ├── {page}.ts         # 親コンポーネント（Facade、RxLet）
+│       ├── {page}.ts         # 親コンポーネント（Facade）
 │       ├── {page}.html       # レイアウト + サブコンポーネント呼び出し
 │       ├── {page}.routes.ts  # ルーティング定義
 │       └── components/       # ページ固有サブコンポーネント
@@ -284,7 +279,7 @@ src/
 │   └── ui/               # UIプリミティブ（shadcn/ui相当）
 ├── main.ts               # クライアントエントリーポイント
 ├── main.server.ts        # SSRエントリーポイント
-├── server.ts             # Expressサーバー（SSR + ISR）
+├── server.ts             # Expressサーバー（SSR）
 └── index.html
 ```
 
@@ -631,7 +626,7 @@ setArticle(ctx: StateContext<ArticleEditStateModel>, action: SetArticle) {
 
 ## リアクティブパターンの使い分け
 
-**キーワード**: `Signal`, `Observable`, `NGXS`, `AsyncPipe`, `RxLet`, `Reactive Forms`, `@ngxs/form-plugin`
+**キーワード**: `Signal`, `Observable`, `NGXS`, `AsyncPipe`, `toSignal`, `Reactive Forms`, `@ngxs/form-plugin`
 
 このセクションでは、Signal、Observable、NGXS、Reactive Formsなどのリアクティブパターンの使い分けを説明します。
 
@@ -649,15 +644,15 @@ setArticle(ctx: StateContext<ArticleEditStateModel>, action: SetArticle) {
 - **フォーム**: Reactive Forms でバリデーション、@ngxs/form-plugin で Store 同期（詳細は[フォーム管理](#フォーム管理)セクションを参照）
 - **テンプレートでの Observable**: SSRハイドレーション対応のため `async` パイプを使用
 
-### AsyncPipe vs RxLet の選択基準
+### AsyncPipe / toSignal
 
-| シナリオ                          | 推奨          | 理由                                                         |
-| --------------------------------- | ------------- | ------------------------------------------------------------ |
-| SSR + ハイドレーション（ページ）  | **AsyncPipe** | RxLet は SSR 環境で CLS が発生する可能性がある               |
-| CSRのみ（ダイアログ、モーダル内） | **RxLet**     | ハイドレーション不要で、パフォーマンス向上の恩恵を受けられる |
-| Zone.js 除外が必要なイベント      | **RxUnpatch** | 特定イベントのみ Zone.js をバイパス                          |
+| 手法 | 用途 |
+| ---- | ---- |
+| **AsyncPipe** | テンプレートで Observable を購読（`data$ \| async`） |
+| **toSignal** | コンポーネント側で Observable を Signal に変換 |
 
-> **注意**: RxLet は SSR 環境で `ngSkipHydration` を自動的に追加するため、SSR でレンダリングされた HTML がクライアントで完全に再レンダリングされ、レイアウトシフト（CLS）が発生する可能性があります。SSR を使用するページコンポーネントでは `async` パイプを使用してください。
+> すべてのコンポーネントで `AsyncPipe` または `toSignal` を使用してください。本プロジェクトでは `@rx-angular/*` は使用しません。
+
 
 ## フォーム管理
 
@@ -1091,92 +1086,6 @@ this.facade.updateArticle(articleId, request).subscribe(() => {
 
 ---
 
-## ISR（Incremental Static Regeneration）
-
-**キーワード**: `ISR`, `SSR`, `@rx-angular/isr`, `キャッシュ`, `静的生成`, `再生成`
-
-このセクションでは、`@rx-angular/isr` を使用した ISR（Incremental Static Regeneration）の実装について説明します。
-
-**関連ファイル**:
-
-- `apps/client/src/server.ts` - Express サーバー（ISR 設定）
-- `apps/client/src/modules/isr/isr.service.ts` - ISR キャッシュ無効化サービス
-
-### ISR の仕組み
-
-ISR は、静的に生成されたページを増分的に再生成する仕組みです。リクエスト時にキャッシュされたHTMLを返しつつ、バックグラウンドで最新版を生成します。
-
-```mermaid
-sequenceDiagram
-    participant Browser
-    participant SSRServer
-    participant Cache
-    participant NestJS
-
-    Browser->>SSRServer: GET /article/123
-    SSRServer->>Cache: キャッシュ確認
-    alt キャッシュあり（有効期限内）
-        Cache->>Browser: キャッシュされたHTML
-    else キャッシュなし or 期限切れ
-        SSRServer->>NestJS: API呼び出し
-        NestJS->>SSRServer: データ返却
-        SSRServer->>Cache: HTML保存
-        SSRServer->>Browser: 新規生成HTML
-    end
-```
-
-### ルート設定
-
-各ルートに `revalidate` オプションを指定して、キャッシュの有効期限を設定します。
-
-```typescript
-// apps/client/src/app/app.routes.ts
-export const routes: Routes = [
-  { path: '', component: HomeComponent, data: { revalidate: 60 } }, // 60秒
-  { path: 'article/:id', component: ArticleComponent, data: { revalidate: 300 } }, // 5分
-];
-```
-
-### キャッシュ無効化
-
-記事の更新や削除時に、`IsrService` を使用してキャッシュを手動で無効化します。
-
-```typescript
-// apps/client/src/modules/isr/isr.service.ts
-@Injectable({ providedIn: 'root' })
-export class IsrService {
-  invalidateCache(urlsToInvalidate: string[]): Observable<void> {
-    return this.http.post<void>('/api/invalidate-cache', {
-      secret: environment.isrSecret,
-      urlsToInvalidate,
-    });
-  }
-
-  // 記事ページのキャッシュを無効化
-  invalidateArticle(articleId: string): Observable<void> {
-    return this.invalidateCache([`/article/${articleId}`]);
-  }
-}
-```
-
-### SSR サーバー側の設定
-
-```typescript
-// apps/client/src/server.ts
-import { ISRHandler } from '@rx-angular/isr/server';
-
-const isr = new ISRHandler({
-  indexHtml,
-  invalidateSecretToken: process.env['ISR_SECRET'] || 'MY_SECRET_TOKEN',
-  enableLogging: !isProd,
-});
-
-// ISR キャッシュ無効化エンドポイント
-server.post('/api/invalidate-cache', async (req, res) => {
-  await isr.invalidate(req, res, req.body);
-});
-```
-
 ## SEO対応
 
 **キーワード**: `SEO`, `Open Graph`, `Twitter Card`, `meta タグ`, `OG画像`, `Sitemap`
@@ -1379,7 +1288,7 @@ export const Default: Story = {
 
 ## パフォーマンス最適化
 
-**キーワード**: `Zoneless`, `変更検知`, `AsyncPipe`, `@rx-angular/template`, `RxUnpatch`, `ISR`
+**キーワード**: `Zoneless`, `変更検知`, `AsyncPipe`, `toSignal`
 
 このセクションでは、Zoneless変更検知とSSRハイドレーションを考慮したパフォーマンス最適化について説明します。
 
@@ -1417,97 +1326,40 @@ export class ArticleListComponent {
 }
 ```
 
-### Angular 17+ Zoneless 環境での AsyncPipe
+### Angular Zoneless と AsyncPipe
 
-Angular 17+ の `provideZonelessChangeDetection()` を使用する Zoneless 環境では、`AsyncPipe` が RxLet と同等のパフォーマンスを発揮します。これは、Zone.js による不要な変更検知が発生しないためです。
+`provideZonelessChangeDetection()` 環境では、`AsyncPipe` が SSR 対応かつ十分に高速なため、プロジェクト標準として `AsyncPipe` / `toSignal` に統一します。
 
-**Zoneless 環境での推奨:**
+### Observable のテンプレートバインディング
 
-| シナリオ                 | 推奨                     | 理由                                   |
-| ------------------------ | ------------------------ | -------------------------------------- |
-| SSR + ハイドレーション   | `AsyncPipe`              | ハイドレーション対応 + Zoneless で高速 |
-| CSR のみ（ダイアログ等） | `AsyncPipe` または RxLet | どちらも同等のパフォーマンス           |
-
-> **結論**: Zoneless 環境では `AsyncPipe` が SSR 対応かつ高パフォーマンスなため、標準として使用することを推奨します。RxLet は CSR のみのコンポーネントで使用できますが、プロジェクト全体で `AsyncPipe` に統一することでコードの一貫性が保たれます。
-
-### @rx-angular/template の使いどころ
-
-RxLet / RxIf などの rx-angular ディレクティブは、**SSR を使用しないコンポーネント**（ダイアログ、モーダル、オーバーレイなど）で使用できます。
-
-> **⚠️ 注意**: RxLet / RxIf は `ngSkipHydration` を自動追加するため、SSR ページで使用するとハイドレーションがスキップされ、CLS が発生する可能性があります。
-
-| ディレクティブ | 用途                            | SSR対応 |
-| -------------- | ------------------------------- | ------- |
-| `AsyncPipe`    | Observable をテンプレートで使用 | ✅      |
-| `RxLet`        | Observable を変数として展開     | ❌      |
-| `RxIf`         | Observable の値で条件分岐       | ❌      |
-| `RxUnpatch`    | イベントを Zone.js から除外     | ✅      |
-
-#### RxUnpatch の使用例
-
-Change Detection が不要なイベント（オーバーレイのクリックなど）に使用します。
-
-```html
-<!-- unpatch: Zone.js を介さずにイベントを処理 -->
-<div class="overlay" [unpatch]="['click']" (click)="closeSidebar()"></div>
-
-<!-- 複数のイベントを unpatch -->
-<div [unpatch]="['scroll', 'mousemove']" (scroll)="onScroll()">...</div>
-```
+Observable はテンプレートで `AsyncPipe` を使うか、コンポーネント側で `toSignal` に変換します。
 
 ```typescript
-import { RxUnpatch } from '@rx-angular/template/unpatch';
+import { AsyncPipe } from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 
-@Component({
-  imports: [RxUnpatch],
-})
-export class SidebarComponent { ... }
-```
-
-### Signal vs Observable の使い分け
-
-| データソース   | 推奨技術                | 理由                                            |
-| -------------- | ----------------------- | ----------------------------------------------- |
-| **Signal**     | 組み込み `@if` / `@for` | Signal はすでに効率的な Change Detection を持つ |
-| **Observable** | `async` パイプ          | SSR ハイドレーション対応                        |
-
-**Signal を使う場面:**
-
-1. **Signal はすでに効率的**: Angular Signal は Zone.js に依存しないリアクティブプリミティブ
-2. **Angular 17+ の `@if`/`@for` は Signal と最適化**: 組み込みコントロールフローは Signal を意識して設計されている
-
-```typescript
-// 推奨: Signal には組み込み @if/@for を使用
-@Component({ ... })
-export class ArticleListContentComponent {
-  readonly articles = input.required<Article[]>();
-}
-```
-
-```html
-<!-- Signal ベース: 組み込み @for で十分 -->
-@for (article of articles(); track article.id) {
-<app-article-card [article]="article" />
-}
-```
-
-```typescript
-// 推奨: Observable には async パイプを使用（SSR対応）
 @Component({
   imports: [AsyncPipe],
+  template: `
+    @if (page$ | async; as page) {
+      <app-content [items]="items()" />
+    }
+  `,
 })
 export class ArticlePageComponent {
+  private readonly facade = inject(ArticleFacade);
   readonly page$ = this.facade.page$;
-  readonly items$ = this.facade.items$;
+  readonly items = toSignal(this.facade.items$, { initialValue: [] });
 }
 ```
 
-```html
-<!-- Observable ベース: async パイプ -->
-@if ((page$ | async); as page) {
-<app-content [items]="(items$ | async) ?? []" />
-}
-```
+#### Signal と Observable の使い分け
+
+| データソース | 推奨 | 理由 |
+| ------------ | ---- | ---- |
+| **Signal** | 組み込み `@if` / `@for` | Signal はそれ自体が効率的な変更検知を持つ |
+| **Observable** | `AsyncPipe` / `toSignal` | Zone.js に依存せずストリームをバインド／変換 |
 
 ## エラーコード同期テスト
 
@@ -1577,7 +1429,7 @@ describe('Error Code Sync', () => {
 ```yaml
 # ファイル: pnpm-workspace.yaml（ルートディレクトリ）
 versions:
-  angular: &angular 21.0.0
+  # Angular 22 (see pnpm-workspace.yaml catalog)
   ngxs: &ngxs 20.1.0
 
 catalog:
