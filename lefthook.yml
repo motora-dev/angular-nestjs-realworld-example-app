@@ -39,4 +39,4 @@ pre-commit:
       stage_fixed: true
 
     typecheck:
-      run: pnpm tsc
+      run: mise exec -- pnpm tsc
