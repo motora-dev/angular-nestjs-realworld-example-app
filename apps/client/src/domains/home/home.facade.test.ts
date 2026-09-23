@@ -78,7 +78,7 @@ describe('HomeFacade', () => {
   });
 
   describe('loadArticles', () => {
-    it('should load articles and dispatch SetListConfig and SetArticles actions', () => {
+    it('should load articles and dispatch SetListConfig and SetArticles actions', async () => {
       const dispatchSpy = vi.spyOn(store, 'dispatch');
       const config = { type: 'all' as const, filters: {} };
 
@@ -88,37 +88,34 @@ describe('HomeFacade', () => {
       expect(homeApi.getArticles).toHaveBeenCalledWith(config);
       expect(spinnerFacade.withSpinner).toHaveBeenCalled();
 
-      // Wait for async operations
-      setTimeout(() => {
-        expect(dispatchSpy).toHaveBeenCalledWith(
-          expect.objectContaining({
-            articles: expect.arrayContaining([
-              expect.objectContaining({
-                slug: 'test-slug',
-                title: 'Test Article',
-              }),
-            ]),
-            articlesCount: 1,
-          }),
-        );
-      }, 100);
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      expect(dispatchSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          articles: expect.arrayContaining([
+            expect.objectContaining({
+              slug: 'test-slug',
+              title: 'Test Article',
+            }),
+          ]),
+          articlesCount: 1,
+        }),
+      );
     });
 
-    it('should map article responses correctly', () => {
+    it('should map article responses correctly', async () => {
       const dispatchSpy = vi.spyOn(store, 'dispatch');
       const config = { type: 'all' as const, filters: {} };
 
       facade.loadArticles(config);
 
-      setTimeout(() => {
-        const setArticlesCall = dispatchSpy.mock.calls.find((call) => call[0] instanceof SetArticles);
-        expect(setArticlesCall).toBeDefined();
-        if (setArticlesCall) {
-          const action = setArticlesCall[0] as SetArticles;
-          expect(action.articles[0].createdAt).toBeInstanceOf(Date);
-          expect(action.articles[0].updatedAt).toBeInstanceOf(Date);
-        }
-      }, 100);
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      const setArticlesCall = dispatchSpy.mock.calls.find((call) => call[0] instanceof SetArticles);
+      expect(setArticlesCall).toBeDefined();
+      if (setArticlesCall) {
+        const action = setArticlesCall[0] as SetArticles;
+        expect(action.articles[0].createdAt).toBeInstanceOf(Date);
+        expect(action.articles[0].updatedAt).toBeInstanceOf(Date);
+      }
     });
   });
 

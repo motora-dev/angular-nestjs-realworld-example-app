@@ -9,7 +9,7 @@ Frontend application built with Angular 22 + Tailwind CSS 4 + SSR.
 [![esbuild](https://img.shields.io/badge/esbuild-@angular/build-FFCF00.svg?logo=esbuild)](https://angular.dev/tools/cli/build-system-migration)
 
 **Lint & Format:**</br>
-[![ESLint](https://img.shields.io/badge/ESLint-9.39.5-4B32C3.svg?logo=eslint)](https://eslint.org/)
+[![ESLint](https://img.shields.io/badge/ESLint-10.11.0-4B32C3.svg?logo=eslint)](https://eslint.org/)
 [![Prettier](https://img.shields.io/badge/Prettier-3.9.8-F7B93E.svg?logo=prettier)](https://prettier.io/)
 
 **SSR:**</br>

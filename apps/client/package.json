@@ -28,14 +28,12 @@
     "build-storybook": "ng run client:build-storybook"
   },
   "dependencies": {
-    "@angular/animations": "catalog:",
     "@angular/cdk": "catalog:",
     "@angular/common": "catalog:",
     "@angular/compiler": "catalog:",
     "@angular/core": "catalog:",
     "@angular/forms": "catalog:",
     "@angular/platform-browser": "catalog:",
-    "@angular/platform-browser-dynamic": "catalog:",
     "@angular/platform-server": "catalog:",
     "@angular/router": "catalog:",
     "@angular/ssr": "catalog:",

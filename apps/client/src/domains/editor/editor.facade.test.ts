@@ -61,7 +61,7 @@ describe('EditorFacade', () => {
   });
 
   describe('loadArticle', () => {
-    it('should load article and dispatch SetEditorForm action', () => {
+    it('should load article and dispatch SetEditorForm action', async () => {
       const dispatchSpy = vi.spyOn(store, 'dispatch');
       facade.loadArticle('test-slug').subscribe((article) => {
         expect(article.slug).toBe('test-slug');
@@ -70,15 +70,14 @@ describe('EditorFacade', () => {
 
       expect(editorApi.get).toHaveBeenCalledWith('test-slug');
       expect(spinnerFacade.withSpinner).toHaveBeenCalled();
-      setTimeout(() => {
-        expect(dispatchSpy).toHaveBeenCalledWith(
-          new SetEditorForm({
-            title: 'Test Article',
-            description: 'Test Description',
-            body: 'Test Body',
-          }),
-        );
-      }, 100);
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      expect(dispatchSpy).toHaveBeenCalledWith(
+        new SetEditorForm({
+          title: 'Test Article',
+          description: 'Test Description',
+          body: 'Test Body',
+        }),
+      );
     });
 
     it('should map article response correctly', () => {

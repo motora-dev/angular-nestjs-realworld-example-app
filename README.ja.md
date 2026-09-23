@@ -152,16 +152,16 @@ angular-nestjs-realworld-example-app/
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/) 4.3.3 + CVA + tailwind-merge
 - **State Management**: [NGXS](https://www.ngxs.io/) 22.0.0 + @ngxs/form-plugin
 - **Reactive**: RxJS 7.8.2
-- **Testing**: Vitest 4.1.11 + @testing-library/angular + Storybook 10.6.0
-- **Linting**: ESLint 9.39.5 (Flat Config)
+- **Testing**: Vitest 5.0.1 + @testing-library/angular + Storybook 10.6.0
+- **Linting**: ESLint 10.11.0 (Flat Config)
 
 #### 🚀 Server (`apps/server`)
 
 - **Framework**: [NestJS](https://nestjs.com/) 12.0.4
 - **Platform**: Express
 - **ORM**: [Prisma](https://www.prisma.io/) 7.10.0
-- **Testing**: Vitest 4.1.11 + Supertest
-- **Linting**: ESLint 9.39.5 (Flat Config)
+- **Testing**: Vitest 5.0.1 + Supertest
+- **Linting**: ESLint 10.11.0 (Flat Config)
 
 #### 📦 Shared Packages
 
@@ -249,8 +249,8 @@ flowchart TB
 - **Package Manager**: [pnpm](https://pnpm.io/) 12.5.1 (ワークスペース機能使用)
 - **Build System**: [Turborepo](https://turbo.build/repo) 2.11.2
 - **Language**: [TypeScript](https://www.typescriptlang.org/) 6.0.3
-- **Code Quality**: ESLint 9.39.5 + Prettier 3.9.8
-- **Testing**: Vitest 4.1.11 + Testing Library
+- **Code Quality**: ESLint 10.11.0 + Prettier 3.9.8
+- **Testing**: Vitest 5.0.1 + Testing Library
 - **Module System**: ES Modules (`"type": "module"`)
 
 ## 🚀 開発環境のセットアップ
@@ -405,8 +405,8 @@ pnpm test --filter=@monorepo/server
 ![Turborepo](https://img.shields.io/badge/Turborepo-2.11.2-ef4444?logo=turborepo&logoColor=white)
 ![pnpm](https://img.shields.io/badge/pnpm-12.5.1-f69220?logo=pnpm&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-6.0.3-3178c6?logo=typescript&logoColor=white)
-![ESLint](https://img.shields.io/badge/ESLint-9.39.5-4b32c3?logo=eslint&logoColor=white)
-![Vitest](https://img.shields.io/badge/Vitest-4.1.11-729B1B?logo=vitest&logoColor=white)
+![ESLint](https://img.shields.io/badge/ESLint-10.11.0-4b32c3?logo=eslint&logoColor=white)
+![Vitest](https://img.shields.io/badge/Vitest-5.0.1-729B1B?logo=vitest&logoColor=white)
 ![Prettier](https://img.shields.io/badge/Prettier-3.9.8-F7B93E?logo=prettier&logoColor=white)
 ![mise](https://img.shields.io/badge/mise-Node%2Fpnpm%2Flefthook-purple?logoColor=white)
 

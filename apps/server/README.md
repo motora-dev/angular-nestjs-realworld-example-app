@@ -9,7 +9,7 @@ Backend API built with NestJS + esbuild + swc + Vitest + Prisma + CQRS.
 [![SWC](https://img.shields.io/badge/SWC-1.16.2-F8C457.svg)](https://swc.rs/)
 
 **Lint & Format:**</br>
-[![ESLint](https://img.shields.io/badge/ESLint-9.39.5-4B32C3.svg?logo=eslint)](https://eslint.org/)
+[![ESLint](https://img.shields.io/badge/ESLint-10.11.0-4B32C3.svg?logo=eslint)](https://eslint.org/)
 [![Prettier](https://img.shields.io/badge/Prettier-3.9.8-F7B93E.svg?logo=prettier)](https://prettier.io/)
 
 **Database:**</br>
@@ -17,7 +17,7 @@ Backend API built with NestJS + esbuild + swc + Vitest + Prisma + CQRS.
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1.svg?logo=postgresql)](https://www.postgresql.org/)
 
 **Testing:**</br>
-[![Vitest](https://img.shields.io/badge/Vitest-4.1.11-6E9F18.svg?logo=vitest)](https://vitest.dev/)
+[![Vitest](https://img.shields.io/badge/Vitest-5.0.1-6E9F18.svg?logo=vitest)](https://vitest.dev/)
 [![jsdom](https://img.shields.io/badge/jsdom-27.4.0-F7DF1E.svg)](https://github.com/jsdom/jsdom)
 
 ## Table of Contents
