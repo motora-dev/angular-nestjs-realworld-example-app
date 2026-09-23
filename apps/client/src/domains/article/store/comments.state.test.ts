@@ -25,10 +25,13 @@ describe('CommentsState', () => {
     });
 
     it('should have default comment form state', () => {
-      const isInvalid = store.selectSnapshot(CommentsState.isCommentFormInvalid);
-      const isDirty = store.selectSnapshot(CommentsState.isCommentFormDirty);
-      expect(isInvalid).toBe(true);
-      expect(isDirty).toBe(false);
+      const form = store.selectSnapshot((state) => state.comments.commentForm);
+      expect(form).toEqual({
+        model: { body: '' },
+        dirty: false,
+        status: '',
+        errors: {},
+      });
     });
   });
 
@@ -68,20 +71,6 @@ describe('CommentsState', () => {
 
       const comments = store.selectSnapshot(CommentsState.getComments);
       expect(comments).toEqual(mockComments);
-    });
-  });
-
-  describe('isCommentFormInvalid selector', () => {
-    it('should return true when form status is not VALID', () => {
-      const isInvalid = store.selectSnapshot(CommentsState.isCommentFormInvalid);
-      expect(isInvalid).toBe(true);
-    });
-  });
-
-  describe('isCommentFormDirty selector', () => {
-    it('should return false when form is not dirty', () => {
-      const isDirty = store.selectSnapshot(CommentsState.isCommentFormDirty);
-      expect(isDirty).toBe(false);
     });
   });
 
@@ -288,10 +277,13 @@ describe('CommentsState', () => {
     it('should reset comment form to default state', () => {
       store.dispatch(new ClearCommentForm());
 
-      const isInvalid = store.selectSnapshot(CommentsState.isCommentFormInvalid);
-      const isDirty = store.selectSnapshot(CommentsState.isCommentFormDirty);
-      expect(isInvalid).toBe(true);
-      expect(isDirty).toBe(false);
+      const form = store.selectSnapshot((state) => state.comments.commentForm);
+      expect(form).toEqual({
+        model: { body: '' },
+        dirty: false,
+        status: '',
+        errors: {},
+      });
     });
   });
 });

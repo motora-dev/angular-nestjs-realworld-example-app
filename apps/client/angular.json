@@ -167,22 +167,19 @@
           }
         },
         "storybook": {
-          "builder": "@storybook/angular:start-storybook",
+          "builder": "@storybook/angular-vite:start-storybook",
           "options": {
             "configDir": ".storybook",
-            "browserTarget": "client:build",
-            "compodoc": false,
             "port": 6006,
             "styles": ["src/styles.css"]
           }
         },
         "build-storybook": {
-          "builder": "@storybook/angular:build-storybook",
+          "builder": "@storybook/angular-vite:build-storybook",
           "options": {
             "configDir": ".storybook",
-            "browserTarget": "client:build",
-            "compodoc": false,
-            "outputDir": "storybook-static"
+            "outputDir": "storybook-static",
+            "styles": ["src/styles.css"]
           }
         }
       }

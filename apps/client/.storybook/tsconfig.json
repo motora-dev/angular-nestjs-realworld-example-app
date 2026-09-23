@@ -1,12 +1,13 @@
 {
   "extends": "../tsconfig.build.json",
   "compilerOptions": {
-    "types": ["node"],
+    "types": ["node", "@angular/localize"],
     "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "rootDir": "..",
+    "outDir": "../out-tsc/storybook"
   },
   "exclude": ["../src/test.ts", "../src/**/*.spec.ts"],
   "include": ["../src/**/*.stories.*", "./preview.ts"],
   "files": ["./typings.d.ts"]
 }
-

@@ -3,21 +3,21 @@
 NestJS + esbuild + swc + Vitest + Prisma + CQRS を採用したバックエンド API です。
 
 **フレームワーク & ビルド:**</br>
-[![NestJS](https://img.shields.io/badge/NestJS-11.1.10-E0234E.svg?logo=nestjs)](https://nestjs.com/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6.svg?logo=typescript)](https://www.typescriptlang.org/)
-[![esbuild](https://img.shields.io/badge/esbuild-0.27.2-FFCF00.svg?logo=esbuild)](https://esbuild.github.io/)
-[![SWC](https://img.shields.io/badge/SWC-1.15.7-F8C457.svg)](https://swc.rs/)
+[![NestJS](https://img.shields.io/badge/NestJS-12.0.4-E0234E.svg?logo=nestjs)](https://nestjs.com/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-6.0.3-3178C6.svg?logo=typescript)](https://www.typescriptlang.org/)
+[![esbuild](https://img.shields.io/badge/esbuild-0.28.2-FFCF00.svg?logo=esbuild)](https://esbuild.github.io/)
+[![SWC](https://img.shields.io/badge/SWC-1.16.2-F8C457.svg)](https://swc.rs/)
 
 **Lint & フォーマット:**</br>
-[![ESLint](https://img.shields.io/badge/ESLint-9.39.2-4B32C3.svg?logo=eslint)](https://eslint.org/)
-[![Prettier](https://img.shields.io/badge/Prettier-3.7.4-F7B93E.svg?logo=prettier)](https://prettier.io/)
+[![ESLint](https://img.shields.io/badge/ESLint-10.11.0-4B32C3.svg?logo=eslint)](https://eslint.org/)
+[![Prettier](https://img.shields.io/badge/Prettier-3.9.8-F7B93E.svg?logo=prettier)](https://prettier.io/)
 
 **データベース:**</br>
-[![Prisma](https://img.shields.io/badge/Prisma-7.2.0-2D3748.svg?logo=prisma)](https://www.prisma.io/)
+[![Prisma](https://img.shields.io/badge/Prisma-7.10.0-2D3748.svg?logo=prisma)](https://www.prisma.io/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1.svg?logo=postgresql)](https://www.postgresql.org/)
 
 **テスト:**</br>
-[![Vitest](https://img.shields.io/badge/Vitest-4.0.16-6E9F18.svg?logo=vitest)](https://vitest.dev/)
+[![Vitest](https://img.shields.io/badge/Vitest-5.0.1-6E9F18.svg?logo=vitest)](https://vitest.dev/)
 [![jsdom](https://img.shields.io/badge/jsdom-27.4.0-F7DF1E.svg)](https://github.com/jsdom/jsdom)
 
 ## 目次
@@ -710,6 +710,92 @@ pnpm prisma db push
 pnpm prisma db seed
 ```
 
+## バリデーション・変換（class-validator / class-transformer）
+
+**キーワード**: `class-validator`, `class-transformer`, `DTO`, `バリデーション`, `変換`
+
+このセクションでは、NestJS における DTO のバリデーションと変換パターンについて説明します。
+
+**関連ファイル**:
+
+- `apps/server/src/domains/{domain}/contracts/{domain}.input.ts` - 入力バリデーション
+- `apps/server/src/domains/{domain}/contracts/{domain}.dto.ts` - レスポンス変換
+
+### class-validator によるバリデーション
+
+入力データのバリデーションには `class-validator` のデコレーターを使用します。
+
+```typescript
+// contracts/article.input.ts
+import { IsString, IsNotEmpty, MaxLength, IsOptional, IsArray } from 'class-validator';
+
+export class CreateArticleInput {
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(100)
+  title: string;
+
+  @IsString()
+  @IsNotEmpty()
+  description: string;
+
+  @IsString()
+  @IsNotEmpty()
+  body: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  tagList?: string[];
+}
+```
+
+### class-transformer による変換
+
+レスポンス DTO の変換には `class-transformer` を使用します。
+
+```typescript
+// contracts/article.dto.ts
+import { Expose, Transform, Type } from 'class-transformer';
+
+export class ArticleDto {
+  @Expose()
+  id: number;
+
+  @Expose()
+  title: string;
+
+  @Expose()
+  @Type(() => Date)
+  createdAt: Date;
+
+  @Expose()
+  @Transform(({ obj }) => obj.author?.username)
+  authorUsername: string;
+}
+```
+
+### ValidationPipe の設定
+
+`main.ts` でグローバルに `ValidationPipe` を設定しています。
+
+```typescript
+// main.ts
+app.useGlobalPipes(
+  new ValidationPipe({
+    whitelist: true,           // DTOに定義されていないプロパティを除外
+    forbidNonWhitelisted: true, // 未定義プロパティがあればエラー
+    transform: true,            // class-transformerによる自動変換を有効化
+  }),
+);
+```
+
+**メリット:**
+
+- デコレーターベースで宣言的にバリデーションを定義
+- OpenAPI 仕様（Swagger）との連携が容易
+- 型安全なデータ変換
+
 ## エラーハンドリング
 
 **キーワード**: `エラーハンドリング`, `AppError`, `HttpExceptionFilter`, `例外処理`, `エラーレスポンス`
@@ -1036,6 +1122,11 @@ async checkSession(): Promise<{ authenticated: boolean; user?: User }> {
 | `/api/docs`      | Redoc UI（インタラクティブドキュメント） |
 | `/api/docs.json` | OpenAPI JSON 仕様                        |
 
+**公開URL:**
+
+- **Redoc UI**: https://api.realworld.motora-dev.com/api/docs
+- **OpenAPI JSON**: https://api.realworld.motora-dev.com/api/docs.json
+
 ### 設定例
 
 ```typescript
@@ -1268,7 +1359,7 @@ pnpm start
 ```yaml
 # pnpm-workspace.yaml
 versions:
-  nestjs: &nestjs 11.0.0
+  # NestJS 12 (see pnpm-workspace.yaml catalog)
   prisma: &prisma 7.0.0
 
 catalog:

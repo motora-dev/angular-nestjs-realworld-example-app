@@ -1,9 +1,9 @@
-FROM node:24.11.1-slim AS builder
+FROM node:24.21.0-slim AS builder
 
 WORKDIR /app
 
 # Install pnpm
-RUN npm install -g pnpm@10.19.0
+RUN npm install -g pnpm@12.5.1
 
 # Install required system dependencies
 RUN apt-get update && \
@@ -31,12 +31,12 @@ COPY . .
 RUN pnpm run build --filter=@monorepo/server
 
 # Production stage
-FROM node:24.11.1-slim AS runner
+FROM node:24.21.0-slim AS runner
 
 WORKDIR /app
 
 # Install pnpm
-RUN npm install -g pnpm@10.19.0
+RUN npm install -g pnpm@12.5.1
 
 # Install required system dependencies for production
 RUN apt-get update && \

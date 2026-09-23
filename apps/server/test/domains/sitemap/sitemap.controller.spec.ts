@@ -1,14 +1,14 @@
-import { ERROR_CODE, ValidationErrorCode } from '@monorepo/error-code';
+import { ValidationErrorCode } from '@monorepo/error-code';
 import { Logger, Module, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { vi, type MockInstance } from 'vitest';
 
-import type { INestApplication } from '@nestjs/common';
-
 import { PrismaAdapter } from '$adapters';
+import { SitemapModule } from '$domains/sitemap/sitemap.module';
 import { UnprocessableEntityError } from '$errors';
 import { HttpExceptionFilter } from '$filters';
-import { SitemapModule } from '$domains/sitemap/sitemap.module';
+
+import type { INestApplication } from '@nestjs/common';
 
 @Module({
   imports: [SitemapModule],
@@ -93,7 +93,7 @@ describe('Sitemap Controller E2E', () => {
 
   describe('GET /api/sitemap', () => {
     it('should return 200 with sitemap data', async () => {
-      vi.mocked(prismaAdapter.article.findMany).mockResolvedValueOnce(mockArticles as any);
+      (prismaAdapter.article.findMany as ReturnType<typeof vi.fn>).mockResolvedValueOnce(mockArticles);
 
       const response = await fetch(`${baseUrl}/sitemap`);
 
@@ -107,7 +107,7 @@ describe('Sitemap Controller E2E', () => {
     });
 
     it('should return 200 with empty array when no articles exist', async () => {
-      vi.mocked(prismaAdapter.article.findMany).mockResolvedValueOnce([]);
+      (prismaAdapter.article.findMany as ReturnType<typeof vi.fn>).mockResolvedValueOnce([]);
 
       const response = await fetch(`${baseUrl}/sitemap`);
 
@@ -119,4 +119,3 @@ describe('Sitemap Controller E2E', () => {
     });
   });
 });
-

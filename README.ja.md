@@ -8,8 +8,8 @@
 [![RealWorld Frontend](https://img.shields.io/badge/realworld-frontend-%23783578.svg)](https://realworld.show)
 [![RealWorld Backend](https://img.shields.io/badge/realworld-backend-%23783578.svg)](https://realworld.show)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Node.js](https://img.shields.io/badge/Node.js-24.11.1-green.svg)](https://nodejs.org/)
-[![pnpm](https://img.shields.io/badge/pnpm-10.24.0-F69220.svg)](https://pnpm.io/)
+[![Node.js](https://img.shields.io/badge/Node.js-24.21.0-green.svg)](https://nodejs.org/)
+[![pnpm](https://img.shields.io/badge/pnpm-12.5.1-F69220.svg)](https://pnpm.io/)
 [![Build](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/ci-check.yml/badge.svg)](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/ci-check.yml)
 [![Test](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/ci-test.yml/badge.svg)](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/ci-test.yml)
 [![Deploy](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/cd-gcp.yml/badge.svg)](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/cd-gcp.yml)
@@ -63,7 +63,7 @@ CRUD操作、認証、ルーティング、ページネーションなどの機�
 このリポジトリは **TypeScriptのみで構成されたエンタープライズ向け** の実装です。
 
 - Angular / NestJS の基礎知識がある**中〜上級者**向け
-- 本番運用レベルのアーキテクチャ（CQRS、SSR/ISR、モノレポ）を学びたい方
+- 本番運用レベルのアーキテクチャ（CQRS、SSR、モノレポ）を学びたい方
 - TypeScriptフルスタック構成のリファレンスを探している方
 
 シンプルな実装から始めたい方は、以下をお勧めします：
@@ -108,7 +108,7 @@ CRUD操作、認証、ルーティング、ページネーションなどの機�
 **技術的特徴:**
 
 - **Turborepo** によるモノレポ構成で、フロントエンド・バックエンドを一元管理
-- **Angular SSR + ISR** による高速な初期表示と SEO 最適化
+- **Angular SSR** による高速な初期表示と SEO 最適化
 - **NestJS + CQRS** によるスケーラブルなバックエンド設計
 - **Prisma ORM** による型安全なデータベースアクセス
 - **OAuth認証（Google）+ JWT** による安全なセッション管理
@@ -148,20 +148,20 @@ angular-nestjs-realworld-example-app/
 
 #### 📱 Client (`apps/client`)
 
-- **Framework**: [Angular](https://angular.dev/) 21.0.6 + SSR + ISR
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/) 4.1.18 + CVA + tailwind-merge
-- **State Management**: [NGXS](https://www.ngxs.io/) 21.0.0 + @ngxs/form-plugin
-- **Reactive**: [RxAngular](https://www.rx-angular.io/) 20.1.0 + RxJS 7.8.2
-- **Testing**: Vitest 4.0.16 + @testing-library/angular + Storybook 10.1.10
-- **Linting**: ESLint 9.39.2 (Flat Config)
+- **Framework**: [Angular](https://angular.dev/) 22.1.7 + SSR
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/) 4.3.3 + CVA + tailwind-merge
+- **State Management**: [NGXS](https://www.ngxs.io/) 22.0.0 + @ngxs/form-plugin
+- **Reactive**: RxJS 7.8.2
+- **Testing**: Vitest 5.0.1 + @testing-library/angular + Storybook 10.6.0
+- **Linting**: ESLint 10.11.0 (Flat Config)
 
 #### 🚀 Server (`apps/server`)
 
-- **Framework**: [NestJS](https://nestjs.com/) 11.1.10
+- **Framework**: [NestJS](https://nestjs.com/) 12.0.4
 - **Platform**: Express
-- **ORM**: [Prisma](https://www.prisma.io/) 7.2.0
-- **Testing**: Vitest 4.0.16 + Supertest
-- **Linting**: ESLint 9.39.2 (Flat Config)
+- **ORM**: [Prisma](https://www.prisma.io/) 7.10.0
+- **Testing**: Vitest 5.0.1 + Supertest
+- **Linting**: ESLint 10.11.0 (Flat Config)
 
 #### 📦 Shared Packages
 
@@ -192,7 +192,7 @@ flowchart TB
         end
     end
 
-    subgraph Neon["Neon"]
+    subgraph Supabase["Supabase"]
         PostgreSQL[(PostgreSQL)]
     end
 
@@ -246,69 +246,43 @@ flowchart TB
 
 ## 🛠 技術スタック
 
-- **Package Manager**: [pnpm](https://pnpm.io/) 10.24.0 (ワークスペース機能使用)
-- **Build System**: [Turborepo](https://turbo.build/repo) 2.7.2
-- **Language**: [TypeScript](https://www.typescriptlang.org/) 5.9.3
-- **Code Quality**: ESLint 9.39.2 + Prettier 3.7.4
-- **Testing**: Vitest 4.0.16 + Testing Library
+- **Package Manager**: [pnpm](https://pnpm.io/) 12.5.1 (ワークスペース機能使用)
+- **Build System**: [Turborepo](https://turbo.build/repo) 2.11.2
+- **Language**: [TypeScript](https://www.typescriptlang.org/) 6.0.3
+- **Code Quality**: ESLint 10.11.0 + Prettier 3.9.8
+- **Testing**: Vitest 5.0.1 + Testing Library
 - **Module System**: ES Modules (`"type": "module"`)
 
 ## 🚀 開発環境のセットアップ
 
 ### 必要な環境
 
-- Node.js 24.11.1（推奨）
-- pnpm 10.24.0
+- Node.js 24.21.0（推奨）
+- pnpm 12.5.1
+- [mise](https://mise.jdx.dev/)（Node / pnpm / lefthook の管理に推奨）
 
-### Voltaのセットアップ（推奨）
+### miseのセットアップ（推奨）
 
-このプロジェクトでは[Volta](https://volta.sh/)を使用してNode.jsとpnpmのバージョンを自動管理しています。
-
-```bash
-# Voltaがインストールされていない場合
-# macOS / Linux
-curl https://get.volta.sh | bash
-
-# Windows
-# https://docs.volta.sh/guide/getting-started を参照
-```
-
-#### pnpmサポートの有効化
-
-Voltaのpnpmサポートは現在実験的な機能です。有効にするには、環境変数`VOLTA_FEATURE_PNPM`を設定する必要があります。
-
-**macOS / Linuxの場合：**
-
-シェルプロファイルファイル（`.zshrc`、`.bash_profile`など）に以下を追加：
+このプロジェクトでは [mise](https://mise.jdx.dev/) を使って Node.js / pnpm / lefthook のバージョンを管理します（`mise.toml` 参照）。
 
 ```bash
-export VOLTA_FEATURE_PNPM=1
+# mise のインストール（macOS / Linux）
+curl https://mise.run | sh
+
+# ピン留めツールの導入と git hooks 登録（lefthook）
+mise install
 ```
 
-設定を反映：
+`mise install` で Node.js 24.21.0、pnpm 12.5.1、lefthook 2.1.14 が入り、postinstall フックで `lefthook install` が実行されます（`CI` 環境ではスキップ）。
+
+フックを手動で再登録する場合:
 
 ```bash
-# zshの場合
-source ~/.zshrc
-
-# bashの場合
-source ~/.bash_profile
+mise exec -- lefthook install
 ```
-
-**Windowsの場合：**
-
-システム環境変数として`VOLTA_FEATURE_PNPM`を`1`に設定してください（システム設定 > 環境変数）。
-
-```bash
-# プロジェクトディレクトリに移動すると、Voltaが自動的に
-# package.jsonの設定に基づいてNode.js 24.11.1とpnpm 10.24.0を切り替えます
-```
-
-> **注意**: Voltaのpnpmサポートは実験的な機能です。詳細は[公式ドキュメント](https://docs.volta.sh/advanced/pnpm)を参照してください。
-
-Voltaを使用することで、プロジェクトごとに適切なバージョンが自動的に設定され、バージョンの不整合を防げます。
 
 ### インストール
+
 
 ```bash
 # 依存関係のインストール
@@ -392,13 +366,13 @@ pnpm storybook --filter=@monorepo/client
 pnpm build-storybook --filter=@monorepo/client
 ```
 
-### lint-staged設定
+### lefthook設定
 
-コミット時に自動で以下が実行されます：
+Git hooks は [lefthook](https://lefthook.dev/)（mise 経由で導入）で管理します。コミット時に以下が自動実行されます:
 
-- TypeScriptの型チェック（ソースとテストで別々の設定）
-- Prettierによるコードフォーマット
-- ESLintによるリント
+- `apps/client` / `apps/server` / `packages/error-code` の staged ファイルに対する Prettier + ESLint
+- TypeScript 型チェック（`pnpm tsc`）
+
 
 ## 🧪 テスト
 
@@ -428,29 +402,29 @@ pnpm test --filter=@monorepo/server
 
 ### 共通
 
-![Turborepo](https://img.shields.io/badge/Turborepo-2.7.2-ef4444?logo=turborepo&logoColor=white)
-![pnpm](https://img.shields.io/badge/pnpm-10.24.0-f69220?logo=pnpm&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178c6?logo=typescript&logoColor=white)
-![ESLint](https://img.shields.io/badge/ESLint-9.39.2-4b32c3?logo=eslint&logoColor=white)
-![Vitest](https://img.shields.io/badge/Vitest-4.0.16-729B1B?logo=vitest&logoColor=white)
-![Prettier](https://img.shields.io/badge/Prettier-3.7.4-F7B93E?logo=prettier&logoColor=white)
+![Turborepo](https://img.shields.io/badge/Turborepo-2.11.2-ef4444?logo=turborepo&logoColor=white)
+![pnpm](https://img.shields.io/badge/pnpm-12.5.1-f69220?logo=pnpm&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-6.0.3-3178c6?logo=typescript&logoColor=white)
+![ESLint](https://img.shields.io/badge/ESLint-10.11.0-4b32c3?logo=eslint&logoColor=white)
+![Vitest](https://img.shields.io/badge/Vitest-5.0.1-729B1B?logo=vitest&logoColor=white)
+![Prettier](https://img.shields.io/badge/Prettier-3.9.8-F7B93E?logo=prettier&logoColor=white)
+![mise](https://img.shields.io/badge/mise-Node%2Fpnpm%2Flefthook-purple?logoColor=white)
 
 ### Client
 
-![Angular](https://img.shields.io/badge/Angular-21.0.6-DD0031?logo=angular&logoColor=white)
-![Angular CDK](https://img.shields.io/badge/Angular%20CDK-21.0.5-DD0031?logo=angular&logoColor=white)
-![TailwindCSS](https://img.shields.io/badge/Tailwind%20CSS-4.1.18-38bdf8?logo=tailwindcss&logoColor=white)
-![NGXS](https://img.shields.io/badge/NGXS-21.0.0-3F51B5?logoColor=white)
-![RxAngular](https://img.shields.io/badge/RxAngular-20.1.0-E91E63?logoColor=white)
+![Angular](https://img.shields.io/badge/Angular-22.1.7-DD0031?logo=angular&logoColor=white)
+![Angular CDK](https://img.shields.io/badge/Angular%20CDK-22.1.7-DD0031?logo=angular&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/Tailwind%20CSS-4.3.3-38bdf8?logo=tailwindcss&logoColor=white)
+![NGXS](https://img.shields.io/badge/NGXS-22.0.0-3F51B5?logoColor=white)
 ![RxJS](https://img.shields.io/badge/RxJS-7.8.2-b7178c?logo=reactivex&logoColor=white)
-![Storybook](https://img.shields.io/badge/Storybook-10.1.10-FF4785?logo=storybook&logoColor=white)
+![Storybook](https://img.shields.io/badge/Storybook-10.6.0-FF4785?logo=storybook&logoColor=white)
 
 ### Server
 
-![NestJS](https://img.shields.io/badge/NestJS-11.1.10-e0234e?logo=nestjs&logoColor=white)
+![NestJS](https://img.shields.io/badge/NestJS-12.0.4-e0234e?logo=nestjs&logoColor=white)
 ![Express](https://img.shields.io/badge/Express-via%20NestJS-000000?logo=express&logoColor=white)
 ![RxJS](https://img.shields.io/badge/RxJS-7.8.2-b7178c?logo=reactivex&logoColor=white)
-![Prisma](https://img.shields.io/badge/Prisma-7.2.0-2d3748?logo=prisma&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-7.10.0-2d3748?logo=prisma&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-via%20Prisma-4169e1?logo=postgresql&logoColor=white)
 
 ## 📖 API仕様
@@ -592,7 +566,7 @@ gcloud logging read "resource.type=cloud_run_revision" --limit=50
    pnpm check-all
    ```
 
-6. コミット（lint-stagedが自動実行）
+6. コミット（lefthookが自動実行）
 
    ```bash
    git add .

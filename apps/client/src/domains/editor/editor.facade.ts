@@ -6,17 +6,13 @@ import { map } from 'rxjs/operators';
 import { SpinnerFacade } from '$modules/spinner';
 import { ArticleResponse, EditorApi } from './api';
 import { EditorArticle } from './model';
-import { ClearEditorForm, EditorState, SetEditorForm } from './store';
+import { ClearEditorForm, SetEditorForm } from './store';
 
 @Injectable({ providedIn: 'root' })
 export class EditorFacade {
   private readonly store = inject(Store);
   private readonly api = inject(EditorApi);
   private readonly spinnerFacade = inject(SpinnerFacade);
-
-  readonly isFormInvalid$ = this.store.select(EditorState.isFormInvalid);
-  readonly isFormDirty$ = this.store.select(EditorState.isFormDirty);
-  readonly formValue$ = this.store.select(EditorState.getFormValue);
 
   private mapResponseToArticle(response: ArticleResponse): EditorArticle {
     return {
@@ -43,6 +39,7 @@ export class EditorFacade {
             title: article.title,
             description: article.description,
             body: article.body,
+            tagList: article.tagList,
           }),
         );
         return article;

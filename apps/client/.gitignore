@@ -1,5 +1,5 @@
-# Created by https://www.toptal.com/developers/gitignore/api/angular
-# Edit at https://www.toptal.com/developers/gitignore?templates=angular
+# Created by https://www.toptal.com/developers/gitignore/api/angular,storybookjs
+# Edit at https://www.toptal.com/developers/gitignore?templates=angular,storybookjs
 
 ### Angular ###
 ## Angular ##
@@ -33,7 +33,15 @@ e2e/*.map
 # System Files
 .DS_Store/
 
-# End of https://www.toptal.com/developers/gitignore/api/angular
+### StorybookJs ###
+# gitignore template for the Storybook, UI guide for front apps
+# website: https://storybook.js.org/
+
+storybook-static/
+
+# End of https://www.toptal.com/developers/gitignore/api/angular,storybookjs
 
 # Generated i18n files (built from JSON at build time)
 locale/
+
+*storybook.log

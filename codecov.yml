@@ -3,65 +3,66 @@
 
 coverage:
   status:
-    # プロジェクト全体のカバレッジ設定
+    # Coverage settings for the entire project
     project:
       default:
-        target: 0% # 目標カバレッジ率
-        threshold: 0% # 許容される低下率（55%まで許容）
-        base: auto # ベースブランチと比較
-        if_ci_failed: error # CI失敗時はエラー
+        target: 0% # Target coverage percentage
+        threshold: 0% # Allowed decrease rate
+        base: auto # Compare with base branch
+        if_ci_failed: error # Error on CI failure
 
-    # パッチ（新規追加コード）のカバレッジ設定
+    # Coverage settings for patches (newly added code)
     patch:
       default:
-        target: 0% # 新規コードの最小カバレッジ
-        threshold: 0% # パッチの許容低下率
+        target: 0% # Minimum coverage for new code
+        threshold: 0% # Allowed decrease rate for patches
         base: auto
 
-  # カバレッジ計測から除外するファイル・ディレクトリ
+  # Files and directories to exclude from coverage measurement
   ignore:
-    - 'packages/**'
+    - '**/*.config.**'
     - '**/*.spec.**'
+    - '**/*.test.**'
+    - '**/.next/**'
+    - '**/build/**'
     - '**/coverage/**'
     - '**/dist/**'
-    - '**/build/**'
-    - '**/.next/**'
     - '**/node_modules/**'
-    - '**/*.config.**'
+    - 'packages/**'
 
-  # カバレッジの精度設定
-  precision: 1 # 小数点以下1桁
-  round: down # 切り捨て
-  range: 0..100 # カバレッジ範囲（色分け用）
+  # Coverage precision settings
+  precision: 1 # Decimal places
+  round: down # Round down
+  range: 0..100 # Coverage range (for color coding)
 
-# プルリクエストへのコメント設定
+# Comment settings for pull requests
 comment:
-  layout: 'reach, diff, flags, files' # 表示項目
-  behavior: default # デフォルト動作
-  require_changes: true # カバレッジに変更がある場合のみコメント
-  require_base: false # ベースブランチ不要
-  require_head: true # HEADブランチ必要
+  layout: 'reach, diff, flags, files' # Display items
+  behavior: default # Default behavior
+  require_changes: true # Comment only when coverage changes
+  require_base: false # Base branch not required
+  require_head: true # HEAD branch required
 
-# フラグ管理（monorepo用）
+# Flag management (for monorepo)
 flag_management:
   default_rules:
-    carryforward: true # 前回結果の引き継ぎ
+    carryforward: true # Carry forward previous results
 
   individual_flags:
-    # クライアント側の設定
+    # Client-side settings
     - name: client
       paths:
         - apps/client/src/
-      target: 100% # クライアント目標
+      target: 100% # Client target
       carryforward: true
 
-    # サーバー側の設定
+    # Server-side settings
     - name: server
       paths:
         - apps/server/src/
-      target: 100% # サーバー目標
+      target: 100% # Server target
       carryforward: true
 
-# GitHub統合設定
+# GitHub integration settings
 github_checks:
-  annotations: false # コード注釈を有効
+  annotations: false # Disable code annotations

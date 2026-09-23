@@ -20,7 +20,7 @@ export default [
   },
   // Angular ESLint TypeScript files configuration
   {
-    files: ['src/**/*.ts', 'scripts/**/*.ts', 'test/**/*.ts'],
+    files: ['src/**/*.ts', 'scripts/**/*.ts'],
     plugins: {
       '@angular-eslint': angularEslintPlugin,
     },
@@ -32,7 +32,20 @@ export default [
     },
     processor: angularTemplatePlugin.processors['extract-inline-html'],
     rules: {
-      ...angularEslintPlugin.configs.recommended.rules,
+      // angular-eslint/ts-recommended (flat configs moved out of the plugin in v22)
+      '@angular-eslint/contextual-lifecycle': 'error',
+      '@angular-eslint/no-empty-lifecycle-method': 'error',
+      '@angular-eslint/no-input-rename': 'error',
+      '@angular-eslint/no-inputs-metadata-property': 'error',
+      '@angular-eslint/no-output-native': 'error',
+      '@angular-eslint/no-output-on-prefix': 'error',
+      '@angular-eslint/no-output-rename': 'error',
+      '@angular-eslint/no-outputs-metadata-property': 'error',
+      '@angular-eslint/prefer-inject': 'error',
+      '@angular-eslint/prefer-on-push-component-change-detection': 'error',
+      '@angular-eslint/prefer-standalone': 'error',
+      '@angular-eslint/use-pipe-transform-interface': 'error',
+      '@angular-eslint/use-lifecycle-interface': 'warn',
       '@angular-eslint/directive-selector': ['error', { type: 'attribute', prefix: ['app'], style: 'camelCase' }],
       // Allow camelCase for components using attribute selectors (button, input, etc.)
       '@angular-eslint/component-selector': 'off',
@@ -114,8 +127,23 @@ export default [
       '@angular-eslint/template': angularTemplatePlugin,
     },
     rules: {
-      ...angularTemplatePlugin.configs.recommended.rules,
-      ...angularTemplatePlugin.configs.accessibility.rules,
+      // angular-eslint/template-recommended
+      '@angular-eslint/template/banana-in-box': 'error',
+      '@angular-eslint/template/eqeqeq': 'error',
+      '@angular-eslint/template/no-negated-async': 'error',
+      '@angular-eslint/template/prefer-control-flow': 'error',
+      // angular-eslint/template-accessibility
+      '@angular-eslint/template/alt-text': 'error',
+      '@angular-eslint/template/click-events-have-key-events': 'error',
+      '@angular-eslint/template/elements-content': 'error',
+      '@angular-eslint/template/interactive-supports-focus': 'error',
+      '@angular-eslint/template/label-has-associated-control': 'error',
+      '@angular-eslint/template/mouse-events-have-key-events': 'error',
+      '@angular-eslint/template/no-autofocus': 'error',
+      '@angular-eslint/template/no-distracting-elements': 'error',
+      '@angular-eslint/template/role-has-required-aria': 'error',
+      '@angular-eslint/template/table-scope': 'error',
+      '@angular-eslint/template/valid-aria': 'error',
     },
   },
 ];

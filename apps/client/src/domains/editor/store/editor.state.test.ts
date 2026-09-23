@@ -20,51 +20,18 @@ describe('EditorState', () => {
 
   describe('initial state', () => {
     it('should have default editor form as initial state', () => {
-      const formValue = store.selectSnapshot(EditorState.getFormValue);
-      expect(formValue).toEqual({
-        title: '',
-        description: '',
-        body: '',
+      const form = store.selectSnapshot((state) => state.editor.editorForm);
+      expect(form).toEqual({
+        model: {
+          title: '',
+          description: '',
+          body: '',
+          tagList: [],
+        },
+        dirty: false,
+        status: '',
+        errors: {},
       });
-    });
-
-    it('should have invalid form status as initial state', () => {
-      const isInvalid = store.selectSnapshot(EditorState.isFormInvalid);
-      expect(isInvalid).toBe(true);
-    });
-
-    it('should have non-dirty form as initial state', () => {
-      const isDirty = store.selectSnapshot(EditorState.isFormDirty);
-      expect(isDirty).toBe(false);
-    });
-  });
-
-  describe('isFormInvalid selector', () => {
-    it('should return true when form status is not VALID', () => {
-      const isInvalid = store.selectSnapshot(EditorState.isFormInvalid);
-      expect(isInvalid).toBe(true);
-    });
-  });
-
-  describe('isFormDirty selector', () => {
-    it('should return false when form is not dirty', () => {
-      const isDirty = store.selectSnapshot(EditorState.isFormDirty);
-      expect(isDirty).toBe(false);
-    });
-  });
-
-  describe('getFormValue selector', () => {
-    it('should return form value from state', () => {
-      const mockForm: EditorFormModel = {
-        title: 'Test Title',
-        description: 'Test Description',
-        body: 'Test Body',
-      };
-
-      store.dispatch(new SetEditorForm(mockForm));
-
-      const formValue = store.selectSnapshot(EditorState.getFormValue);
-      expect(formValue).toEqual(mockForm);
     });
   });
 
@@ -74,25 +41,14 @@ describe('EditorState', () => {
         title: 'Test Title',
         description: 'Test Description',
         body: 'Test Body',
+        tagList: ['test'],
       };
 
       store.dispatch(new SetEditorForm(mockForm));
 
-      const formValue = store.selectSnapshot(EditorState.getFormValue);
-      expect(formValue).toEqual(mockForm);
-    });
-
-    it('should set dirty to false when form is set', () => {
-      const mockForm: EditorFormModel = {
-        title: 'Test Title',
-        description: 'Test Description',
-        body: 'Test Body',
-      };
-
-      store.dispatch(new SetEditorForm(mockForm));
-
-      const isDirty = store.selectSnapshot(EditorState.isFormDirty);
-      expect(isDirty).toBe(false);
+      const form = store.selectSnapshot((state) => state.editor.editorForm);
+      expect(form.model).toEqual(mockForm);
+      expect(form.dirty).toBe(false);
     });
   });
 
@@ -102,16 +58,18 @@ describe('EditorState', () => {
         title: 'Test Title',
         description: 'Test Description',
         body: 'Test Body',
+        tagList: ['test'],
       };
 
       store.dispatch(new SetEditorForm(mockForm));
       store.dispatch(new ClearEditorForm());
 
-      const formValue = store.selectSnapshot(EditorState.getFormValue);
+      const formValue = store.selectSnapshot((state) => state.editor.editorForm.model);
       expect(formValue).toEqual({
         title: '',
         description: '',
         body: '',
+        tagList: [],
       });
     });
   });

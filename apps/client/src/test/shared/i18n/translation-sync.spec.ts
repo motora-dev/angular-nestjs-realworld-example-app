@@ -61,12 +61,13 @@ function extractIdsFromXlf(xlfPath: string): string[] {
 }
 
 /**
- * Get translation for a given ID from UI and error translations
+ * Get translation for a given ID from UI, error, and validator translations
  */
 function getTranslation(
   id: string,
   uiTranslations: TranslationData,
   errorTranslations: TranslationData,
+  validatorTranslations: TranslationData,
 ): string | undefined {
   const keys = id.split('.');
 
@@ -78,6 +79,10 @@ function getTranslation(
   const errorValue = getNestedValue(errorTranslations, keys);
   if (errorValue) return errorValue;
 
+  // Finally try validator translations
+  const validatorValue = getNestedValue(validatorTranslations, keys);
+  if (validatorValue) return validatorValue;
+
   return undefined;
 }
 
@@ -85,6 +90,7 @@ describe('Translation sync', () => {
   const xlfPath = resolve(process.cwd(), 'locale/messages.xlf');
   const uiI18nDir = resolve(process.cwd(), 'public/i18n/ui');
   const errorI18nDir = resolve(process.cwd(), 'public/i18n/error');
+  const validatorI18nDir = resolve(process.cwd(), 'public/i18n/validator');
 
   // Skip tests if XLF file doesn't exist (e.g., before first build)
   const xlfExists = existsSync(xlfPath);
@@ -100,8 +106,11 @@ describe('Translation sync', () => {
     it.each(languages)('should have all i18n keys defined in %s.json', (lang) => {
       const uiTranslations = loadJsonTranslations(resolve(uiI18nDir, `${lang}.json`));
       const errorTranslations = loadJsonTranslations(resolve(errorI18nDir, `${lang}.json`));
+      const validatorTranslations = loadJsonTranslations(resolve(validatorI18nDir, `${lang}.json`));
 
-      const missingKeys = xlfIds.filter((id) => !getTranslation(id, uiTranslations, errorTranslations));
+      const missingKeys = xlfIds.filter(
+        (id) => !getTranslation(id, uiTranslations, errorTranslations, validatorTranslations),
+      );
 
       if (missingKeys.length > 0) {
         console.error(`\nMissing translations for ${lang}:`);

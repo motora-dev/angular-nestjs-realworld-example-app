@@ -1,14 +1,15 @@
-import { PrismaAdapter } from '$adapters';
-import { ProfileModule } from '$domains/profile/profile.module';
-import { UnprocessableEntityError } from '$errors';
-import { HttpExceptionFilter } from '$filters';
-import { GoogleAuthGuard } from '$modules/auth/guards';
 import { ERROR_CODE, ValidationErrorCode } from '@monorepo/error-code';
 import { ExecutionContext, Logger, Module, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { vi, type MockInstance } from 'vitest';
 
+import { PrismaAdapter } from '$adapters';
 import type { CurrentUserType } from '$decorators';
+import { ProfileModule } from '$domains/profile/profile.module';
+import { UnprocessableEntityError } from '$errors';
+import { HttpExceptionFilter } from '$filters';
+import { GoogleAuthGuard } from '$modules/auth/guards';
+
 import type { INestApplication } from '@nestjs/common';
 
 @Module({
@@ -92,7 +93,7 @@ describe('Profile Controller E2E', () => {
 
     // Middleware to set user for all requests (for testing purposes)
     // This simulates authenticated requests even when @UseGuards is not applied
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     app.use((req: any, res: any, next: any) => {
       req.user = mockCurrentUser;
       next();
@@ -121,7 +122,6 @@ describe('Profile Controller E2E', () => {
 
   describe('GET /api/profiles/:username', () => {
     it('should return 200 with profile data when user exists', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       vi.mocked(prismaAdapter.user.findUnique).mockResolvedValueOnce(mockProfileUser as any);
       vi.mocked(prismaAdapter.follow.findUnique).mockResolvedValueOnce(null);
 
@@ -136,7 +136,6 @@ describe('Profile Controller E2E', () => {
     });
 
     it('should return 200 with following=true when authenticated user is following', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       vi.mocked(prismaAdapter.user.findUnique).mockResolvedValueOnce(mockProfileUser as any);
       vi.mocked(prismaAdapter.follow.findUnique).mockResolvedValueOnce({
         followerId: 1,
@@ -168,14 +167,12 @@ describe('Profile Controller E2E', () => {
 
   describe('POST /api/profiles/:username/follow', () => {
     it('should return 200 with profile when follow is successful', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       vi.mocked(prismaAdapter.user.findUnique).mockResolvedValueOnce(mockProfileUser as any);
       vi.mocked(prismaAdapter.follow.findUnique).mockResolvedValueOnce(null);
       vi.mocked(prismaAdapter.follow.upsert).mockResolvedValueOnce({
         followerId: 1,
         followingId: 2,
         createdAt: new Date('2024-01-01T00:00:00.000Z'),
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
       const response = await fetch(`${baseUrl}/profiles/profileuser/follow`, {
@@ -204,14 +201,13 @@ describe('Profile Controller E2E', () => {
 
   describe('DELETE /api/profiles/:username/follow', () => {
     it('should return 200 with profile when unfollow is successful', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       vi.mocked(prismaAdapter.user.findUnique).mockResolvedValueOnce(mockProfileUser as any);
       vi.mocked(prismaAdapter.follow.findUnique).mockResolvedValueOnce({
         followerId: 1,
         followingId: 2,
         createdAt: new Date('2024-01-01T00:00:00.000Z'),
       });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       vi.mocked(prismaAdapter.follow.deleteMany).mockResolvedValueOnce({ count: 1 } as any);
 
       const response = await fetch(`${baseUrl}/profiles/profileuser/follow`, {

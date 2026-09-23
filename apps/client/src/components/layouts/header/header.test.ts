@@ -56,31 +56,19 @@ describe('HeaderComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('observables', () => {
-    it('should expose isAuthenticated$ from facade', async () => {
-      let isAuth: boolean | null = false;
-      const subscription = component.isAuthenticated$.subscribe((value) => {
-        isAuth = value;
-      });
-
-      expect(isAuth).toBe(false);
+  describe('signals', () => {
+    it('should expose isAuthenticated from facade', () => {
+      expect(component.isAuthenticated()).toBe(false);
 
       mockAuthFacade.isAuthenticated$.next(true);
-      expect(isAuth).toBe(true);
-
-      subscription.unsubscribe();
+      expect(component.isAuthenticated()).toBe(true);
     });
 
-    it('should expose currentUser$ from facade', async () => {
-      let user: User | null = null;
-      component.currentUser$.subscribe((value) => {
-        user = value;
-      });
-
-      expect(user).toBeNull();
+    it('should expose currentUser from facade', () => {
+      expect(component.currentUser()).toBeNull();
 
       mockAuthFacade.currentUser$.next(mockUser);
-      expect(user).toEqual(mockUser);
+      expect(component.currentUser()).toEqual(mockUser);
     });
   });
 

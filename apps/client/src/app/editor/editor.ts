@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { EditorArticle, EditorFacade } from '$domains/editor';
-import { EditorFormComponent, EditorFormSubmitEvent } from './components/editor-form';
+import { EditorFacade, EditorFormModel } from '$domains/editor';
+import { EditorFormComponent } from './components/editor-form';
 
 @Component({
   selector: 'app-editor',
@@ -16,27 +16,24 @@ export class EditorComponent {
   private readonly router = inject(Router);
   private readonly editorFacade = inject(EditorFacade);
 
-  readonly isEditMode = signal(false);
-  readonly initialTagList = signal<string[]>([]);
-
-  private slug: string | null = null;
+  private slug: string | null = this.route.snapshot.params['slug'] ?? null;
 
   constructor() {
-    this.slug = this.route.snapshot.params['slug'];
     if (this.slug) {
-      this.isEditMode.set(true);
-      this.editorFacade.loadArticle(this.slug).subscribe((article: EditorArticle) => {
-        this.initialTagList.set(article.tagList);
-      });
+      this.editorFacade.loadArticle(this.slug).subscribe();
     }
   }
 
-  onFormSubmit(event: EditorFormSubmitEvent): void {
+  get isEditMode(): boolean {
+    return this.slug !== null;
+  }
+
+  onFormSubmit(form: EditorFormModel): void {
     const articleData = {
-      title: event.title,
-      description: event.description,
-      body: event.body,
-      tagList: event.tagList,
+      title: form.title,
+      description: form.description,
+      body: form.body,
+      tagList: form.tagList,
     };
 
     const observable = this.slug

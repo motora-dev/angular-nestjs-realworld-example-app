@@ -34,7 +34,6 @@ export class ArticleFacade {
 
   // Comments selectors
   readonly comments$ = this.store.select(CommentsState.getComments);
-  readonly isCommentFormInvalid$ = this.store.select(CommentsState.isCommentFormInvalid);
 
   // Article methods
   private mapResponseToArticle(response: ArticleResponse): Article {

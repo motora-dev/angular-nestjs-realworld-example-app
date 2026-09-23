@@ -1,12 +1,11 @@
 import 'reflect-metadata';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import swc from 'unplugin-swc';
 import { defineConfig } from 'vitest/config';
 
 import type { PluginOption } from 'vite';
 
-const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
+const dirname = import.meta.dirname;
 
 const swcPlugin = swc.vite({
   sourceMaps: true,

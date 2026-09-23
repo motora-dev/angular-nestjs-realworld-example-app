@@ -21,8 +21,8 @@ export const VALIDATION_MESSAGE_EMAIL = $localize`:@@validation.email:Please ent
 export const VALIDATION_MESSAGE_PATTERN = $localize`:@@validation.pattern:Invalid format`;
 
 /** Localized message prefixes for dynamic validation errors */
-export const MINLENGTH_PREFIX = $localize`:@@validation.minlength.withValue:Please enter at least`;
-export const MAXLENGTH_PREFIX = $localize`:@@validation.maxlength.withValue:Please enter no more than`;
+export const MINLENGTH_PREFIX = $localize`:@@validation.minlengthWithValue:Please enter at least`;
+export const MAXLENGTH_PREFIX = $localize`:@@validation.maxlengthWithValue:Please enter no more than`;
 export const UNKNOWN_ERROR_SUFFIX = $localize`:@@validation.unknown:error`;
 
 /**

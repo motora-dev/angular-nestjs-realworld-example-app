@@ -6,12 +6,11 @@ import {
   isMainModule,
   writeResponseToNodeResponse,
 } from '@angular/ssr/node';
-import { ISRHandler } from '@rx-angular/isr/server';
 import acceptLanguage from 'accept-language';
 import compression from 'compression';
 import express from 'express';
 import basicAuth from 'express-basic-auth';
-import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 import { environment } from '$environments';
@@ -50,27 +49,15 @@ function getLocale(req: express.Request): string {
   return defaultLocale;
 }
 
-// Load index.html for each locale (for ISR)
-const indexHtmlByLocale: Record<string, string> = {};
-for (const locale of supportedLocales) {
-  const indexHtmlPath = join(browserDistFolder, locale, 'index.csr.html');
-  if (existsSync(indexHtmlPath)) {
-    indexHtmlByLocale[locale] = readFileSync(indexHtmlPath, 'utf-8');
-  }
-}
-
-// Fallback to non-localized structure if no locale folders exist
-const legacyIndexHtmlPath = join(browserDistFolder, 'index.csr.html');
-if (Object.keys(indexHtmlByLocale).length === 0 && existsSync(legacyIndexHtmlPath)) {
-  indexHtmlByLocale[defaultLocale] = readFileSync(legacyIndexHtmlPath, 'utf-8');
-}
-
 const baseUrl = environment.baseUrl;
 const apiUrl = environment.apiUrl;
 const gaId = environment.gaId;
 
-// Inject Google Analytics scripts if GA ID is configured
-if (gaId) {
+function injectGaScripts(html: string): string {
+  if (!gaId) {
+    return html.replace('<!-- __GA_SCRIPTS__ -->', '');
+  }
+
   const gaScripts = `
     <!-- Consent Mode v2 default settings -->
     <script>
@@ -110,15 +97,21 @@ if (gaId) {
       gtag('config', '${gaId}');
     </script>`;
 
-  // Inject GA scripts into all locale index.html files
-  for (const locale of Object.keys(indexHtmlByLocale)) {
-    indexHtmlByLocale[locale] = indexHtmlByLocale[locale].replace('<!-- __GA_SCRIPTS__ -->', gaScripts);
+  return html.replace('<!-- __GA_SCRIPTS__ -->', gaScripts);
+}
+
+// Inject GA into built index.html files (locale folders and legacy layout)
+for (const locale of supportedLocales) {
+  const indexHtmlPath = join(browserDistFolder, locale, 'index.csr.html');
+  if (existsSync(indexHtmlPath)) {
+    const html = readFileSync(indexHtmlPath, 'utf-8');
+    writeFileSync(indexHtmlPath, injectGaScripts(html));
   }
-} else {
-  // Remove placeholder from all locale index.html files
-  for (const locale of Object.keys(indexHtmlByLocale)) {
-    indexHtmlByLocale[locale] = indexHtmlByLocale[locale].replace('<!-- __GA_SCRIPTS__ -->', '');
-  }
+}
+const legacyIndexHtmlPath = join(browserDistFolder, 'index.csr.html');
+if (existsSync(legacyIndexHtmlPath)) {
+  const html = readFileSync(legacyIndexHtmlPath, 'utf-8');
+  writeFileSync(legacyIndexHtmlPath, injectGaScripts(html));
 }
 
 const app = express();
@@ -149,23 +142,6 @@ if (process.env['BASIC_AUTH_ENABLED'] === 'true') {
     );
   }
 }
-
-// ISRHandler for caching per locale (only initialize if index.html exists)
-const isrByLocale: Record<string, ISRHandler> = {};
-for (const locale of Object.keys(indexHtmlByLocale)) {
-  isrByLocale[locale] = new ISRHandler({
-    indexHtml: indexHtmlByLocale[locale],
-    invalidateSecretToken: process.env['ISR_SECRET'] || 'MY_SECRET_TOKEN',
-    enableLogging: process.env['NODE_ENV'] !== 'production',
-    angularAppEngine: angularApp, // Use AngularNodeAppEngine for rendering
-  });
-}
-
-// Default ISR for backwards compatibility
-const isr = isrByLocale[defaultLocale] || null;
-
-// Parse JSON for invalidation endpoint
-app.use(express.json());
 
 /**
  * Serve favicon.ico from the default locale folder
@@ -290,62 +266,6 @@ ${allUrls
 });
 
 /**
- * ISR cache invalidation endpoint (internal use only)
- * POST /api/invalidate with { "token": "MY_SECRET_TOKEN", "urlsToInvalidate": ["/home"] }
- */
-app.post('/api/invalidate', async (req, res) => {
-  if (isr) {
-    await isr.invalidate(req, res);
-  } else {
-    res.status(503).json({ error: 'ISR not available' });
-  }
-});
-
-/**
- * ISR cache invalidation proxy endpoint (requires session auth)
- * POST /api/invalidate-cache with { "urlsToInvalidate": ["/article/xxx/yyy"] }
- *
- * This endpoint verifies the user's session with NestJS API before invalidating cache.
- * The ISR_SECRET token is added server-side, so clients don't need to know it.
- */
-app.post('/api/invalidate-cache', async (req, res) => {
-  if (!isr) {
-    res.status(503).json({ error: 'ISR not available' });
-    return;
-  }
-
-  // Forward cookies to NestJS API to verify session
-  const cookie = req.headers.cookie;
-  const checkSessionResponse = await fetch(`${apiUrl}/auth/check-session`, {
-    headers: cookie ? { cookie } : {},
-    credentials: 'include',
-  });
-
-  if (!checkSessionResponse.ok) {
-    res.status(401).json({ error: 'Unauthorized' });
-    return;
-  }
-
-  const sessionData = await checkSessionResponse.json();
-  if (!sessionData.authenticated) {
-    res.status(401).json({ error: 'Unauthorized' });
-    return;
-  }
-
-  // Add ISR secret token to the request body and call invalidate
-  const urlsToInvalidate = req.body.urlsToInvalidate;
-  if (!Array.isArray(urlsToInvalidate) || urlsToInvalidate.length === 0) {
-    res.status(400).json({ error: 'urlsToInvalidate must be a non-empty array' });
-    return;
-  }
-
-  // Create a modified request with the token
-  req.body.token = process.env['ISR_SECRET'] || 'MY_SECRET_TOKEN';
-
-  await isr.invalidate(req, res);
-});
-
-/**
  * Serve static files from /browser/{locale}
  * Static files are served without locale detection since they have hashed names
  */
@@ -373,39 +293,14 @@ app.use(
 );
 
 /**
- * Handle all other requests:
- * - Detect locale from Accept-Language header or URL path
- * - If ISR is available: try cache first, then render with ISR
- * - If ISR is not available: fallback to AngularNodeAppEngine
+ * Handle all other requests with Angular SSR
  */
-app.use(
-  async (req, res, next) => {
-    const locale = getLocale(req);
-    const localeIsr = isrByLocale[locale] || isr;
-
-    if (localeIsr) {
-      // First, try to serve from cache
-      await localeIsr.serveFromCache(req, res, next);
-    } else {
-      next();
-    }
-  },
-  async (req, res, next) => {
-    const locale = getLocale(req);
-    const localeIsr = isrByLocale[locale] || isr;
-
-    if (localeIsr) {
-      // If not in cache, render and cache
-      await localeIsr.render(req, res, next);
-    } else {
-      // Fallback: Standard Angular SSR without ISR
-      angularApp
-        .handle(req)
-        .then((response) => (response ? writeResponseToNodeResponse(response, res) : next()))
-        .catch(next);
-    }
-  },
-);
+app.use((req, res, next) => {
+  angularApp
+    .handle(req)
+    .then((response) => (response ? writeResponseToNodeResponse(response, res) : next()))
+    .catch(next);
+});
 
 /**
  * Start the server if this module is the main entry point, or it is ran via PM2.

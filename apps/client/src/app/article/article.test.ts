@@ -187,7 +187,7 @@ describe('ArticleComponent', () => {
     });
   });
 
-  it('should subscribe to article$ from facade', async () => {
+  it('should expose article from facade', async () => {
     // 初期化時のHTTPリクエストをモック
     const articleReq = httpMock.expectOne('http://localhost:3000/articles/test-slug');
     articleReq.flush({
@@ -216,14 +216,12 @@ describe('ArticleComponent', () => {
     // Wait for async operations
     await new Promise((resolve) => setTimeout(resolve, 100));
 
-    const article = await new Promise<Article | null>((resolve) => {
-      component.article$.subscribe((a) => resolve(a));
-    });
+    const article = component.article();
     expect(article).toBeTruthy();
     expect(article?.slug).toBe('test-slug');
   });
 
-  it('should subscribe to comments$ from facade', async () => {
+  it('should expose comments from facade', async () => {
     // 初期化時のHTTPリクエストをモック
     const articleReq = httpMock.expectOne('http://localhost:3000/articles/test-slug');
     articleReq.flush({
@@ -266,14 +264,12 @@ describe('ArticleComponent', () => {
     // Wait for async operations
     await new Promise((resolve) => setTimeout(resolve, 100));
 
-    const comments = await new Promise<Comment[]>((resolve) => {
-      component.comments$.subscribe((c) => resolve(c));
-    });
+    const comments = component.comments();
     expect(comments).toHaveLength(1);
-    expect(comments[0].id).toBe('1');
+    expect(comments?.[0].id).toBe('1');
   });
 
-  it('should subscribe to isAuthenticated$ from auth facade', async () => {
+  it('should expose isAuthenticated from auth facade', async () => {
     // 初期化時のHTTPリクエストをモック
     const articleReq = httpMock.expectOne('http://localhost:3000/articles/test-slug');
     articleReq.flush({
@@ -298,13 +294,10 @@ describe('ArticleComponent', () => {
     const commentsReq = httpMock.expectOne('http://localhost:3000/articles/test-slug/comments');
     commentsReq.flush({ comments: [] });
 
-    const isAuth = await new Promise<boolean | null>((resolve) => {
-      component.isAuthenticated$.subscribe((auth) => resolve(auth));
-    });
-    expect(isAuth).toBe(true);
+    expect(component.isAuthenticated()).toBe(true);
   });
 
-  it('should subscribe to currentUser$ from auth facade', async () => {
+  it('should expose currentUser from auth facade', async () => {
     // 初期化時のHTTPリクエストをモック
     const articleReq = httpMock.expectOne('http://localhost:3000/articles/test-slug');
     articleReq.flush({
@@ -329,10 +322,7 @@ describe('ArticleComponent', () => {
     const commentsReq = httpMock.expectOne('http://localhost:3000/articles/test-slug/comments');
     commentsReq.flush({ comments: [] });
 
-    const user = await new Promise<User | null>((resolve) => {
-      component.currentUser$.subscribe((u) => resolve(u));
-    });
-    expect(user).toEqual(mockUser);
+    expect(component.currentUser()).toEqual(mockUser);
   });
 
   describe('canModify', () => {

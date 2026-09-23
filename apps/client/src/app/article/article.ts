@@ -1,7 +1,7 @@
+import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { RxLet } from '@rx-angular/template/let';
-import { RxPush } from '@rx-angular/template/push';
 
 import { Article, ArticleFacade, Comment } from '$domains/article';
 import { Profile } from '$domains/profile';
@@ -14,15 +14,7 @@ import { CommentFormComponent } from './components/comment-form/comment-form';
 @Component({
   selector: 'app-article',
   standalone: true,
-  imports: [
-    RxLet,
-    RxPush,
-    RouterLink,
-    MarkdownPipe,
-    ArticleMetaComponent,
-    ArticleCommentComponent,
-    CommentFormComponent,
-  ],
+  imports: [AsyncPipe, RouterLink, MarkdownPipe, ArticleMetaComponent, ArticleCommentComponent, CommentFormComponent],
   providers: [ArticleFacade],
   templateUrl: './article.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,10 +24,10 @@ export class ArticleComponent {
   private readonly articleFacade = inject(ArticleFacade);
   private readonly authFacade = inject(AuthFacade);
 
-  readonly article$ = this.articleFacade.article$;
-  readonly comments$ = this.articleFacade.comments$;
-  readonly isAuthenticated$ = this.authFacade.isAuthenticated$;
-  readonly currentUser$ = this.authFacade.currentUser$;
+  readonly article = toSignal(this.articleFacade.article$);
+  readonly comments = toSignal(this.articleFacade.comments$);
+  readonly isAuthenticated = toSignal(this.authFacade.isAuthenticated$);
+  readonly currentUser = toSignal(this.authFacade.currentUser$);
 
   readonly isDeleting = signal(false);
 
@@ -45,7 +37,7 @@ export class ArticleComponent {
     this.articleFacade.loadComments(slug);
   }
 
-  canModify(article: Article, currentUser: User | null): boolean {
+  canModify(article: Article, currentUser: User | null | undefined): boolean {
     return currentUser?.username === article.author.username;
   }
 

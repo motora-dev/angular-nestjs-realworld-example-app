@@ -1,14 +1,15 @@
-import { PrismaAdapter } from '$adapters';
-import { UserModule } from '$domains/user/user.module';
-import { UnprocessableEntityError } from '$errors';
-import { HttpExceptionFilter } from '$filters';
-import { GoogleAuthGuard } from '$modules/auth/guards';
 import { ERROR_CODE, ValidationErrorCode } from '@monorepo/error-code';
 import { CanActivate, ExecutionContext, Logger, Module, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { vi, type MockInstance } from 'vitest';
 
+import { PrismaAdapter } from '$adapters';
 import type { CurrentUserType } from '$decorators';
+import { UserModule } from '$domains/user/user.module';
+import { UnprocessableEntityError } from '$errors';
+import { HttpExceptionFilter } from '$filters';
+import { GoogleAuthGuard } from '$modules/auth/guards';
+
 import type { INestApplication } from '@nestjs/common';
 
 @Module({
@@ -74,7 +75,7 @@ describe('User Controller E2E', () => {
 
     // Configure ValidationPipe with the same exceptionFactory as app.module.ts
     // Handle nested validation errors
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     const flattenValidationErrors = (errors: any[]): any[] => {
       return errors.flatMap((error) => {
         const constraints = Object.values(error.constraints || {});
@@ -131,7 +132,6 @@ describe('User Controller E2E', () => {
 
   describe('GET /api/user', () => {
     it('should return 200 with current user data', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       vi.mocked(prismaAdapter.user.findUnique).mockResolvedValueOnce(mockUser as any);
 
       const response = await fetch(`${baseUrl}/user`);
@@ -162,10 +162,10 @@ describe('User Controller E2E', () => {
         username: 'updateduser',
         bio: 'Updated bio',
       };
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       vi.mocked(prismaAdapter.user.findUnique).mockResolvedValueOnce(mockUser as any);
       vi.mocked(prismaAdapter.user.findFirst).mockResolvedValueOnce(null); // username not taken
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       vi.mocked(prismaAdapter.user.update).mockResolvedValueOnce(updatedUser as any);
 
       const response = await fetch(`${baseUrl}/user`, {
@@ -191,10 +191,10 @@ describe('User Controller E2E', () => {
         ...mockUser,
         email: 'newemail@example.com',
       };
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       vi.mocked(prismaAdapter.user.findUnique).mockResolvedValueOnce(mockUser as any);
       vi.mocked(prismaAdapter.user.findFirst).mockResolvedValueOnce(null); // email not taken
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       vi.mocked(prismaAdapter.user.update).mockResolvedValueOnce(updatedUser as any);
 
       const response = await fetch(`${baseUrl}/user`, {

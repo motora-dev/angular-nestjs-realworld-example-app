@@ -49,26 +49,24 @@ describe('AuthFacade', () => {
   });
 
   describe('checkSession', () => {
-    it('should check session and dispatch SetAuthenticated and SetCurrentUser actions when authenticated', () => {
+    it('should check session and dispatch SetAuthenticated and SetCurrentUser actions when authenticated', async () => {
       const dispatchSpy = vi.spyOn(store, 'dispatch');
       facade.checkSession();
 
       expect(authApi.checkSession).toHaveBeenCalled();
-      setTimeout(() => {
-        expect(dispatchSpy).toHaveBeenCalledWith(new SetAuthenticated(true));
-        expect(dispatchSpy).toHaveBeenCalledWith(new SetCurrentUser(mockUser));
-      }, 100);
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      expect(dispatchSpy).toHaveBeenCalledWith(new SetAuthenticated(true));
+      expect(dispatchSpy).toHaveBeenCalledWith(new SetCurrentUser(mockUser));
     });
 
-    it('should dispatch SetAuthenticated(false) and SetCurrentUser(null) when not authenticated', () => {
+    it('should dispatch SetAuthenticated(false) and SetCurrentUser(null) when not authenticated', async () => {
       const dispatchSpy = vi.spyOn(store, 'dispatch');
       vi.mocked(authApi.checkSession).mockReturnValueOnce(of({ authenticated: false, user: undefined }));
       facade.checkSession();
 
-      setTimeout(() => {
-        expect(dispatchSpy).toHaveBeenCalledWith(new SetAuthenticated(false));
-        expect(dispatchSpy).toHaveBeenCalledWith(new SetCurrentUser(null));
-      }, 100);
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      expect(dispatchSpy).toHaveBeenCalledWith(new SetAuthenticated(false));
+      expect(dispatchSpy).toHaveBeenCalledWith(new SetCurrentUser(null));
     });
 
     it('should not check session on server platform', () => {
@@ -137,15 +135,14 @@ describe('AuthFacade', () => {
   });
 
   describe('logout', () => {
-    it('should logout and dispatch SetAuthenticated(false) and SetCurrentUser(null)', () => {
+    it('should logout and dispatch SetAuthenticated(false) and SetCurrentUser(null)', async () => {
       const dispatchSpy = vi.spyOn(store, 'dispatch');
       facade.logout();
 
       expect(authApi.logout).toHaveBeenCalled();
-      setTimeout(() => {
-        expect(dispatchSpy).toHaveBeenCalledWith(new SetAuthenticated(false));
-        expect(dispatchSpy).toHaveBeenCalledWith(new SetCurrentUser(null));
-      }, 100);
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      expect(dispatchSpy).toHaveBeenCalledWith(new SetAuthenticated(false));
+      expect(dispatchSpy).toHaveBeenCalledWith(new SetCurrentUser(null));
     });
 
     it('should not logout on server platform', () => {
