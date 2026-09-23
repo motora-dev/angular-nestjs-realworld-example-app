@@ -44,7 +44,7 @@ jobs:
     name: Apply Migrations
     runs-on: ubuntu-latest
     needs: [detect-changes]
-    if: needs.detect-changes.outputs.database == 'true' || needs.detect-changes.outputs.workflow == 'true' || github.event_name == 'workflow_dispatch'
+    if: vars.SKIP_DEPLOY != 'true' && (needs.detect-changes.outputs.database == 'true' || needs.detect-changes.outputs.workflow == 'true' || github.event_name == 'workflow_dispatch')
 
     environment: ${{ github.ref_name }}
 
