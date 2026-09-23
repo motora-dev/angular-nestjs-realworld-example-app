@@ -152,14 +152,6 @@ describe('ArticleFacade', () => {
 
       expect(comments).toEqual(mockComments);
     });
-
-    it('should select isCommentFormInvalid from state', async () => {
-      const isInvalid = await new Promise<boolean>((resolve) => {
-        facade.isCommentFormInvalid$.subscribe((invalid) => resolve(invalid));
-      });
-
-      expect(isInvalid).toBe(true);
-    });
   });
 
   describe('loadArticle', () => {
@@ -381,9 +373,13 @@ describe('ArticleFacade', () => {
     it('should clear comment form from state', () => {
       facade.clearCommentForm();
 
-      // Form state is reset to default (invalid)
-      const isInvalid = store.selectSnapshot(CommentsState.isCommentFormInvalid);
-      expect(isInvalid).toBe(true);
+      const form = store.selectSnapshot((state) => state.comments.commentForm);
+      expect(form).toEqual({
+        model: { body: '' },
+        dirty: false,
+        status: '',
+        errors: {},
+      });
     });
   });
 });

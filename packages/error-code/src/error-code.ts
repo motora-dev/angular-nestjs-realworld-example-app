@@ -54,9 +54,7 @@ export type ForbiddenCode = typeof ERROR_CODE.FORBIDDEN;
 
 /** Error codes for 404 Not Found */
 export type NotFoundCode =
-  | typeof ERROR_CODE.USER_NOT_FOUND
-  | typeof ERROR_CODE.ARTICLE_NOT_FOUND
-  | typeof ERROR_CODE.COMMENT_NOT_FOUND;
+  typeof ERROR_CODE.USER_NOT_FOUND | typeof ERROR_CODE.ARTICLE_NOT_FOUND | typeof ERROR_CODE.COMMENT_NOT_FOUND;
 
 /** Error codes for 409 Conflict */
 export type ConflictCode = typeof ERROR_CODE.EMAIL_ALREADY_EXISTS | typeof ERROR_CODE.USERNAME_ALREADY_EXISTS;

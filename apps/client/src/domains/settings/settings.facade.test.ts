@@ -52,22 +52,21 @@ describe('SettingsFacade', () => {
   });
 
   describe('loadSettingsForm', () => {
-    it('should load settings form and dispatch SetSettingsForm and SetCurrentUser actions', () => {
+    it('should load settings form and dispatch SetSettingsForm and SetCurrentUser actions', async () => {
       const dispatchSpy = vi.spyOn(store, 'dispatch');
       facade.loadSettingsForm();
 
       expect(settingsApi.getCurrentUser).toHaveBeenCalled();
-      setTimeout(() => {
-        expect(dispatchSpy).toHaveBeenCalledWith(new SetSettingsForm(mockUser));
-        expect(dispatchSpy).toHaveBeenCalledWith(
-          new SetCurrentUser({
-            image: mockUser.image,
-            username: mockUser.username,
-            bio: mockUser.bio,
-            email: mockUser.email,
-          }),
-        );
-      }, 100);
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      expect(dispatchSpy).toHaveBeenCalledWith(new SetSettingsForm(mockUser));
+      expect(dispatchSpy).toHaveBeenCalledWith(
+        new SetCurrentUser({
+          image: mockUser.image,
+          username: mockUser.username,
+          bio: mockUser.bio,
+          email: mockUser.email,
+        }),
+      );
     });
 
     it('should not load settings form on server platform', () => {
@@ -90,7 +89,7 @@ describe('SettingsFacade', () => {
   });
 
   describe('updateUser', () => {
-    it('should update user and dispatch SetCurrentUser action', () => {
+    it('should update user and dispatch SetCurrentUser action', async () => {
       const dispatchSpy = vi.spyOn(store, 'dispatch');
       const userData: Partial<SettingsFormModel> = {
         bio: 'Updated Bio',
@@ -102,16 +101,15 @@ describe('SettingsFacade', () => {
 
       expect(settingsApi.updateUser).toHaveBeenCalledWith(userData);
       expect(spinnerFacade.withSpinner).toHaveBeenCalled();
-      setTimeout(() => {
-        expect(dispatchSpy).toHaveBeenCalledWith(
-          new SetCurrentUser({
-            image: mockUser.image,
-            username: mockUser.username,
-            bio: mockUser.bio,
-            email: mockUser.email,
-          }),
-        );
-      }, 100);
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      expect(dispatchSpy).toHaveBeenCalledWith(
+        new SetCurrentUser({
+          image: mockUser.image,
+          username: mockUser.username,
+          bio: mockUser.bio,
+          email: mockUser.email,
+        }),
+      );
     });
   });
 
@@ -121,20 +119,6 @@ describe('SettingsFacade', () => {
       facade.clearSettingsForm();
 
       expect(dispatchSpy).toHaveBeenCalledWith(new ClearSettingsForm());
-    });
-  });
-
-  describe('selectors', () => {
-    it('should expose isFormInvalid$ selector', () => {
-      expect(facade.isFormInvalid$).toBeDefined();
-    });
-
-    it('should expose isFormDirty$ selector', () => {
-      expect(facade.isFormDirty$).toBeDefined();
-    });
-
-    it('should expose formValue$ selector', () => {
-      expect(facade.formValue$).toBeDefined();
     });
   });
 });

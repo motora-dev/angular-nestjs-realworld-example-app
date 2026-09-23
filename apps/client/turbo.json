@@ -3,10 +3,29 @@
   "extends": ["//"],
   "tasks": {
     "build": {
+      "dependsOn": ["i18n"],
       "env": ["BUILD_CONFIGURATION"],
       "outputs": ["dist/**"]
     },
+    "start": {
+      "dependsOn": ["i18n"]
+    },
+    "i18n": {
+      "cache": true,
+      "inputs": ["src/**/*.ts", "src/**/*.html", "public/i18n/**", "scripts/merge-translations.ts", "angular.json"],
+      "outputs": ["locale/**"]
+    },
+    "test": {
+      "dependsOn": ["^build", "i18n"]
+    },
+    "test:unit": {
+      "dependsOn": ["^build", "i18n"]
+    },
+    "test:e2e": {
+      "dependsOn": ["^build", "i18n"]
+    },
     "test:coverage": {
+      "dependsOn": ["^build", "i18n"],
       "outputs": ["coverage/**"]
     }
   }

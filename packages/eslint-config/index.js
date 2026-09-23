@@ -77,7 +77,7 @@ export const baseConfig = [
         'error',
         {
           default: 'allow',
-          rules: [
+          policies: [
             {
               from: 'components',
               disallow: ['app'],

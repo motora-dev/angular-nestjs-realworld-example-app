@@ -1,9 +1,9 @@
-FROM node:24.11.1-slim AS builder
+FROM node:24.21.0-slim AS builder
 
 WORKDIR /app
 
 # Install pnpm
-RUN npm install -g pnpm@10.19.0
+RUN npm install -g pnpm@12.5.1
 
 # Copy package.json and other configuration files
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
@@ -25,7 +25,7 @@ RUN echo "BUILD_CONFIGURATION=$BUILD_CONFIGURATION"  # デバッグ用
 RUN pnpm run build --filter=@monorepo/client
 
 # Production stage
-FROM node:24.11.1-slim AS runner
+FROM node:24.21.0-slim AS runner
 
 WORKDIR /app
 

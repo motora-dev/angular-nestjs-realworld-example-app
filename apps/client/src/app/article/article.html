@@ -1,75 +1,63 @@
-<ng-container *rxLet="article$; let article">
-  @if (article) {
-  <div class="min-h-screen bg-gray-50">
-    <!-- Banner -->
-    <div class="bg-gray-800 py-8 text-white">
-      <div class="container mx-auto px-4">
-        <h1 class="mb-4 text-4xl font-bold">{{ article.title }}</h1>
+@if (article(); as article) {
+<div class="min-h-screen bg-gray-50">
+  <!-- Banner -->
+  <div class="bg-gray-800 py-8 text-white">
+    <div class="container mx-auto px-4">
+      <h1 class="mb-4 text-4xl font-bold">{{ article.title }}</h1>
 
-        <ng-container *rxLet="currentUser$; let currentUser">
-          <app-article-meta
-            [article]="article"
-            [canModify]="canModify(article, currentUser)"
-            [isDeleting]="isDeleting()"
-            (favorite)="onToggleFavorite(article)"
-            (delete)="deleteArticle(article.slug)"
-          />
-        </ng-container>
-      </div>
+      <app-article-meta
+        [article]="article"
+        [canModify]="canModify(article, currentUser())"
+        [isDeleting]="isDeleting()"
+        (favorite)="onToggleFavorite(article)"
+        (delete)="deleteArticle(article.slug)"
+      />
     </div>
+  </div>
 
-    <!-- Content -->
-    <div class="container mx-auto px-4 py-8">
-      <div class="mx-auto max-w-3xl">
-        <!-- Article Body -->
-        <div class="prose prose-lg mb-8">
-          <div [innerHTML]="article.body | markdown | push"></div>
-        </div>
+  <!-- Content -->
+  <div class="container mx-auto px-4 py-8">
+    <div class="mx-auto max-w-3xl">
+      <!-- Article Body -->
+      <div class="prose prose-lg mb-8">
+        <div [innerHTML]="article.body | markdown | async"></div>
+      </div>
 
-        <!-- Tags -->
-        <div class="mb-8 flex flex-wrap gap-2">
-          @for (tag of article.tagList; track tag) {
-          <span class="rounded-full border border-gray-300 px-3 py-1 text-sm text-gray-500"> {{ tag }} </span>
-          }
-        </div>
+      <!-- Tags -->
+      <div class="mb-8 flex flex-wrap gap-2">
+        @for (tag of article.tagList; track tag) {
+        <span class="rounded-full border border-gray-300 px-3 py-1 text-sm text-gray-500"> {{ tag }} </span>
+        }
+      </div>
 
-        <hr class="my-8 border-gray-200" />
+      <hr class="my-8 border-gray-200" />
 
-        <!-- Comments Section -->
-        <div class="space-y-6">
-          <ng-container *rxLet="isAuthenticated$; let isAuth">
-            @if (isAuth) {
-            <ng-container *rxLet="currentUser$; let currentUser">
-              <app-comment-form
-                [userImage]="currentUser?.image || ''"
-                [userName]="currentUser?.username || ''"
-                (submitComment)="addComment(article.slug, $event)"
-              />
-            </ng-container>
-            } @else {
-            <p class="text-center text-gray-500">
-              <a routerLink="/login" class="text-emerald-500 hover:underline" i18n="@@article.signIn">Sign in</a>
-              <ng-container i18n="@@article.or"> or </ng-container>
-              <a routerLink="/register" class="text-emerald-500 hover:underline" i18n="@@article.signUp">sign up</a>
-              <ng-container i18n="@@article.toAddComments"> to add comments on this article.</ng-container>
-            </p>
-            }
-          </ng-container>
+      <!-- Comments Section -->
+      <div class="space-y-6">
+        @if (isAuthenticated()) {
+        <app-comment-form
+          [userImage]="currentUser()?.image || ''"
+          [userName]="currentUser()?.username || ''"
+          (submitComment)="addComment(article.slug, $event)"
+        />
+        } @else {
+        <p class="text-center text-gray-500">
+          <a routerLink="/login" class="text-emerald-500 hover:underline" i18n="@@article.signIn">Sign in</a>
+          <ng-container i18n="@@article.or"> or </ng-container>
+          <a routerLink="/register" class="text-emerald-500 hover:underline" i18n="@@article.signUp">sign up</a>
+          <ng-container i18n="@@article.toAddComments"> to add comments on this article.</ng-container>
+        </p>
+        }
 
-          <ng-container *rxLet="comments$; let comments">
-            @for (comment of comments; track comment.id) {
-            <ng-container *rxLet="currentUser$; let currentUser">
-              <app-article-comment
-                [comment]="comment"
-                [canDelete]="currentUser?.username === comment.author.username"
-                (delete)="deleteComment(comment, article.slug)"
-              />
-            </ng-container>
-            }
-          </ng-container>
-        </div>
+        @for (comment of comments() ?? []; track comment.id) {
+        <app-article-comment
+          [comment]="comment"
+          [canDelete]="currentUser()?.username === comment.author.username"
+          (delete)="deleteComment(comment, article.slug)"
+        />
+        }
       </div>
     </div>
   </div>
-  }
-</ng-container>
+</div>
+}

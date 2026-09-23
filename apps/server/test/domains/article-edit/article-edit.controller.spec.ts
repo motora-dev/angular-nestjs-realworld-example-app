@@ -1,14 +1,15 @@
-import { PrismaAdapter } from '$adapters';
-import { ArticleEditModule } from '$domains/article-edit/article-edit.module';
-import { UnprocessableEntityError } from '$errors';
-import { HttpExceptionFilter } from '$filters';
-import { GoogleAuthGuard } from '$modules/auth/guards';
 import { ERROR_CODE, ValidationErrorCode } from '@monorepo/error-code';
 import { CanActivate, ExecutionContext, Logger, Module, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { vi, type MockInstance } from 'vitest';
 
+import { PrismaAdapter } from '$adapters';
 import type { CurrentUserType } from '$decorators';
+import { ArticleEditModule } from '$domains/article-edit/article-edit.module';
+import { UnprocessableEntityError } from '$errors';
+import { HttpExceptionFilter } from '$filters';
+import { GoogleAuthGuard } from '$modules/auth/guards';
+
 import type { INestApplication } from '@nestjs/common';
 
 @Module({
@@ -125,7 +126,7 @@ describe('Article Edit Controller E2E', () => {
 
     // Configure ValidationPipe with the same exceptionFactory as app.module.ts
     // Handle nested validation errors
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     const flattenValidationErrors = (errors: any[]): any[] => {
       return errors.flatMap((error) => {
         const constraints = Object.values(error.constraints || {});
@@ -190,7 +191,7 @@ describe('Article Edit Controller E2E', () => {
         body: 'New Body',
         tags: ['tag1'],
       };
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       vi.mocked(prismaAdapter.article.create).mockResolvedValueOnce(createdArticle as any);
       vi.mocked(prismaAdapter.follow.findUnique).mockResolvedValueOnce(null);
 
@@ -321,7 +322,7 @@ describe('Article Edit Controller E2E', () => {
     it('should return 200 with updated article when user is the author', async () => {
       const updatedArticle = { ...mockArticle, title: 'Updated Title' };
       vi.mocked(prismaAdapter.article.findUnique).mockResolvedValueOnce(mockArticle);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       vi.mocked(prismaAdapter.article.update).mockResolvedValueOnce(updatedArticle as any);
       vi.mocked(prismaAdapter.follow.findUnique).mockResolvedValueOnce(null);
 
@@ -382,7 +383,7 @@ describe('Article Edit Controller E2E', () => {
   describe('DELETE /api/articles/:slug', () => {
     it('should return 204 when article is deleted successfully', async () => {
       vi.mocked(prismaAdapter.article.findUnique).mockResolvedValueOnce(mockArticle);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       vi.mocked(prismaAdapter.article.delete).mockResolvedValueOnce(mockArticle as any);
 
       const response = await fetch(`${baseUrl}/articles/test-article-slug`, {
@@ -427,7 +428,7 @@ describe('Article Edit Controller E2E', () => {
       };
       vi.mocked(prismaAdapter.article.findUnique).mockResolvedValueOnce(mockArticle);
       vi.mocked(prismaAdapter.favorite.findUnique).mockResolvedValueOnce(null);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       vi.mocked(prismaAdapter.favorite.upsert).mockResolvedValueOnce({ userId: 1, articleId: 1 } as any);
       vi.mocked(prismaAdapter.article.findUnique).mockResolvedValueOnce(favoritedArticle);
       vi.mocked(prismaAdapter.follow.findUnique).mockResolvedValueOnce(null);
@@ -463,9 +464,9 @@ describe('Article Edit Controller E2E', () => {
         _count: { favorites: 1 },
       };
       vi.mocked(prismaAdapter.article.findUnique).mockResolvedValueOnce(favoritedArticle);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       vi.mocked(prismaAdapter.favorite.findUnique).mockResolvedValueOnce({ userId: 1, articleId: 1 } as any);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       vi.mocked(prismaAdapter.favorite.deleteMany).mockResolvedValueOnce({ count: 1 } as any);
       vi.mocked(prismaAdapter.article.findUnique).mockResolvedValueOnce(mockArticle);
       vi.mocked(prismaAdapter.follow.findUnique).mockResolvedValueOnce(null);
@@ -495,9 +496,8 @@ describe('Article Edit Controller E2E', () => {
 
   describe('POST /api/articles/:slug/comments', () => {
     it('should return 200 with created comment when valid data is provided', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       vi.mocked(prismaAdapter.article.findUnique).mockResolvedValueOnce({ id: 1, slug: 'test-article-slug' } as any);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       vi.mocked(prismaAdapter.comment.create).mockResolvedValueOnce(mockComment as any);
 
       const response = await fetch(`${baseUrl}/articles/test-article-slug/comments`, {
@@ -556,9 +556,8 @@ describe('Article Edit Controller E2E', () => {
 
   describe('DELETE /api/articles/:slug/comments/:id', () => {
     it('should return 204 when comment is deleted successfully', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       vi.mocked(prismaAdapter.comment.findUnique).mockResolvedValueOnce(mockComment as any);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       vi.mocked(prismaAdapter.comment.deleteMany).mockResolvedValueOnce({ count: 1 } as any);
 
       const response = await fetch(`${baseUrl}/articles/test-article-slug/comments/1`, {
@@ -570,7 +569,7 @@ describe('Article Edit Controller E2E', () => {
 
     it('should return 403 when user is not the comment author', async () => {
       const otherUserComment = { ...mockComment, userId: 2, user: { ...mockComment.user, id: 2 } };
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       vi.mocked(prismaAdapter.comment.findUnique).mockResolvedValueOnce(otherUserComment as any);
 
       const response = await fetch(`${baseUrl}/articles/test-article-slug/comments/1`, {

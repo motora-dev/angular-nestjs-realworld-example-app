@@ -8,8 +8,8 @@
 [![RealWorld Frontend](https://img.shields.io/badge/realworld-frontend-%23783578.svg)](https://realworld.show)
 [![RealWorld Backend](https://img.shields.io/badge/realworld-backend-%23783578.svg)](https://realworld.show)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Node.js](https://img.shields.io/badge/Node.js-24.11.1-green.svg)](https://nodejs.org/)
-[![pnpm](https://img.shields.io/badge/pnpm-10.24.0-F69220.svg)](https://pnpm.io/)
+[![Node.js](https://img.shields.io/badge/Node.js-24.21.0-green.svg)](https://nodejs.org/)
+[![pnpm](https://img.shields.io/badge/pnpm-12.5.1-F69220.svg)](https://pnpm.io/)
 [![Build](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/ci-check.yml/badge.svg)](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/ci-check.yml)
 [![Test](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/ci-test.yml/badge.svg)](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/ci-test.yml)
 [![Deploy](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/cd-gcp.yml/badge.svg)](https://github.com/motora-dev/angular-nestjs-realworld-example-app/actions/workflows/cd-gcp.yml)
@@ -62,7 +62,7 @@ For information on how to integrate with other frontends/backends, check out the
 This repository is an **enterprise-grade implementation composed entirely of TypeScript**.
 
 - **Intermediate to advanced** users with basic Angular / NestJS knowledge
-- Those who want to learn production-level architecture (CQRS, SSR/ISR, monorepo)
+- Those who want to learn production-level architecture (CQRS, SSR, monorepo)
 - Those looking for a TypeScript fullstack reference
 
 If you want to start with a simpler implementation, we recommend:
@@ -107,7 +107,7 @@ This implementation is a "Conduit" blog platform that conforms to the [RealWorld
 **Technical Features:**
 
 - **Turborepo** monorepo structure for unified frontend/backend management
-- **Angular SSR + ISR** for fast initial display and SEO optimization
+- **Angular SSR** for fast initial display and SEO optimization
 - **NestJS + CQRS** for scalable backend design
 - **Prisma ORM** for type-safe database access
 - **OAuth authentication (Google) + JWT** for secure session management
@@ -147,20 +147,20 @@ angular-nestjs-realworld-example-app/
 
 #### 📱 Client (`apps/client`)
 
-- **Framework**: [Angular](https://angular.dev/) 21.0.6 + SSR + ISR
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/) 4.1.18 + CVA + tailwind-merge
-- **State Management**: [NGXS](https://www.ngxs.io/) 21.0.0 + @ngxs/form-plugin
-- **Reactive**: [RxAngular](https://www.rx-angular.io/) 20.1.0 + RxJS 7.8.2
-- **Testing**: Vitest 4.0.16 + @testing-library/angular + Storybook 10.1.10
-- **Linting**: ESLint 9.39.2 (Flat Config)
+- **Framework**: [Angular](https://angular.dev/) 22.1.7 + SSR
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/) 4.3.3 + CVA + tailwind-merge
+- **State Management**: [NGXS](https://www.ngxs.io/) 22.0.0 + @ngxs/form-plugin
+- **Reactive**: RxJS 7.8.2
+- **Testing**: Vitest 5.0.1 + @testing-library/angular + Storybook 10.6.0
+- **Linting**: ESLint 10.11.0 (Flat Config)
 
 #### 🚀 Server (`apps/server`)
 
-- **Framework**: [NestJS](https://nestjs.com/) 11.1.10
+- **Framework**: [NestJS](https://nestjs.com/) 12.0.4
 - **Platform**: Express
-- **ORM**: [Prisma](https://www.prisma.io/) 7.2.0
-- **Testing**: Vitest 4.0.16 + Supertest
-- **Linting**: ESLint 9.39.2 (Flat Config)
+- **ORM**: [Prisma](https://www.prisma.io/) 7.10.0
+- **Testing**: Vitest 5.0.1 + Supertest
+- **Linting**: ESLint 10.11.0 (Flat Config)
 
 #### 📦 Shared Packages
 
@@ -191,7 +191,7 @@ flowchart TB
         end
     end
 
-    subgraph Neon["Neon"]
+    subgraph Supabase["Supabase"]
         PostgreSQL[(PostgreSQL)]
     end
 
@@ -245,69 +245,43 @@ For detailed design and architecture of each application, refer to their respect
 
 ## 🛠 Technology Stack
 
-- **Package Manager**: [pnpm](https://pnpm.io/) 10.24.0 (using workspace feature)
-- **Build System**: [Turborepo](https://turbo.build/repo) 2.7.2
-- **Language**: [TypeScript](https://www.typescriptlang.org/) 5.9.3
-- **Code Quality**: ESLint 9.39.2 + Prettier 3.7.4
-- **Testing**: Vitest 4.0.16 + Testing Library
+- **Package Manager**: [pnpm](https://pnpm.io/) 12.5.1 (using workspace feature)
+- **Build System**: [Turborepo](https://turbo.build/repo) 2.11.2
+- **Language**: [TypeScript](https://www.typescriptlang.org/) 6.0.3
+- **Code Quality**: ESLint 10.11.0 + Prettier 3.9.8
+- **Testing**: Vitest 5.0.1 + Testing Library
 - **Module System**: ES Modules (`"type": "module"`)
 
 ## 🚀 Development Environment Setup
 
 ### Required Environment
 
-- Node.js 24.11.1 (recommended)
-- pnpm 10.24.0
+- Node.js 24.21.0 (recommended)
+- pnpm 12.5.1
+- [mise](https://mise.jdx.dev/) (recommended for Node / pnpm / lefthook)
 
-### Volta Setup (Recommended)
+### mise Setup (Recommended)
 
-This project uses [Volta](https://volta.sh/) to automatically manage Node.js and pnpm versions.
-
-```bash
-# If Volta is not installed
-# macOS / Linux
-curl https://get.volta.sh | bash
-
-# Windows
-# Refer to https://docs.volta.sh/guide/getting-started
-```
-
-#### Enabling pnpm Support
-
-Volta's pnpm support is currently an experimental feature. To enable it, you need to set the environment variable `VOLTA_FEATURE_PNPM`.
-
-**For macOS / Linux:**
-
-Add the following to your shell profile file (`.zshrc`, `.bash_profile`, etc.):
+This project uses [mise](https://mise.jdx.dev/) to manage Node.js, pnpm, and lefthook versions (see `mise.toml`).
 
 ```bash
-export VOLTA_FEATURE_PNPM=1
+# Install mise (macOS / Linux)
+curl https://mise.run | sh
+
+# Install pinned tools and register git hooks (lefthook)
+mise install
 ```
 
-Apply the configuration:
+`mise install` installs Node.js 24.21.0, pnpm 12.5.1, and lefthook 2.1.14, then runs `lefthook install` via the postinstall hook (skipped when `CI` is set).
+
+To re-register hooks manually:
 
 ```bash
-# For zsh
-source ~/.zshrc
-
-# For bash
-source ~/.bash_profile
+mise exec -- lefthook install
 ```
-
-**For Windows:**
-
-Set `VOLTA_FEATURE_PNPM` to `1` as a system environment variable (System Settings > Environment Variables).
-
-```bash
-# When you navigate to the project directory, Volta automatically
-# switches to Node.js 24.11.1 and pnpm 10.24.0 based on package.json settings
-```
-
-> **Note**: Volta's pnpm support is an experimental feature. For details, refer to the [official documentation](https://docs.volta.sh/advanced/pnpm).
-
-Using Volta ensures the appropriate versions are automatically set per project, preventing version inconsistencies.
 
 ### Installation
+
 
 ```bash
 # Install dependencies
@@ -391,13 +365,12 @@ pnpm storybook --filter=@monorepo/client
 pnpm build-storybook --filter=@monorepo/client
 ```
 
-### lint-staged Configuration
+### lefthook Configuration
 
-The following are automatically executed on commit:
+Git hooks are managed by [lefthook](https://lefthook.dev/) (installed via mise). On commit, the following run automatically:
 
-- TypeScript type checking (separate configurations for source and tests)
-- Code formatting with Prettier
-- Linting with ESLint
+- Prettier + ESLint for staged files under `apps/client`, `apps/server`, and `packages/error-code`
+- TypeScript type checking (`pnpm tsc`)
 
 ## 🧪 Testing
 
@@ -427,29 +400,29 @@ pnpm test --filter=@monorepo/server
 
 ### Common
 
-![Turborepo](https://img.shields.io/badge/Turborepo-2.7.2-ef4444?logo=turborepo&logoColor=white)
-![pnpm](https://img.shields.io/badge/pnpm-10.24.0-f69220?logo=pnpm&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178c6?logo=typescript&logoColor=white)
-![ESLint](https://img.shields.io/badge/ESLint-9.39.2-4b32c3?logo=eslint&logoColor=white)
-![Vitest](https://img.shields.io/badge/Vitest-4.0.16-729B1B?logo=vitest&logoColor=white)
-![Prettier](https://img.shields.io/badge/Prettier-3.7.4-F7B93E?logo=prettier&logoColor=white)
+![Turborepo](https://img.shields.io/badge/Turborepo-2.11.2-ef4444?logo=turborepo&logoColor=white)
+![pnpm](https://img.shields.io/badge/pnpm-12.5.1-f69220?logo=pnpm&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-6.0.3-3178c6?logo=typescript&logoColor=white)
+![ESLint](https://img.shields.io/badge/ESLint-10.11.0-4b32c3?logo=eslint&logoColor=white)
+![Vitest](https://img.shields.io/badge/Vitest-5.0.1-729B1B?logo=vitest&logoColor=white)
+![Prettier](https://img.shields.io/badge/Prettier-3.9.8-F7B93E?logo=prettier&logoColor=white)
+![mise](https://img.shields.io/badge/mise-Node%2Fpnpm%2Flefthook-purple?logoColor=white)
 
 ### Client
 
-![Angular](https://img.shields.io/badge/Angular-21.0.6-DD0031?logo=angular&logoColor=white)
-![Angular CDK](https://img.shields.io/badge/Angular%20CDK-21.0.5-DD0031?logo=angular&logoColor=white)
-![TailwindCSS](https://img.shields.io/badge/Tailwind%20CSS-4.1.18-38bdf8?logo=tailwindcss&logoColor=white)
-![NGXS](https://img.shields.io/badge/NGXS-21.0.0-3F51B5?logoColor=white)
-![RxAngular](https://img.shields.io/badge/RxAngular-20.1.0-E91E63?logoColor=white)
+![Angular](https://img.shields.io/badge/Angular-22.1.7-DD0031?logo=angular&logoColor=white)
+![Angular CDK](https://img.shields.io/badge/Angular%20CDK-22.1.7-DD0031?logo=angular&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/Tailwind%20CSS-4.3.3-38bdf8?logo=tailwindcss&logoColor=white)
+![NGXS](https://img.shields.io/badge/NGXS-22.0.0-3F51B5?logoColor=white)
 ![RxJS](https://img.shields.io/badge/RxJS-7.8.2-b7178c?logo=reactivex&logoColor=white)
-![Storybook](https://img.shields.io/badge/Storybook-10.1.10-FF4785?logo=storybook&logoColor=white)
+![Storybook](https://img.shields.io/badge/Storybook-10.6.0-FF4785?logo=storybook&logoColor=white)
 
 ### Server
 
-![NestJS](https://img.shields.io/badge/NestJS-11.1.10-e0234e?logo=nestjs&logoColor=white)
+![NestJS](https://img.shields.io/badge/NestJS-12.0.4-e0234e?logo=nestjs&logoColor=white)
 ![Express](https://img.shields.io/badge/Express-via%20NestJS-000000?logo=express&logoColor=white)
 ![RxJS](https://img.shields.io/badge/RxJS-7.8.2-b7178c?logo=reactivex&logoColor=white)
-![Prisma](https://img.shields.io/badge/Prisma-7.2.0-2d3748?logo=prisma&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-7.10.0-2d3748?logo=prisma&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-via%20Prisma-4169e1?logo=postgresql&logoColor=white)
 
 ## 📖 API Specification
@@ -591,7 +564,7 @@ gcloud logging read "resource.type=cloud_run_revision" --limit=50
    pnpm check-all
    ```
 
-6. Commit (lint-staged runs automatically)
+6. Commit (lefthook runs automatically)
 
    ```bash
    git add .

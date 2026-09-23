@@ -1,11 +1,12 @@
-import { PrismaAdapter } from '$adapters';
-import { ArticleModule } from '$domains/article/article.module';
-import { UnprocessableEntityError } from '$errors';
-import { HttpExceptionFilter } from '$filters';
 import { ERROR_CODE, ValidationErrorCode } from '@monorepo/error-code';
 import { Logger, Module, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { vi, type MockInstance } from 'vitest';
+
+import { PrismaAdapter } from '$adapters';
+import { ArticleModule } from '$domains/article/article.module';
+import { UnprocessableEntityError } from '$errors';
+import { HttpExceptionFilter } from '$filters';
 
 import type { INestApplication } from '@nestjs/common';
 
@@ -174,7 +175,6 @@ describe('Article Controller E2E', () => {
       vi.mocked(prismaAdapter.article.findUnique).mockResolvedValueOnce({
         id: 1,
         slug: 'test-article-slug',
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
       vi.mocked(prismaAdapter.comment.findMany).mockResolvedValueOnce(mockComments);
       vi.mocked(prismaAdapter.follow.findUnique).mockResolvedValueOnce(null);
@@ -194,7 +194,6 @@ describe('Article Controller E2E', () => {
       vi.mocked(prismaAdapter.article.findUnique).mockResolvedValueOnce({
         id: 1,
         slug: 'test-article-slug',
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
       vi.mocked(prismaAdapter.comment.findMany).mockResolvedValueOnce([]);
 

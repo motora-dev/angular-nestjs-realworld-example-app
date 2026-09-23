@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Action, Selector, State, StateContext } from '@ngxs/store';
+import { Action, State, StateContext } from '@ngxs/store';
 import { patch } from '@ngxs/store/operators';
 
-import { EditorFormModel, EditorFormState } from '../model';
+import { EditorFormState } from '../model';
 import { ClearEditorForm, SetEditorForm } from './editor.actions';
 
 const defaultEditorForm: EditorFormState = {
@@ -10,6 +10,7 @@ const defaultEditorForm: EditorFormState = {
     title: '',
     description: '',
     body: '',
+    tagList: [],
   },
   dirty: false,
   status: '',
@@ -28,21 +29,6 @@ export interface EditorStateModel {
 })
 @Injectable()
 export class EditorState {
-  @Selector()
-  static isFormInvalid(state: EditorStateModel): boolean {
-    return state.editorForm.status !== 'VALID';
-  }
-
-  @Selector()
-  static isFormDirty(state: EditorStateModel): boolean {
-    return state.editorForm.dirty;
-  }
-
-  @Selector()
-  static getFormValue(state: EditorStateModel): EditorFormModel | null {
-    return state.editorForm?.model ?? null;
-  }
-
   @Action(SetEditorForm)
   setEditorForm(ctx: StateContext<EditorStateModel>, action: SetEditorForm) {
     ctx.setState(
@@ -52,6 +38,7 @@ export class EditorState {
             title: action.form.title,
             description: action.form.description,
             body: action.form.body,
+            tagList: action.form.tagList,
           }),
           dirty: false,
         }),

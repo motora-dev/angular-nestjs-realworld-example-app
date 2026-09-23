@@ -83,8 +83,7 @@ describe('EditorComponent', () => {
   });
 
   it('should not be in edit mode when slug is not provided', () => {
-    expect(component.isEditMode()).toBe(false);
-    expect(component.initialTagList()).toEqual([]);
+    expect(component.isEditMode).toBe(false);
     expect(mockEditorFacade.loadArticle).not.toHaveBeenCalled();
   });
 
@@ -118,15 +117,11 @@ describe('EditorComponent', () => {
     });
 
     it('should be in edit mode when slug is provided', () => {
-      expect(component.isEditMode()).toBe(true);
+      expect(component.isEditMode).toBe(true);
     });
 
-    it('should load article when slug is provided', async () => {
+    it('should load article when slug is provided', () => {
       expect(mockEditorFacade.loadArticle).toHaveBeenCalledWith('test-slug');
-
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      expect(component.initialTagList()).toEqual(['test']);
     });
   });
 
@@ -156,7 +151,6 @@ describe('EditorComponent', () => {
     it('should call updateArticle and navigate when in edit mode', async () => {
       // Set edit mode
       component['slug'] = 'test-slug';
-      component.isEditMode.set(true);
 
       const event = {
         title: 'Updated Article',

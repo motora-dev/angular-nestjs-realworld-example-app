@@ -1,6 +1,6 @@
 import { ButtonDirective } from './button';
 
-import type { Meta, StoryObj } from '@storybook/angular';
+import type { Meta, StoryObj } from '@storybook/angular-vite';
 
 const meta: Meta<ButtonDirective> = {
   title: 'UI/Button',

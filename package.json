@@ -2,7 +2,6 @@
   "name": "@monorepo/root",
   "private": true,
   "scripts": {
-    "prepare": "husky || true",
     "clean": "turbo run clean && pnpm run clean:root && pnpm store prune",
     "clean:cache": "turbo run clean:cache && pnpm run clean:cache:root",
     "clean:root": "rimraf .turbo node_modules",
@@ -25,20 +24,14 @@
     "@monorepo/eslint-config": "workspace:*",
     "@types/node": "catalog:",
     "eslint": "catalog:",
-    "lint-staged": "catalog:",
     "prettier": "catalog:",
-    "husky": "catalog:",
     "rimraf": "catalog:",
     "turbo": "catalog:",
     "typescript": "catalog:"
   },
-  "packageManager": "pnpm@10.24.0",
+  "packageManager": "pnpm@12.5.1",
   "engines": {
-    "node": "24.11.1",
-    "pnpm": "10.24.0"
-  },
-  "volta": {
-    "node": "24.11.1",
-    "pnpm": "10.24.0"
+    "node": "24.21.0",
+    "pnpm": "12.5.1"
   }
 }

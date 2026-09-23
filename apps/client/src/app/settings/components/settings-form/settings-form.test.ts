@@ -3,7 +3,6 @@ import { provideStore } from '@ngxs/store';
 import { BehaviorSubject } from 'rxjs';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 
-import { SettingsFacade } from '$domains/settings';
 import { SettingsState } from '$domains/settings/store';
 import { SpinnerFacade } from '$modules/spinner';
 import { SpinnerState } from '$modules/spinner/store';
@@ -12,29 +11,18 @@ import { SettingsFormComponent } from './settings-form';
 describe('SettingsFormComponent', () => {
   let component: SettingsFormComponent;
   let fixture: ComponentFixture<SettingsFormComponent>;
-  let mockSettingsFacade: {
-    isFormInvalid$: BehaviorSubject<boolean>;
-  };
   let mockSpinnerFacade: {
     isLoading$: BehaviorSubject<boolean>;
   };
 
   beforeEach(async () => {
-    mockSettingsFacade = {
-      isFormInvalid$: new BehaviorSubject<boolean>(false),
-    };
-
     mockSpinnerFacade = {
       isLoading$: new BehaviorSubject<boolean>(false),
     };
 
     await TestBed.configureTestingModule({
       imports: [SettingsFormComponent],
-      providers: [
-        provideStore([SettingsState, SpinnerState]),
-        { provide: SettingsFacade, useValue: mockSettingsFacade },
-        { provide: SpinnerFacade, useValue: mockSpinnerFacade },
-      ],
+      providers: [provideStore([SettingsState, SpinnerState]), { provide: SpinnerFacade, useValue: mockSpinnerFacade }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SettingsFormComponent);
@@ -125,18 +113,6 @@ describe('SettingsFormComponent', () => {
 
       mockSpinnerFacade.isLoading$.next(true);
       expect(isLoading).toBe(true);
-    });
-
-    it('should expose isFormInvalid$ from settingsFacade', async () => {
-      let isInvalid = false;
-      component.isFormInvalid$.subscribe((value) => {
-        isInvalid = value;
-      });
-
-      expect(isInvalid).toBe(false);
-
-      mockSettingsFacade.isFormInvalid$.next(true);
-      expect(isInvalid).toBe(true);
     });
   });
 });

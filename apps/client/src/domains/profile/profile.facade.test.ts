@@ -50,21 +50,20 @@ describe('ProfileFacade', () => {
   });
 
   describe('loadProfile', () => {
-    it('should load profile and dispatch SetProfile action', () => {
+    it('should load profile and dispatch SetProfile action', async () => {
       const dispatchSpy = vi.spyOn(store, 'dispatch');
       facade.loadProfile('testuser');
 
       expect(profileApi.get).toHaveBeenCalledWith('testuser');
       expect(spinnerFacade.withSpinner).toHaveBeenCalled();
 
-      setTimeout(() => {
-        expect(dispatchSpy).toHaveBeenCalledWith(new SetProfile(mockProfile));
-      }, 100);
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      expect(dispatchSpy).toHaveBeenCalledWith(new SetProfile(mockProfile));
     });
   });
 
   describe('follow', () => {
-    it('should follow user and dispatch SetProfile action', () => {
+    it('should follow user and dispatch SetProfile action', async () => {
       const dispatchSpy = vi.spyOn(store, 'dispatch');
       const updatedProfile = { ...mockProfile, following: true };
 
@@ -73,14 +72,13 @@ describe('ProfileFacade', () => {
       });
 
       expect(profileApi.follow).toHaveBeenCalledWith('testuser');
-      setTimeout(() => {
-        expect(dispatchSpy).toHaveBeenCalledWith(new SetProfile(updatedProfile));
-      }, 100);
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      expect(dispatchSpy).toHaveBeenCalledWith(new SetProfile(updatedProfile));
     });
   });
 
   describe('unfollow', () => {
-    it('should unfollow user and dispatch SetProfile action', () => {
+    it('should unfollow user and dispatch SetProfile action', async () => {
       const dispatchSpy = vi.spyOn(store, 'dispatch');
       const updatedProfile = { ...mockProfile, following: false };
 
@@ -89,9 +87,8 @@ describe('ProfileFacade', () => {
       });
 
       expect(profileApi.unfollow).toHaveBeenCalledWith('testuser');
-      setTimeout(() => {
-        expect(dispatchSpy).toHaveBeenCalledWith(new SetProfile(updatedProfile));
-      }, 100);
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      expect(dispatchSpy).toHaveBeenCalledWith(new SetProfile(updatedProfile));
     });
   });
 

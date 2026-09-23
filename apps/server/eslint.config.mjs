@@ -11,7 +11,7 @@ export default [
     ignores: ['esbuild.config.mjs', 'eslint.config.mjs'],
   },
   {
-    files: ['src/**/*.ts', 'src/**/*.spec.ts'],
+    files: ['src/**/*.ts', 'test/**/*.ts'],
     languageOptions: {
       parserOptions: {
         projectService: true,

@@ -72,7 +72,7 @@ describe('AuthRegisterFacade', () => {
   });
 
   describe('register', () => {
-    it('should register user and dispatch ClearPendingRegistration and SetAuthenticated actions', () => {
+    it('should register user and dispatch ClearPendingRegistration and SetAuthenticated actions', async () => {
       const dispatchSpy = vi.spyOn(store, 'dispatch');
       facade.register('testuser').subscribe((response) => {
         expect(response).toEqual(mockRegisterResponse);
@@ -80,34 +80,31 @@ describe('AuthRegisterFacade', () => {
 
       expect(authRegisterApi.register).toHaveBeenCalledWith('testuser');
       expect(spinnerFacade.withSpinner).toHaveBeenCalled();
-      setTimeout(() => {
-        expect(dispatchSpy).toHaveBeenCalledWith(new ClearPendingRegistration());
-        expect(dispatchSpy).toHaveBeenCalledWith(new SetAuthenticated(true));
-      }, 100);
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      expect(dispatchSpy).toHaveBeenCalledWith(new ClearPendingRegistration());
+      expect(dispatchSpy).toHaveBeenCalledWith(new SetAuthenticated(true));
     });
   });
 
   describe('loadPendingRegistration', () => {
-    it('should load pending registration and dispatch SetPendingRegistration action', () => {
+    it('should load pending registration and dispatch SetPendingRegistration action', async () => {
       const dispatchSpy = vi.spyOn(store, 'dispatch');
       facade.loadPendingRegistration();
 
       expect(authRegisterApi.getPendingRegistration).toHaveBeenCalled();
-      setTimeout(() => {
-        expect(dispatchSpy).toHaveBeenCalledWith(new SetPendingRegistration('test@example.com'));
-      }, 100);
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      expect(dispatchSpy).toHaveBeenCalledWith(new SetPendingRegistration('test@example.com'));
     });
 
-    it('should not dispatch action when email is not present', () => {
+    it('should not dispatch action when email is not present', async () => {
       const dispatchSpy = vi.spyOn(store, 'dispatch');
       vi.mocked(authRegisterApi.getPendingRegistration).mockReturnValueOnce(of(null));
 
       facade.loadPendingRegistration();
 
       expect(authRegisterApi.getPendingRegistration).toHaveBeenCalled();
-      setTimeout(() => {
-        expect(dispatchSpy).not.toHaveBeenCalledWith(expect.any(SetPendingRegistration));
-      }, 100);
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      expect(dispatchSpy).not.toHaveBeenCalledWith(expect.any(SetPendingRegistration));
     });
 
     it('should not load pending registration on server platform', () => {

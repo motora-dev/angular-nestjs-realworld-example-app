@@ -3,12 +3,11 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { vi, type MockInstance } from 'vitest';
 
+import { HttpExceptionFilter } from '$filters';
+import { LoggingInterceptor } from '$interceptors';
 import { LoggingControllerMock } from './logging.controller.mock';
 
 import type { INestApplication } from '@nestjs/common';
-
-import { HttpExceptionFilter } from '$filters';
-import { LoggingInterceptor } from '$interceptors';
 
 @Module({
   controllers: [LoggingControllerMock],

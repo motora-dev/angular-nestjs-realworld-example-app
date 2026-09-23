@@ -1,0 +1,42 @@
+pre-commit:
+  parallel: false
+  commands:
+    client-lint:
+      root: apps/client/
+      glob: '{src,test}/**/*.{ts,html}'
+      run: |
+        FILES="{staged_files}"
+        if [ -z "$FILES" ]; then exit 0; fi
+        TS_FILES=$(echo "$FILES" | tr ' ' '\n' | grep -E '\.ts$' || true)
+        HTML_FILES=$(echo "$FILES" | tr ' ' '\n' | grep -E '\.html$' || true)
+        if [ -n "$TS_FILES" ]; then
+          echo "$TS_FILES" | xargs prettier --write
+          echo "$TS_FILES" | xargs eslint --fix --config eslint.config.mjs --max-warnings 0
+        fi
+        if [ -n "$HTML_FILES" ]; then
+          echo "$HTML_FILES" | xargs eslint --fix --config eslint.config.mjs --max-warnings 0
+        fi
+      stage_fixed: true
+
+    server-lint:
+      root: apps/server/
+      glob: '{src,test}/**/*.ts'
+      run: |
+        FILES="{staged_files}"
+        if [ -z "$FILES" ]; then exit 0; fi
+        echo "$FILES" | xargs prettier --write
+        echo "$FILES" | xargs eslint --fix --config eslint.config.mjs --max-warnings 0
+      stage_fixed: true
+
+    error-code-lint:
+      root: packages/error-code/
+      glob: 'src/**/*.ts'
+      run: |
+        FILES="{staged_files}"
+        if [ -z "$FILES" ]; then exit 0; fi
+        echo "$FILES" | xargs prettier --write
+        echo "$FILES" | xargs eslint --fix --config eslint.config.mjs --max-warnings 0
+      stage_fixed: true
+
+    typecheck:
+      run: mise exec -- pnpm tsc

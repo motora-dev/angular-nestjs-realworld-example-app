@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { RxLet } from '@rx-angular/template/let';
 import { take } from 'rxjs';
 
 import { ArticleListConfig } from '$domains/article';
@@ -12,7 +12,7 @@ import { UserInfoComponent } from './components/user-info/user-info';
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [RxLet, RouterLink, UserInfoComponent],
+  imports: [RouterLink, UserInfoComponent],
   providers: [ProfileFacade, HomeFacade],
   templateUrl: './profile.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,9 +23,9 @@ export class ProfileComponent {
   private readonly homeFacade = inject(HomeFacade);
   private readonly authFacade = inject(AuthFacade);
 
-  readonly profile$ = this.profileFacade.profile$;
-  readonly articles$ = this.homeFacade.articles$;
-  readonly currentUser$ = this.authFacade.currentUser$;
+  readonly profile = toSignal(this.profileFacade.profile$);
+  readonly articles = toSignal(this.homeFacade.articles$);
+  readonly currentUser = toSignal(this.authFacade.currentUser$);
 
   readonly activeTab = signal<'posts' | 'favorites'>('posts');
 

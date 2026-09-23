@@ -2,7 +2,7 @@ import { PLATFORM_ID } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Store } from '@ngxs/store';
 import { provideStore } from '@ngxs/store';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 
 import { SpinnerFacade } from './spinner.facade';
@@ -78,18 +78,11 @@ describe('SpinnerFacade', () => {
       const hideSpinnerSpy = vi.spyOn(facade, 'hideSpinner');
       const source = of('test data');
 
-      source.pipe(facade.withSpinner('Loading...')).subscribe({
-        next: (data) => {
-          expect(data).toBe('test data');
-        },
-        complete: async () => {
-          expect(showSpinnerSpy).toHaveBeenCalledWith('Loading...');
-          await new Promise((resolve) => setTimeout(resolve, 400));
-          expect(hideSpinnerSpy).toHaveBeenCalled();
-        },
-      });
+      const result = await firstValueFrom(source.pipe(facade.withSpinner('Loading...')));
 
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      expect(result).toBe('test data');
+      expect(showSpinnerSpy).toHaveBeenCalledWith('Loading...');
+      expect(hideSpinnerSpy).toHaveBeenCalled();
     });
 
     it('should not control spinner on server platform', async () => {

@@ -18,6 +18,7 @@ concurrency:
 jobs:
   deploy-client:
     name: Deploy Client
+    if: vars.SKIP_DEPLOY != 'true'
     runs-on: ubuntu-latest
 
     environment: preview
@@ -72,6 +73,7 @@ jobs:
 
   deploy-server:
     name: Deploy Server
+    if: vars.SKIP_DEPLOY != 'true'
     runs-on: ubuntu-latest
 
     environment: preview
