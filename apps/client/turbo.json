@@ -16,16 +16,16 @@
       "outputs": ["locale/**"]
     },
     "test": {
-      "dependsOn": ["i18n"]
+      "dependsOn": ["^build", "i18n"]
     },
     "test:unit": {
-      "dependsOn": ["i18n"]
+      "dependsOn": ["^build", "i18n"]
     },
     "test:e2e": {
-      "dependsOn": ["i18n"]
+      "dependsOn": ["^build", "i18n"]
     },
     "test:coverage": {
-      "dependsOn": ["i18n"],
+      "dependsOn": ["^build", "i18n"],
       "outputs": ["coverage/**"]
     }
   }
