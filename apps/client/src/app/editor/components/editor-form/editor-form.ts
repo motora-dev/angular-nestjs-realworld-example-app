@@ -1,74 +1,60 @@
-import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { AsyncPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgxsFormDirective } from '@ngxs/form-plugin';
 
-import { EditorFacade } from '$domains/editor';
+import { EditorFormModel } from '$domains/editor';
 import { SpinnerFacade } from '$modules/spinner';
 
 interface ArticleForm {
   title: FormControl<string>;
   description: FormControl<string>;
   body: FormControl<string>;
-}
-
-export interface EditorFormSubmitEvent {
-  title: string;
-  description: string;
-  body: string;
-  tagList: string[];
+  tagList: FormControl<string[]>;
 }
 
 @Component({
   selector: 'app-editor-form',
   standalone: true,
-  imports: [ReactiveFormsModule, NgxsFormDirective],
+  imports: [AsyncPipe, ReactiveFormsModule, NgxsFormDirective],
   templateUrl: './editor-form.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditorFormComponent {
-  private readonly editorFacade = inject(EditorFacade);
   private readonly spinnerFacade = inject(SpinnerFacade);
 
-  readonly initialTagList = input<string[]>([]);
+  readonly formSubmit = output<EditorFormModel>();
 
-  readonly formSubmit = output<EditorFormSubmitEvent>();
-
-  readonly tagList = signal<string[]>([]);
-  readonly isLoading = toSignal(this.spinnerFacade.isLoading$);
-  readonly isFormInvalid = toSignal(this.editorFacade.isFormInvalid$);
+  readonly isLoading$ = this.spinnerFacade.isLoading$;
 
   readonly articleForm = new FormGroup<ArticleForm>({
     title: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
     description: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
     body: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+    tagList: new FormControl<string[]>([], { nonNullable: true }),
   });
 
   readonly tagField = new FormControl<string>('', { nonNullable: true });
 
   addTag(): void {
     const tag = this.tagField.value.trim();
-    if (tag && !this.tagList().includes(tag)) {
-      this.tagList.update((tags) => [...tags, tag]);
+    const tags = this.articleForm.controls.tagList.value;
+    if (tag && !tags.includes(tag)) {
+      this.articleForm.controls.tagList.setValue([...tags, tag]);
     }
     this.tagField.reset('');
   }
 
   removeTag(tagToRemove: string): void {
-    this.tagList.update((tags) => tags.filter((tag) => tag !== tagToRemove));
+    this.articleForm.controls.tagList.setValue(
+      this.articleForm.controls.tagList.value.filter((tag) => tag !== tagToRemove),
+    );
   }
 
   onSubmit(): void {
     if (this.articleForm.invalid) return;
 
     this.addTag();
-
-    const formValue = this.articleForm.getRawValue();
-    this.formSubmit.emit({
-      title: formValue.title,
-      description: formValue.description,
-      body: formValue.body,
-      tagList: this.tagList(),
-    });
+    this.formSubmit.emit(this.articleForm.getRawValue());
   }
 }

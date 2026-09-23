@@ -33,16 +33,6 @@ export class CommentsState {
     return state.comments;
   }
 
-  @Selector()
-  static isCommentFormInvalid(state: CommentsStateModel): boolean {
-    return state.commentForm.status !== 'VALID';
-  }
-
-  @Selector()
-  static isCommentFormDirty(state: CommentsStateModel): boolean {
-    return state.commentForm.dirty;
-  }
-
   @Action(SetComments)
   setComments(ctx: StateContext<CommentsStateModel>, action: SetComments) {
     ctx.setState(patch({ comments: action.comments }));

@@ -662,7 +662,7 @@ setArticle(ctx: StateContext<ArticleEditStateModel>, action: SetArticle) {
 
 **関連ファイル**:
 
-- `apps/client/src/app/article-edit/components/edit-form/edit-form.ts` - フォームコンポーネント例
+- `apps/client/src/app/editor/components/editor-form/editor-form.ts` - フォームコンポーネント例
 - `apps/client/src/components/fields/input-field/input-field.ts` - InputFieldComponent実装
 
 ### 技術構成
@@ -691,50 +691,44 @@ setArticle(ctx: StateContext<ArticleEditStateModel>, action: SetArticle) {
 
 ### フォーム管理パターン（親子コンポーネント連携）
 
-article-editで使用しているフォーム管理パターン：
+editor で使用しているフォーム管理パターン：
 
-- **親コンポーネント**: Facadeの呼び出し、`isFormInvalid$`と`isFormDirty$`をFacade経由で取得
-- **子コンポーネント**: `FormGroup`を定義し、`ngxsForm`ディレクティブでNGXS Storeと連携
+- **親コンポーネント**: Facade で読み込みと保存を行う。送信値は `ngxsForm` が同期したフォームモデルを使う
+- **子コンポーネント**: 送信する値（`tagList` のような配列を含む）をすべて `FormGroup` に定義し、`ngxsForm` で NGXS Store と連携する。同じ値をコンポーネントの `signal` に持たない
+- **送信ボタンの disabled**: `form.invalid` をバインドする。`@ngxs/form-plugin` は Store の model 更新時に `markForCheck()` するため、`toSignal` なしで Zoneless の変更検知に載る
 - **保存アクション**: 親コンポーネント側で定義（`onSave()`メソッド）
 - **URLパラメータのバリデーション**: URLパラメータもStoreに保存し、FormsのValidatorsを利用することで同時にvalidateを実施
 
 実装例:
 
 ```typescript
-// ファイル: apps/client/src/app/article-edit/article-edit.ts
-// 親コンポーネントの実装例
+// ファイル: apps/client/src/app/editor/editor.ts
 @Component({ ... })
-export class ArticleEditComponent {
-  private readonly facade = inject(ArticleEditFacade);
-  readonly isFormInvalid$ = this.facade.isFormInvalid$;
-  readonly isFormDirty$ = this.facade.isFormDirty$;
+export class EditorComponent {
+  private readonly facade = inject(EditorFacade);
 
-  onSave(): void {
-    const form = this.editForm()?.form;
-    if (!form || form.invalid) return;
-    // 保存処理
+  onFormSubmit(form: EditorFormModel): void {
+    this.facade.createArticle(form);
   }
 }
 ```
 
 ```typescript
-// ファイル: apps/client/src/app/article-edit/components/edit-form/edit-form.ts
-// 子コンポーネントの実装例
+// ファイル: apps/client/src/app/editor/components/editor-form/editor-form.ts
 @Component({ ... })
-export class EditFormComponent {
-  readonly form = this.fb.nonNullable.group({
-    articleId: ['', [Validators.required]],
-    title: ['', [Validators.required]],
-    // ...
+export class EditorFormComponent {
+  readonly articleForm = new FormGroup({
+    title: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+    tagList: new FormControl<string[]>([], { nonNullable: true }),
   });
 }
 ```
 
 ```html
-<!-- ファイル: apps/client/src/app/article-edit/components/edit-form/edit-form.html -->
-<!-- 子コンポーネントテンプレートの実装例 -->
-<form [formGroup]="form" ngxsForm="articleEdit.articleForm">
+<!-- ファイル: apps/client/src/app/editor/components/editor-form/editor-form.html -->
+<form [formGroup]="articleForm" ngxsForm="editor.editorForm">
   <input formControlName="title" />
+  <button type="submit" [disabled]="articleForm.invalid">Publish Article</button>
 </form>
 ```
 

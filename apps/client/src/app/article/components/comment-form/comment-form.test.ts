@@ -1,9 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideStore } from '@ngxs/store';
-import { of } from 'rxjs';
 import { describe, expect, it, vi } from 'vitest';
 
-import { ArticleFacade } from '$domains/article';
 import { CommentsState } from '$domains/article/store';
 import { CommentFormComponent } from './comment-form';
 
@@ -12,13 +10,9 @@ describe('CommentFormComponent', () => {
   let fixture: ComponentFixture<CommentFormComponent>;
 
   beforeEach(async () => {
-    const mockArticleFacade = {
-      isCommentFormInvalid$: of(true),
-    };
-
     await TestBed.configureTestingModule({
       imports: [CommentFormComponent],
-      providers: [provideStore([CommentsState]), { provide: ArticleFacade, useValue: mockArticleFacade }],
+      providers: [provideStore([CommentsState])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CommentFormComponent);
@@ -89,22 +83,26 @@ describe('CommentFormComponent', () => {
     expect(submitSpy).toHaveBeenCalledWith('Test Comment');
   });
 
-  it('should expose isFormInvalid from facade', async () => {
-    const mockFacade = {
-      isCommentFormInvalid$: of(true),
-    };
+  it('should disable submit button when form is invalid', async () => {
+    fixture.detectChanges();
+    await fixture.whenStable();
 
-    TestBed.resetTestingModule();
-    await TestBed.configureTestingModule({
-      imports: [CommentFormComponent],
-      providers: [provideStore([CommentsState]), { provide: ArticleFacade, useValue: mockFacade }],
-    }).compileComponents();
+    const compiled = fixture.nativeElement as HTMLElement;
+    const submitButton = compiled.querySelector('button[type="submit"]') as HTMLButtonElement;
+    expect(submitButton?.disabled).toBe(true);
+  });
 
-    const newFixture = TestBed.createComponent(CommentFormComponent);
-    const newComponent = newFixture.componentInstance;
-    newFixture.detectChanges();
+  it('should enable submit button when form is valid', async () => {
+    fixture.detectChanges();
 
-    expect(newComponent.isFormInvalid()).toBe(true);
+    const bodyControl = component.commentForm.get('body');
+    bodyControl?.setValue('Valid comment');
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const submitButton = compiled.querySelector('button[type="submit"]') as HTMLButtonElement;
+    expect(submitButton?.disabled).toBe(false);
   });
 
   it('should render form with textarea', () => {
@@ -121,42 +119,5 @@ describe('CommentFormComponent', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const submitButton = compiled.querySelector('button[type="submit"]');
     expect(submitButton).toBeTruthy();
-  });
-
-  it('should disable submit button when form is invalid', async () => {
-    fixture.detectChanges();
-    await fixture.whenStable();
-
-    const compiled = fixture.nativeElement as HTMLElement;
-    const submitButton = compiled.querySelector('button[type="submit"]') as HTMLButtonElement;
-    // Form is invalid (empty body) and isFormInvalid$ is true
-    expect(submitButton?.disabled).toBe(true);
-  });
-
-  it('should enable submit button when form is valid', async () => {
-    // Create a new test module with valid form state
-    const mockArticleFacade = {
-      isCommentFormInvalid$: of(false),
-    };
-
-    TestBed.resetTestingModule();
-    await TestBed.configureTestingModule({
-      imports: [CommentFormComponent],
-      providers: [provideStore([CommentsState]), { provide: ArticleFacade, useValue: mockArticleFacade }],
-    }).compileComponents();
-
-    const newFixture = TestBed.createComponent(CommentFormComponent);
-    const newComponent = newFixture.componentInstance;
-
-    newFixture.detectChanges();
-
-    const bodyControl = newComponent.commentForm.get('body');
-    bodyControl?.setValue('Valid comment');
-    newFixture.detectChanges();
-    await newFixture.whenStable();
-
-    const compiled = newFixture.nativeElement as HTMLElement;
-    const submitButton = compiled.querySelector('button[type="submit"]') as HTMLButtonElement;
-    expect(submitButton?.disabled).toBe(false);
   });
 });

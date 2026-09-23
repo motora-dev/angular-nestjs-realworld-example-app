@@ -121,18 +121,4 @@ describe('SettingsFacade', () => {
       expect(dispatchSpy).toHaveBeenCalledWith(new ClearSettingsForm());
     });
   });
-
-  describe('selectors', () => {
-    it('should expose isFormInvalid$ selector', () => {
-      expect(facade.isFormInvalid$).toBeDefined();
-    });
-
-    it('should expose isFormDirty$ selector', () => {
-      expect(facade.isFormDirty$).toBeDefined();
-    });
-
-    it('should expose formValue$ selector', () => {
-      expect(facade.formValue$).toBeDefined();
-    });
-  });
 });

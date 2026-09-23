@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, inject, output } from '@angular/cor
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgxsFormDirective } from '@ngxs/form-plugin';
 
-import { SettingsFacade, SettingsFormModel } from '$domains/settings';
+import { SettingsFormModel } from '$domains/settings';
 import { SpinnerFacade } from '$modules/spinner';
 
 interface SettingsForm {
@@ -21,13 +21,11 @@ interface SettingsForm {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SettingsFormComponent {
-  private readonly settingsFacade = inject(SettingsFacade);
   private readonly spinnerFacade = inject(SpinnerFacade);
 
   readonly formSubmit = output<SettingsFormModel>();
 
   readonly isLoading$ = this.spinnerFacade.isLoading$;
-  readonly isFormInvalid$ = this.settingsFacade.isFormInvalid$;
 
   readonly settingsForm = new FormGroup<SettingsForm>({
     image: new FormControl('', { nonNullable: true }),

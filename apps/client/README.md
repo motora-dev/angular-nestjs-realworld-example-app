@@ -664,7 +664,7 @@ This section explains form management patterns integrating Reactive Forms with N
 
 **Related Files**:
 
-- `apps/client/src/app/article-edit/components/edit-form/edit-form.ts` - Form component example
+- `apps/client/src/app/editor/components/editor-form/editor-form.ts` - Form component example
 - `apps/client/src/components/fields/input-field/input-field.ts` - InputFieldComponent implementation
 
 ### Technology Stack
@@ -693,50 +693,44 @@ Features:
 
 ### Form Management Pattern (Parent-Child Component Coordination)
 
-Form management pattern used in article-edit:
+Form management pattern used in the editor:
 
-- **Parent component**: Facade calls, get `isFormInvalid$` and `isFormDirty$` via Facade
-- **Child component**: Define `FormGroup`, connect with NGXS Store via `ngxsForm` directive
+- **Parent component**: Calls the facade to load and save. Submitted values come from the form model synced by `ngxsForm`
+- **Child component**: Define `FormGroup` for every submitted field, including arrays such as `tagList`. Connect it with `ngxsForm`. Do not mirror those fields in a component `signal`
+- **Disabled submit**: Bind `form.invalid`. `@ngxs/form-plugin` calls `markForCheck()` when the store model changes, so zoneless change detection sees the updated validity without `toSignal`
 - **Save action**: Defined in parent component (`onSave()` method)
 - **URL parameter validation**: Store URL parameters and validate simultaneously using Forms Validators
 
 Implementation example:
 
 ```typescript
-// File: apps/client/src/app/article-edit/article-edit.ts
-// Parent component implementation example
+// File: apps/client/src/app/editor/editor.ts
 @Component({ ... })
-export class ArticleEditComponent {
-  private readonly facade = inject(ArticleEditFacade);
-  readonly isFormInvalid$ = this.facade.isFormInvalid$;
-  readonly isFormDirty$ = this.facade.isFormDirty$;
+export class EditorComponent {
+  private readonly facade = inject(EditorFacade);
 
-  onSave(): void {
-    const form = this.editForm()?.form;
-    if (!form || form.invalid) return;
-    // Save processing
+  onFormSubmit(form: EditorFormModel): void {
+    this.facade.createArticle(form);
   }
 }
 ```
 
 ```typescript
-// File: apps/client/src/app/article-edit/components/edit-form/edit-form.ts
-// Child component implementation example
+// File: apps/client/src/app/editor/components/editor-form/editor-form.ts
 @Component({ ... })
-export class EditFormComponent {
-  readonly form = this.fb.nonNullable.group({
-    articleId: ['', [Validators.required]],
-    title: ['', [Validators.required]],
-    // ...
+export class EditorFormComponent {
+  readonly articleForm = new FormGroup({
+    title: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+    tagList: new FormControl<string[]>([], { nonNullable: true }),
   });
 }
 ```
 
 ```html
-<!-- File: apps/client/src/app/article-edit/components/edit-form/edit-form.html -->
-<!-- Child component template implementation example -->
-<form [formGroup]="form" ngxsForm="articleEdit.articleForm">
+<!-- File: apps/client/src/app/editor/components/editor-form/editor-form.html -->
+<form [formGroup]="articleForm" ngxsForm="editor.editorForm">
   <input formControlName="title" />
+  <button type="submit" [disabled]="articleForm.invalid">Publish Article</button>
 </form>
 ```
 

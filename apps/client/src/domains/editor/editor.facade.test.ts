@@ -76,6 +76,7 @@ describe('EditorFacade', () => {
           title: 'Test Article',
           description: 'Test Description',
           body: 'Test Body',
+          tagList: ['test'],
         }),
       );
     });
@@ -131,20 +132,6 @@ describe('EditorFacade', () => {
       facade.clearEditorForm();
 
       expect(dispatchSpy).toHaveBeenCalledWith(new ClearEditorForm());
-    });
-  });
-
-  describe('selectors', () => {
-    it('should expose isFormInvalid$ selector', () => {
-      expect(facade.isFormInvalid$).toBeDefined();
-    });
-
-    it('should expose isFormDirty$ selector', () => {
-      expect(facade.isFormDirty$).toBeDefined();
-    });
-
-    it('should expose formValue$ selector', () => {
-      expect(facade.formValue$).toBeDefined();
     });
   });
 });

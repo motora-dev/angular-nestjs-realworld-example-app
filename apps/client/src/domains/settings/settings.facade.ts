@@ -8,7 +8,7 @@ import { SetCurrentUser } from '$modules/auth/store';
 import { SpinnerFacade } from '$modules/spinner';
 import { SettingsApi } from './api';
 import { SettingsFormModel } from './model';
-import { ClearSettingsForm, SetSettingsForm, SettingsState } from './store';
+import { ClearSettingsForm, SetSettingsForm } from './store';
 
 @Injectable({ providedIn: 'root' })
 export class SettingsFacade {
@@ -16,10 +16,6 @@ export class SettingsFacade {
   private readonly store = inject(Store);
   private readonly api = inject(SettingsApi);
   private readonly spinnerFacade = inject(SpinnerFacade);
-
-  readonly isFormInvalid$ = this.store.select(SettingsState.isFormInvalid);
-  readonly isFormDirty$ = this.store.select(SettingsState.isFormDirty);
-  readonly formValue$ = this.store.select(SettingsState.getFormValue);
 
   loadSettingsForm(): void {
     if (!isPlatformBrowser(this.platformId)) {

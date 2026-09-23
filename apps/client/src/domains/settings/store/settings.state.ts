@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Action, Selector, State, StateContext } from '@ngxs/store';
+import { Action, State, StateContext } from '@ngxs/store';
 import { patch } from '@ngxs/store/operators';
 
-import { SettingsFormModel, SettingsFormState } from '../model';
+import { SettingsFormState } from '../model';
 import { ClearSettingsForm, SetSettingsForm } from './settings.actions';
 
 const defaultSettingsForm: SettingsFormState = {
@@ -29,21 +29,6 @@ export interface SettingsStateModel {
 })
 @Injectable()
 export class SettingsState {
-  @Selector()
-  static isFormInvalid(state: SettingsStateModel): boolean {
-    return state.settingsForm.status !== 'VALID';
-  }
-
-  @Selector()
-  static isFormDirty(state: SettingsStateModel): boolean {
-    return state.settingsForm.dirty;
-  }
-
-  @Selector()
-  static getFormValue(state: SettingsStateModel): SettingsFormModel | null {
-    return state.settingsForm?.model ?? null;
-  }
-
   @Action(SetSettingsForm)
   setSettingsForm(ctx: StateContext<SettingsStateModel>, action: SetSettingsForm) {
     ctx.setState(

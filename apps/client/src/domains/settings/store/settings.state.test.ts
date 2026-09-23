@@ -20,72 +20,18 @@ describe('SettingsState', () => {
 
   describe('initial state', () => {
     it('should have default settings form as initial state', () => {
-      const formValue = store.selectSnapshot(SettingsState.getFormValue);
-      expect(formValue).toEqual({
-        image: '',
-        username: '',
-        bio: '',
-        email: '',
-      });
-    });
-
-    it('should have invalid form status as initial state', () => {
-      const isInvalid = store.selectSnapshot(SettingsState.isFormInvalid);
-      expect(isInvalid).toBe(true);
-    });
-
-    it('should have non-dirty form as initial state', () => {
-      const isDirty = store.selectSnapshot(SettingsState.isFormDirty);
-      expect(isDirty).toBe(false);
-    });
-  });
-
-  describe('isFormInvalid selector', () => {
-    it('should return true when form status is not VALID', () => {
-      const isInvalid = store.selectSnapshot(SettingsState.isFormInvalid);
-      expect(isInvalid).toBe(true);
-    });
-  });
-
-  describe('isFormDirty selector', () => {
-    it('should return false when form is not dirty', () => {
-      const isDirty = store.selectSnapshot(SettingsState.isFormDirty);
-      expect(isDirty).toBe(false);
-    });
-  });
-
-  describe('getFormValue selector', () => {
-    it('should return form value from state', () => {
-      const mockForm: SettingsFormModel = {
-        username: 'testuser',
-        email: 'test@example.com',
-        bio: 'Test Bio',
-        image: 'https://example.com/image.jpg',
-      };
-
-      store.dispatch(new SetSettingsForm(mockForm));
-
-      const formValue = store.selectSnapshot(SettingsState.getFormValue);
-      expect(formValue).toEqual(mockForm);
-    });
-
-    it('should return null when settingsForm is undefined', () => {
-      const state = { settingsForm: undefined } as any;
-      const formValue = SettingsState.getFormValue(state);
-      expect(formValue).toBeNull();
-    });
-
-    it('should return null when settingsForm.model is undefined', () => {
-      const state = {
-        settingsForm: {
-          model: undefined,
-          dirty: false,
-          status: '',
-          errors: {},
+      const form = store.selectSnapshot((state) => state.settings.settingsForm);
+      expect(form).toEqual({
+        model: {
+          image: '',
+          username: '',
+          bio: '',
+          email: '',
         },
-      } as any;
-      const formValue = SettingsState.getFormValue(state);
-      expect(formValue).toBeNull();
+        dirty: false,
+        status: '',
+        errors: {},
+      });
     });
   });
 
@@ -100,22 +46,9 @@ describe('SettingsState', () => {
 
       store.dispatch(new SetSettingsForm(mockForm));
 
-      const formValue = store.selectSnapshot(SettingsState.getFormValue);
-      expect(formValue).toEqual(mockForm);
-    });
-
-    it('should set dirty to false when form is set', () => {
-      const mockForm: SettingsFormModel = {
-        username: 'testuser',
-        email: 'test@example.com',
-        bio: 'Test Bio',
-        image: 'https://example.com/image.jpg',
-      };
-
-      store.dispatch(new SetSettingsForm(mockForm));
-
-      const isDirty = store.selectSnapshot(SettingsState.isFormDirty);
-      expect(isDirty).toBe(false);
+      const form = store.selectSnapshot((state) => state.settings.settingsForm);
+      expect(form.model).toEqual(mockForm);
+      expect(form.dirty).toBe(false);
     });
   });
 
@@ -131,7 +64,7 @@ describe('SettingsState', () => {
       store.dispatch(new SetSettingsForm(mockForm));
       store.dispatch(new ClearSettingsForm());
 
-      const formValue = store.selectSnapshot(SettingsState.getFormValue);
+      const formValue = store.selectSnapshot((state) => state.settings.settingsForm.model);
       expect(formValue).toEqual({
         image: '',
         username: '',
