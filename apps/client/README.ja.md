@@ -1240,7 +1240,7 @@ pnpm test:watch     # ウォッチモード
 | Storybook | UIカタログ・ドキュメント |
 | Vitest    | Unit テスト・E2E テスト  |
 
-> **Note**: `@storybook/addon-vitest` は Angular では未対応のため、テストは Vitest で行います。
+> **Note**: コンポーネントのテストは Vitest で行います。Storybook は UI カタログです。
 
 ## Storybook
 
@@ -1272,7 +1272,7 @@ pnpm storybook        # http://localhost:6006
 // ファイル: apps/client/src/shared/ui/button/button.stories.ts
 // Storybook Storiesの実装例
 import { ButtonDirective } from './button';
-import type { Meta, StoryObj } from '@storybook/angular';
+import type { Meta, StoryObj } from '@storybook/angular-vite';
 
 const meta: Meta<ButtonDirective> = {
   title: 'UI/Button',

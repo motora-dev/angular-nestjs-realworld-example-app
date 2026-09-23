@@ -1242,7 +1242,7 @@ pnpm test:watch     # Watch mode
 | Storybook | UI catalog, documentation |
 | Vitest    | Unit tests, E2E tests     |
 
-> **Note**: `@storybook/addon-vitest` doesn't support Angular, so tests run with Vitest.
+> **Note**: Component tests run with Vitest. Storybook is the UI catalog.
 
 ## Storybook
 
@@ -1274,7 +1274,7 @@ Define each variant in `*.stories.ts` files:
 // File: apps/client/src/shared/ui/button/button.stories.ts
 // Storybook Stories implementation example
 import { ButtonDirective } from './button';
-import type { Meta, StoryObj } from '@storybook/angular';
+import type { Meta, StoryObj } from '@storybook/angular-vite';
 
 const meta: Meta<ButtonDirective> = {
   title: 'UI/Button',
