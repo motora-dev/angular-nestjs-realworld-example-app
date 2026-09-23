@@ -1,5 +1,13 @@
-# Created by https://www.toptal.com/developers/gitignore/api/node,macos,linux,windows,turbo,visualstudiocode,jetbrains
-# Edit at https://www.toptal.com/developers/gitignore?templates=node,macos,linux,windows,turbo,visualstudiocode,jetbrains
+# Created by https://www.toptal.com/developers/gitignore/api/node,macos,linux,windows,turbo,visualstudiocode,jetbrains,certificates
+# Edit at https://www.toptal.com/developers/gitignore?templates=node,macos,linux,windows,turbo,visualstudiocode,jetbrains,certificates
+
+### certificates ###
+*.pem
+*.key
+*.crt
+*.cer
+*.der
+*.priv
 
 ### JetBrains ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
@@ -350,4 +358,4 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# End of https://www.toptal.com/developers/gitignore/api/node,macos,linux,windows,turbo,visualstudiocode,jetbrains
+# End of https://www.toptal.com/developers/gitignore/api/node,macos,linux,windows,turbo,visualstudiocode,jetbrains,certificates
